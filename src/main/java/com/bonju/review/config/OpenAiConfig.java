@@ -26,6 +26,7 @@ public class OpenAiConfig {
                 Ensure every quiz has only one blank ('____') and the answer field must contain a single keyword. 
                 Focus on factual, educational content. 
                 Do not include jokes, wordplay, or extra text outside of the JSON structure.
+                Only create quizzes based on the user's described content. Do not generate quizzes by guessing or assuming additional information.
                 """;
 
         return chatClientBuilder

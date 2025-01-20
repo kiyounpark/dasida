@@ -7,12 +7,12 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public final class QuizDto {
-    @JsonProperty("quiz")
+    @JsonProperty("quiz") // json 키값 지정
     private final String quiz;
 
-    @JsonProperty("answer")
+    @JsonProperty("answer") // json 키값 지정
     private final String answer;
 
-    @JsonProperty("commentary")
+    @JsonProperty("commentary") // json 키값 지정
     private final String commentary;
 }

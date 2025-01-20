@@ -23,7 +23,7 @@ public class OpenAiController {
 
     @GetMapping
     public String test(){
-        openAiRepositoryJpa.createQuiz();
+//        openAiRepositoryJpa.createQuiz();
         return "ok";
     }
 }
