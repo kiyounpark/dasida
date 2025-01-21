@@ -7,6 +7,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.LocalDateTime;
+
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -44,6 +46,8 @@ public class Quiz {
     @Enumerated(EnumType.STRING)
     @Setter
     private AnswerStatus answerStatus30d = AnswerStatus.NOT_ATTEMPTED;
+
+    private final LocalDateTime createdAt = LocalDateTime.now();
 
     public Quiz(User user ,Knowledge knowledge, String quiz, String answer, String commentary) {
         this.user = user;
