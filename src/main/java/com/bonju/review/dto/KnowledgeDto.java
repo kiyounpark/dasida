@@ -2,6 +2,7 @@ package com.bonju.review.dto;
 
 
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
@@ -14,5 +15,6 @@ public class KnowledgeDto {
     private final String title;
 
     @NotBlank(message = "지식 내용이 비었습니다.")
+    @Size(max = 500)
     private final String description;
 }
