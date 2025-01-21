@@ -1,5 +1,6 @@
 package com.bonju.review.config;
 
+import com.bonju.review.service.CustomOAuth2UserService;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -17,17 +18,29 @@ public class SecurityConfig {
 
     private final AuthenticationFailureHandler failureHandler;
     private final AuthenticationSuccessHandler successHandler;
+    private final CustomOAuth2UserService customOAuth2UserService;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 // 1. 요청 권한 설정
                 .authorizeHttpRequests(authorize -> authorize
+                        .requestMatchers("/h2-console/**").permitAll()
                         // OAuth2 로그인 처리용 URL은 모두 허용
                         .requestMatchers("/oauth2/authorization/**").permitAll()
                         // 그 외 요청은 인증 필요
                         .anyRequest().authenticated()
                 )
+
+                .csrf(csrf -> csrf
+                        .ignoringRequestMatchers("/h2-console/**")
+                )
+
+                .headers(headers -> headers
+                        .frameOptions(frameOptions -> frameOptions.disable())
+                )
+
+
 
                 // 2. formLogin을 비활성화함 -> 401 에러 반환이 가능해짐
                 .formLogin(Customizer.withDefaults())
@@ -41,6 +54,7 @@ public class SecurityConfig {
 
                 // 4. OAuth2 로그인은 그대로 유지(선택 사항)
                 .oauth2Login(oauth2 -> oauth2
+                        .userInfoEndpoint(userInfo -> userInfo.userService(customOAuth2UserService))
                         .successHandler(successHandler)
                         .failureHandler(failureHandler)
                 );

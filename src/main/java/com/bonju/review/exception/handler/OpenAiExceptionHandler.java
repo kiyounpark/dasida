@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import java.util.HashMap;
 import java.util.Map;
 
-@RestControllerAdvice(basePackageClasses = OpenAiClient.class)
+@RestControllerAdvice
 public class OpenAiExceptionHandler {
 
     @ExceptionHandler(OpenAiException.class)
