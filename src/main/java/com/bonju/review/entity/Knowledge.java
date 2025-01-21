@@ -21,7 +21,8 @@ public class Knowledge {
     private String title;       // 예: "영어 단어", "수학 공식" 등
     private String description; // 예: "토익 대비 단어 모음"
 
-    public Knowledge(String title, String description) {
+    public Knowledge(User user ,String title, String description) {
+        this.user = user;
         this.title = title;
         this.description = description;
     }

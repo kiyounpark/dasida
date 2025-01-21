@@ -23,6 +23,7 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
+                .csrf(AbstractHttpConfigurer::disable) // CSRF 보호 비활성화
                 // 1. 요청 권한 설정
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers("/h2-console/**").permitAll()
@@ -30,10 +31,6 @@ public class SecurityConfig {
                         .requestMatchers("/oauth2/authorization/**").permitAll()
                         // 그 외 요청은 인증 필요
                         .anyRequest().authenticated()
-                )
-
-                .csrf(csrf -> csrf
-                        .ignoringRequestMatchers("/h2-console/**")
                 )
 
                 .headers(headers -> headers

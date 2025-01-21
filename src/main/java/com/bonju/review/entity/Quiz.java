@@ -45,7 +45,8 @@ public class Quiz {
     @Setter
     private AnswerStatus answerStatus30d = AnswerStatus.NOT_ATTEMPTED;
 
-    public Quiz(Knowledge knowledge, String quiz, String answer, String commentary) {
+    public Quiz(User user ,Knowledge knowledge, String quiz, String answer, String commentary) {
+        this.user = user;
         this.knowledge = knowledge;
         this.quiz = quiz;
         this.answer = answer;
