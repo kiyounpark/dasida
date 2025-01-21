@@ -14,6 +14,10 @@ public class Knowledge {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    private User user;
+
     private String title;       // 예: "영어 단어", "수학 공식" 등
     private String description; // 예: "토익 대비 단어 모음"
 

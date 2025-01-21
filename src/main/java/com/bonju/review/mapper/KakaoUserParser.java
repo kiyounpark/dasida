@@ -12,11 +12,7 @@ public class KakaoUserParser {
 
     private static final ObjectMapper objectMapper = new ObjectMapper();
 
-    /**
-     * JSON 문자열을 받아서 id, nickname 정보를 KakaoUserInfo로 반환한다.
-     * @param json JSON 문자열
-     * @return KakaoUserInfo (id, nickname)
-     */
+
     public static KakaoUserInfoDto parseKakaoUserInfo(Map<String, Object> attributes) {
         try {
             if (attributes == null) {

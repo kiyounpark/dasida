@@ -21,6 +21,10 @@ public class Quiz {
     @JoinColumn(name = "knowledge_id")
     private Knowledge knowledge;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    private User user;
+
     private String quiz;
     private String answer;
     private String commentary;
