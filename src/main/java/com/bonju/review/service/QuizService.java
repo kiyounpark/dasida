@@ -25,7 +25,7 @@ public class QuizService {
      */
     public List<List<QuizResponseDto>> getGroupedQuizzesByKnowledge() {
 
-        User user = userService.findUserByKaKaoId();
+        User user = userService.findUser();
         // 1) 모든 Quiz(또는 필요 조건) 조회
         List<Quiz> quizList = quizRepository.findQuizzesCreatedWithin30DaysByUser(user.getId());
 

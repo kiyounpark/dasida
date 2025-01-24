@@ -14,7 +14,7 @@ public class UserService {
 
     private final UserRepository userRepository;
 
-    public User findUserByKaKaoId() {
+    public User findUser() {
         String kakaoId = AuthenticationHelper.getKaKaoId();
 
         return userRepository.findByKaKaoId(kakaoId)

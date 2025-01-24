@@ -33,7 +33,7 @@ public class OpenAiService {
 
     @Transactional
     public void saveQuiz(KnowledgeDto knowledgeDto) {
-        User user = userService.findUserByKaKaoId();
+        User user = userService.findUser();
 
         Knowledge knowledge = knowledgeMapper.toEntity(user, knowledgeDto);
         saveKnowledge(knowledge);
