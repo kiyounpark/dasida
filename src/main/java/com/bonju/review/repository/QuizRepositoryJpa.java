@@ -15,11 +15,14 @@ public class QuizRepositoryJpa implements QuizRepository {
 
     public List<Quiz> findQuizzesCreatedWithin30DaysByUser(Long userId) {
         LocalDateTime thresholdDate = LocalDateTime.now().minusDays(30);
-        String jpql = "SELECT q FROM Quiz q WHERE q.createdAt >= :thresholdDate AND q.user.id = :userId";
+        String jpql = "SELECT q " +
+                "FROM Quiz q " +
+                "WHERE q.createdAt >= :thresholdDate AND q.user.id = :userId " +
+                "ORDER BY q.createdAt DESC";
+
         TypedQuery<Quiz> query = em.createQuery(jpql, Quiz.class);
         query.setParameter("thresholdDate", thresholdDate);
         query.setParameter("userId", userId);
         return query.getResultList();
     }
-
 }
