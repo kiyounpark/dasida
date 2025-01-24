@@ -27,9 +27,12 @@ public class SecurityConfig {
                 // 1. 요청 권한 설정
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers("/h2-console/**").permitAll()
-                        // OAuth2 로그인 처리용 URL은 모두 허용
                         .requestMatchers("/oauth2/authorization/**").permitAll()
-                        // 그 외 요청은 인증 필요
+                        .requestMatchers(   "/swagger-ui/**",   // Swagger UI 경로
+                                "/v3/api-docs/**",  // OpenAPI 문서 경로
+                                "/swagger-resources/**",
+                                "/webjars/**"       // Swagger 관련 정적 리소스
+                                         ).permitAll()
                         .anyRequest().authenticated()
                 )
 
