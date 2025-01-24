@@ -1,15 +1,10 @@
 package com.bonju.review.client;
 
-import com.bonju.review.dto.QuizDto;
-import com.bonju.review.dto.QuizWrapperDto;
 import com.bonju.review.exception.exception.OpenAiException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.stereotype.Component;
-
-import java.util.List;
 
 @Component
 @RequiredArgsConstructor

@@ -6,7 +6,6 @@ import com.bonju.review.entity.Quiz;
 import com.bonju.review.entity.User;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 

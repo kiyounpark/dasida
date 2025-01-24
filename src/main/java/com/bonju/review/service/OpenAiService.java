@@ -19,7 +19,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -30,12 +29,11 @@ public class OpenAiService {
     private final QuizJsonParser quizJsonParser;
     private final QuizEntityMapper quizEntityMapper;
     private final KnowledgeMapper knowledgeMapper;
-    private final UserRepository userRepository;
+    private final UserService userService;
 
     @Transactional
     public void saveQuiz(KnowledgeDto knowledgeDto) {
-        String kakaoId = AuthenticationHelper.getKaKaoId();
-        User user = findUserByKaKaoId(kakaoId);
+        User user = userService.findUserByKaKaoId();
 
         Knowledge knowledge = knowledgeMapper.toEntity(user, knowledgeDto);
         saveKnowledge(knowledge);
@@ -54,9 +52,6 @@ public class OpenAiService {
         openAiRepository.saveQuizzes(quizzes);
     }
 
-    private User findUserByKaKaoId(String kakaoId) {
-        return userRepository.findByKaKaoId(kakaoId)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, "사용자를 찾을 수 없습니다."));
-    }
+
 }
 
