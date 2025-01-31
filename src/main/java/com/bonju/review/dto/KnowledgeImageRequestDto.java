@@ -1,2 +1,4 @@
-package com.bonju.review.dto;public class KnowledgeImageRequestDto {
+package com.bonju.review.dto;
+
+public class KnowledgeImageRequestDto {
 }
