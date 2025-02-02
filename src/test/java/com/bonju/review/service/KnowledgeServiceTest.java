@@ -1,6 +1,6 @@
 package com.bonju.review.service;
 
-import com.bonju.review.dto.KnowledgeTextRequestDto;
+import com.bonju.review.dto.KnowledgeRequestDto;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
@@ -18,11 +18,11 @@ class KnowledgeServiceTest {
     @Test
     public void givenValidKnowledgeTextRequest_whenRegisterKnowledge_thenReturnRegisteredId(){
         //given
-        KnowledgeTextRequestDto knowledgeTextRequestDto = new KnowledgeTextRequestDto("최고다", "이순신");
-        when(knowledgeServiceMock.registerKnowledge(knowledgeTextRequestDto)).thenReturn(1L);
+        KnowledgeRequestDto knowledgeRequestDto = new KnowledgeRequestDto("최고다", "이순신");
+        when(knowledgeServiceMock.registerKnowledge(knowledgeRequestDto)).thenReturn(1L);
 
         //when
-        Long knowledgeId = knowledgeServiceMock.registerKnowledge(knowledgeTextRequestDto);
+        Long knowledgeId = knowledgeServiceMock.registerKnowledge(knowledgeRequestDto);
 
         //then
         assertEquals(1L, knowledgeId);
