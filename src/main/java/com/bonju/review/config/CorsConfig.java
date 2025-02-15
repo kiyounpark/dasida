@@ -15,8 +15,11 @@ public class CorsConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        // 오직 http://127.0.0.1:5500 (실제 요청 시 Origin 헤더는 경로 없이 전달됨) 만 허용합니다.
-        configuration.setAllowedOrigins(List.of("http://127.0.0.1:5500"));
+        // ✅ dasida.dev와 api.dasida.dev 허용 (서브도메인 포함)
+        configuration.setAllowedOriginPatterns(List.of(
+                "http://dasida.local:*",      // 프론트엔드
+                "http://api.dasida.local:*"   // 백엔드 API
+        ));
         // 요청 메서드 허용 설정
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         // 모든 헤더 허용
