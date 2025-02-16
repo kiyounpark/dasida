@@ -53,7 +53,6 @@ public class DevSecurityConfig {
 
                 // 4. OAuth2 로그인은 그대로 유지(선택 사항)
                 .oauth2Login(oauth2 -> oauth2
-                        .userInfoEndpoint(userInfo -> userInfo.userService(customOAuth2UserService))
                         .successHandler(successHandler)
                         .failureHandler(failureHandler)
                 );
