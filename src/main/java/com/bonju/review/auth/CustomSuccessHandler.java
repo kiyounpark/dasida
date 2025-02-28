@@ -24,12 +24,12 @@ public class CustomSuccessHandler implements AuthenticationSuccessHandler {
         sessionCookie.setPath("/");  // 모든 경로에서 접근 가능
         sessionCookie.setHttpOnly(true);  // JavaScript에서 접근 불가능 (보안 강화)
         sessionCookie.setMaxAge((int) Duration.ofDays(1).toSeconds());  // 1일 유지
-        sessionCookie.setDomain("dasida.local");  // ✅ 쿠키 도메인 설정 (프론트엔드에서 접근 가능)
-        sessionCookie.setSecure(false);  // ✅ HTTPS 사용 시 `true`, 현재는 HTTP 사용 중이므로 `false`
+        sessionCookie.setDomain("dasida.org");  // ✅ 쿠키 도메인 설정 (프론트엔드에서 접근 가능)
+        sessionCookie.setSecure(true);  // ✅ HTTPS 사용 시 `true`, 현재는 HTTP 사용 중이므로 `false`
 
         response.addCookie(sessionCookie);  // 응답에 쿠키 추가
 
         // ✅ 로그인 성공 후 프론트엔드 홈 페이지로 리디렉트
-        response.sendRedirect("http://dasida.local:3000/home");
+        response.sendRedirect("https://dev.dasida.org:3000");
     }
 }
