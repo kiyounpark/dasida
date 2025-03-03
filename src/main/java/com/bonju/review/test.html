@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>JPA Flush와 준영속 상태</title>
+</head>
+<body>
+    <h1>플러시는!</h1>
+    <img src="https://dev-dasida-static-files.s3.ap-northeast-2.amazonaws.com/d4b41388-0b6d-4e85-af58-8feca420a192.png">
+
+    <h2>준영속 상태로 만드는 방법</h2>
+    <ul>
+        <li><code>em.detach(entity)</code> → 특정 엔티티만 준영속 상태로 전환</li>
+        <li><code>em.clear()</code> → 영속성 컨텍스트를 완전히 초기화</li>
+        <li><code>em.close()</code> → 영속성 컨텍스트를 종료</li>
+    </ul>
+    <p>
+        <strong>준영속 상태</strong>란, 엔티티가 더 이상 영속성 컨텍스트에 의해 관리되지 않는 상태를 의미합니다.<br>
+        따라서 <code>em.detach()</code>, <code>em.clear()</code>, <code>em.close()</code> 등을 사용해 엔티티를 준영속 상태로 만들 수 있습니다.
+    </p>
+</body>
+</html>
