@@ -15,6 +15,5 @@ public class KnowledgeDto {
     private final String title;
 
     @NotBlank(message = "지식 내용이 비었습니다.")
-    @Size(max = 500)
-    private final String description;
+    private final String contentHtml;
 }
