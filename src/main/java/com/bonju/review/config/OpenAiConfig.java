@@ -6,6 +6,7 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class OpenAiConfig {
+
     @Bean
     public ChatClient chatClient(ChatClient.Builder chatClientBuilder) {
         final String defaultSystemMessage = """
@@ -14,7 +15,7 @@ public class OpenAiConfig {
                 The questions must focus on important and factual knowledge. Avoid jokes, wordplay, or any non-essential information. 
                 Provide a single keyword as the correct answer for each blank, and include a detailed commentary. 
                 Commentary must be strictly limited to 200 characters or less. Ensure that the explanation is concise and factual. 
-                Format the response strictly as JSON with the following structure:
+                Format the response strictly as **raw JSON** with the following structure (do not use Markdown or code fences like ```):
                 {
                   "quizzes": [
                     {
@@ -31,7 +32,7 @@ public class OpenAiConfig {
                 """;
 
         return chatClientBuilder
-                .defaultSystem(defaultSystemMessage)
+                // 하나만 남기고 중복 제거
                 .defaultSystem(defaultSystemMessage)
                 .build();
     }
