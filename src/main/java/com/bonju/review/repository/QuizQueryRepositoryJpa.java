@@ -11,10 +11,9 @@ import java.util.List;
 
 @Repository
 @RequiredArgsConstructor
-public class QuizRepositoryJpa implements QuizRepository {
-
-    private final EntityManager em;
-
+public class QuizQueryRepositoryJpa implements QuizQueryRepository {
+    EntityManager em;
+    @Override
     public List<Quiz> findQuizzesCreatedWithin30DaysByUser(Long userId) {
         LocalDateTime thresholdDate = LocalDateTime.now().minusDays(30);
         String jpql = "SELECT q " +
@@ -26,5 +25,5 @@ public class QuizRepositoryJpa implements QuizRepository {
         query.setParameter("thresholdDate", thresholdDate);
         query.setParameter("userId", userId);
         return query.getResultList();
-    }
+    };
 }
