@@ -1,8 +1,7 @@
 package com.bonju.review.service;
 
-import com.bonju.review.AuthenticationHelper;
 import com.bonju.review.client.OpenAiClient;
-import com.bonju.review.dto.KnowledgeDto;
+import com.bonju.review.dto.KnowledgeRequestDto;
 import com.bonju.review.dto.QuizDto;
 import com.bonju.review.entity.Knowledge;
 import com.bonju.review.entity.Quiz;
@@ -11,12 +10,9 @@ import com.bonju.review.mapper.KnowledgeMapper;
 import com.bonju.review.mapper.QuizEntityMapper;
 import com.bonju.review.mapper.QuizJsonParser;
 import com.bonju.review.repository.OpenAiRepository;
-import com.bonju.review.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
@@ -32,13 +28,13 @@ public class OpenAiService {
     private final UserService userService;
 
     @Transactional
-    public void saveQuiz(KnowledgeDto knowledgeDto) {
+    public void saveQuiz(KnowledgeRequestDto knowledgeRequestDto) {
         User user = userService.findUser();
 
-        Knowledge knowledge = knowledgeMapper.toEntity(user, knowledgeDto);
+        Knowledge knowledge = knowledgeMapper.toEntity(user, knowledgeRequestDto);
         saveKnowledge(knowledge);
 
-        String jsonQuizData = openAiClient.getQuizJson(knowledgeDto.getDescription());
+        String jsonQuizData = openAiClient.getQuizJson(knowledgeRequestDto.getContentHtml());
         saveQuizzes(user, jsonQuizData, knowledge);
     }
 

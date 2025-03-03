@@ -1,16 +1,12 @@
 package com.bonju.review.controller;
 
-import com.bonju.review.client.OpenAiClient;
-import com.bonju.review.dto.KnowledgeDto;
-import com.bonju.review.mapper.QuizEntityMapper;
-import com.bonju.review.mapper.QuizJsonParser;
-import com.bonju.review.repository.OpenAiRepository;
+import com.bonju.review.dto.KnowledgeRequestDto;
+import com.bonju.review.service.KnowledgeService;
 import com.bonju.review.service.OpenAiService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -18,15 +14,22 @@ import org.springframework.web.bind.annotation.*;
     @RequestMapping("/knowledge")
     public class KnowledgeController {
 
-
+        private final KnowledgeService knowledgeService;
         private final OpenAiService openAiService;
 
-        @PostMapping
-        public ResponseEntity<String> createKnowledge(@Valid @ModelAttribute KnowledgeDto knowledgeDto) {
-            openAiService.saveQuiz(knowledgeDto);
+//        @PostMapping
+//        public ResponseEntity<String> createKnowledge(@Valid @ModelAttribute KnowledgeRequestDto knowledgeRequestDto) {
+//            openAiService.saveQuiz(knowledgeRequestDto);
+//
+//            // 유효성 검증 후 DTO 데이터 처리
+//            return ResponseEntity.ok("Title: " + knowledgeRequestDto.getTitle() + ", Description: " + knowledgeRequestDto.getContentHtml());
+//        }
 
-            // 유효성 검증 후 DTO 데이터 처리
-            return ResponseEntity.ok("Title: " + knowledgeDto.getTitle() + ", Description: " + knowledgeDto.getDescription());
+        @PostMapping
+        public ResponseEntity<Void> createKnowledge(@Valid @ModelAttribute KnowledgeRequestDto knowledgeRequestDto) {
+            knowledgeService.registerKnowledge(knowledgeRequestDto);
+            // 201(Created) 상태코드만 반환 (응답 바디 없음)
+            return ResponseEntity.status(HttpStatus.CREATED).build();
         }
     }
 
