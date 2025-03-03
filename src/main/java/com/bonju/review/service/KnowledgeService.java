@@ -1,8 +1,9 @@
 package com.bonju.review.service;
 
 import com.bonju.review.dto.KnowledgeRequestDto;
+import com.bonju.review.entity.Knowledge;
 
 public interface KnowledgeService {
 
-    Long registerKnowledge(KnowledgeRequestDto knowledgeRequestDto);
+    Knowledge registerKnowledge(KnowledgeRequestDto knowledgeRequestDto);
 }
