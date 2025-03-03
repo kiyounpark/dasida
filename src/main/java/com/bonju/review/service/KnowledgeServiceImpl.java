@@ -16,9 +16,9 @@ public class KnowledgeServiceImpl implements KnowledgeService{
     private final UserService userService;
     @Override
     @Transactional
-    public void registerKnowledge(KnowledgeRequestDto knowledgeRequestDto) {
+    public Long registerKnowledge(KnowledgeRequestDto knowledgeRequestDto) {
         User user = userService.findUser();
         Knowledge knowledge = new Knowledge(user, knowledgeRequestDto.getTitle(), knowledgeRequestDto.getContentHtml());
-        knowledgeRepository.registerKnowledge(knowledge);
+        return knowledgeRepository.registerKnowledge(knowledge);
     }
 }

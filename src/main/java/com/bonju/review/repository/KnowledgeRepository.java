@@ -4,5 +4,5 @@ import com.bonju.review.entity.Knowledge;
 
 public interface KnowledgeRepository {
 
-    void registerKnowledge(Knowledge knowledge);
+    Long registerKnowledge(Knowledge knowledge);
 }

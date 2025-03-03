@@ -4,5 +4,5 @@ import com.bonju.review.dto.KnowledgeRequestDto;
 
 public interface KnowledgeService {
 
-    void registerKnowledge(KnowledgeRequestDto knowledgeRequestDto);
+    Long registerKnowledge(KnowledgeRequestDto knowledgeRequestDto);
 }
