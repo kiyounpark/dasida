@@ -16,7 +16,6 @@ public class Quiz {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -30,23 +29,6 @@ public class Quiz {
     private String quiz;
     private String answer;
     private String hint;
-
-    @Enumerated(EnumType.STRING)
-    @Setter
-    private AnswerStatus answerStatus1d = AnswerStatus.NOT_ATTEMPTED;
-
-    @Enumerated(EnumType.STRING)
-    @Setter
-    private AnswerStatus answerStatus3d = AnswerStatus.NOT_ATTEMPTED;
-
-    @Enumerated(EnumType.STRING)
-    @Setter
-    private AnswerStatus answerStatus7d = AnswerStatus.NOT_ATTEMPTED;
-
-    @Enumerated(EnumType.STRING)
-    @Setter
-    private AnswerStatus answerStatus30d = AnswerStatus.NOT_ATTEMPTED;
-
     private final LocalDateTime createdAt = LocalDateTime.now();
 
     public Quiz(User user ,Knowledge knowledge, String quiz, String answer, String hint) {
