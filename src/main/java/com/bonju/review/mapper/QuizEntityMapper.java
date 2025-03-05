@@ -19,7 +19,7 @@ public class QuizEntityMapper {
                         knowledge,
                         dto.getQuiz(),
                         dto.getAnswer(),
-                        dto.getCommentary()
+                        dto.getHint()
                 ))
                 .collect(Collectors.toList()); // 결과를 리스트로 수집
     }

@@ -13,6 +13,6 @@ public final class QuizDto {
     @JsonProperty("answer") // json 키값 지정
     private final String answer;
 
-    @JsonProperty("commentary") // json 키값 지정
-    private final String commentary;
+    @JsonProperty("hint") // json 키값 지정
+    private final String hint;
 }

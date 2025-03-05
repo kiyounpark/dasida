@@ -29,7 +29,7 @@ public class Quiz {
 
     private String quiz;
     private String answer;
-    private String commentary;
+    private String hint;
 
     @Enumerated(EnumType.STRING)
     @Setter
@@ -49,11 +49,11 @@ public class Quiz {
 
     private final LocalDateTime createdAt = LocalDateTime.now();
 
-    public Quiz(User user ,Knowledge knowledge, String quiz, String answer, String commentary) {
+    public Quiz(User user ,Knowledge knowledge, String quiz, String answer, String hint) {
         this.user = user;
         this.knowledge = knowledge;
         this.quiz = quiz;
         this.answer = answer;
-        this.commentary = commentary;
+        this.hint = hint;
     }
 }
