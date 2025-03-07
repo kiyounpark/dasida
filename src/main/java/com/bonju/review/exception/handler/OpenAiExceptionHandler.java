@@ -1,12 +1,9 @@
 package com.bonju.review.exception.handler;
 
 
-import com.bonju.review.client.OpenAiClient;
 import com.bonju.review.exception.exception.OpenAiException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.FieldError;
-import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 

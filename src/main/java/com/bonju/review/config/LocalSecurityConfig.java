@@ -1,6 +1,6 @@
 package com.bonju.review.config;
 
-import com.bonju.review.service.CustomOAuth2UserService;
+import com.bonju.review.user.service.CustomOAuth2UserService;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
