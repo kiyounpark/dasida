@@ -9,4 +9,5 @@ import java.util.List;
 @RequiredArgsConstructor
 public class HomeResponseDto {
     private final List<DayQuizResponseDto> quizzes;
+    private final List<DayKnowledgeResponseDto> knowledges;
 }

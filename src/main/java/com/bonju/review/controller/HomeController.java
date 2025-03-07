@@ -1,7 +1,9 @@
 package com.bonju.review.controller;
 
+import com.bonju.review.dto.DayKnowledgeResponseDto;
 import com.bonju.review.dto.DayQuizResponseDto;
 import com.bonju.review.dto.HomeResponseDto;
+import com.bonju.review.service.KnowledgesService;
 import com.bonju.review.service.QuizzesService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,10 +18,12 @@ import java.util.List;
 public class HomeController {
 
     private final QuizzesService quizzesService;
+    private final KnowledgesService knowledgesService;
 
     @GetMapping
     public HomeResponseDto getQuizzesAndKnowledge() {
         List<DayQuizResponseDto> dayQuizzes = quizzesService.getAllDayQuizzes();
-        return new HomeResponseDto(dayQuizzes);
+        List<DayKnowledgeResponseDto> dayKnowledges = knowledgesService.getAllDayKnowledges();
+        return new HomeResponseDto(dayQuizzes, dayKnowledges);
     }
 }
