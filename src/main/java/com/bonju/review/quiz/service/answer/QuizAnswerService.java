@@ -5,5 +5,5 @@ import com.bonju.review.quiz.dto.QuizAnswerResponseDto;
 
 public interface QuizAnswerService {
 
-    QuizAnswerResponseDto submitAnswer(QuizAnswerRequestDto answerDto);
+    QuizAnswerResponseDto submitAnswer(Long quizId, QuizAnswerRequestDto answerDto);
 }
