@@ -20,7 +20,7 @@ public class QuizController {
             @PathVariable("quizId") Long quizId,
             @Valid @RequestBody QuizAnswerRequestDto answerDto) {
 
-        QuizAnswerResponseDto responseDto = quizAnswerService.submitAnswer(answerDto);
+        QuizAnswerResponseDto responseDto = quizAnswerService.submitAnswer(quizId, answerDto);
 
         return ResponseEntity.ok(responseDto);
     }
