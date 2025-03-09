@@ -15,7 +15,7 @@ public class QuizController {
 
     private final QuizAnswerService quizAnswerService;
 
-    @PostMapping("/{quizId}/answers")
+    @PostMapping("/{quizId}")
     public ResponseEntity<QuizAnswerResponseDto> submitAnswer(
             @PathVariable("quizId") Long quizId,
             @Valid @RequestBody QuizAnswerRequestDto answerDto) {
