@@ -22,9 +22,9 @@ public class QuizAnswerServiceImpl implements QuizAnswerService {
     private final QuizAnswerRepository quizAnswerRepositoryJpa;
     private final WrongAnswerNoteWriteService wrongAnswerNoteWriteService;
     @Override
-    public QuizAnswerResponseDto submitAnswer(Long quizId,QuizAnswerRequestDto answerDto) {
+    public QuizAnswerResponseDto submitAnswer(QuizAnswerRequestDto answerDto) {
         User user = userService.findUser();
-        Quiz quiz = quizFindService.findQuizById(quizId);
+        Quiz quiz = quizFindService.findQuizById(answerDto.getQuizId());
 
         boolean isWrong = !quiz.getAnswer().equalsIgnoreCase(answerDto.getAnswer());
 
