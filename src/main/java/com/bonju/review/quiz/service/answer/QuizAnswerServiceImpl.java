@@ -8,6 +8,7 @@ import com.bonju.review.quiz.entity.UserAnswer;
 import com.bonju.review.quiz.repository.answer.QuizAnswerRepository;
 import com.bonju.review.quiz.service.find.QuizFindService;
 import com.bonju.review.user.service.UserService;
+import com.bonju.review.wrong_answer_note.service.WrongAnswerNoteWriteService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,7 +20,7 @@ public class QuizAnswerServiceImpl implements QuizAnswerService {
     private final UserService userService;
     private final QuizFindService quizFindService;
     private final QuizAnswerRepository quizAnswerRepositoryJpa;
-    // TODO private final WrongAnswerNoteService wrongAnswerNoteService;
+    private final WrongAnswerNoteWriteService wrongAnswerNoteWriteService;
     @Override
     public QuizAnswerResponseDto submitAnswer(QuizAnswerRequestDto answerDto) {
         User user = userService.findUser();
@@ -30,10 +31,9 @@ public class QuizAnswerServiceImpl implements QuizAnswerService {
         UserAnswer userAnswer = new UserAnswer(user, quiz, answerDto.getAnswer(), answerDto.getDayType(), isWrong);
         quizAnswerRepositoryJpa.save(userAnswer);
 
-        //TODO
-//        if (isWrong) {
-//            wrongAnswerNoteService.saveWrongAnswer(user, quiz, answerDto.getDayType());
-//        }
+        if (isWrong) {
+            wrongAnswerNoteWriteService.addWrongAnswer(userAnswer);
+        }
 
         return new QuizAnswerResponseDto(userAnswer.getId(), !isWrong);
     }
