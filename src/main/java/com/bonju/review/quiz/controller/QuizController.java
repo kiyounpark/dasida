@@ -15,12 +15,11 @@ public class QuizController {
 
     private final QuizAnswerService quizAnswerService;
 
-    @PostMapping("/{quizId}")
+    @PostMapping
     public ResponseEntity<QuizAnswerResponseDto> submitAnswer(
-            @PathVariable("quizId") Long quizId,
             @Valid @RequestBody QuizAnswerRequestDto answerDto) {
 
-        QuizAnswerResponseDto responseDto = quizAnswerService.submitAnswer(quizId, answerDto);
+        QuizAnswerResponseDto responseDto = quizAnswerService.submitAnswer(answerDto);
 
         return ResponseEntity.ok(responseDto);
     }
