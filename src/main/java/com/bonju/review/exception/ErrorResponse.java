@@ -4,6 +4,7 @@ import lombok.Builder;
 import lombok.Getter;
 
 import java.time.Instant;
+import java.time.LocalDateTime;
 
 @Getter
 @Builder
@@ -12,5 +13,5 @@ public class ErrorResponse {
     private final String error;
     private final String message;
     private final String path;
-    private final Instant timestamp;
+    private final LocalDateTime timestamp;
 }
