@@ -9,12 +9,8 @@ import org.springframework.test.context.ActiveProfiles;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
-@SpringBootTest
-@ActiveProfiles("test")
-public class KakaoOAuthAutoConfigTest {
 
-    @Autowired
-    OAuth2ClientProperties oAuth2ClientProperties;
+public class KakaoOAuthAutoConfigTest extends BaseTest{
 
     @Test
     @DisplayName("OAuth2ClientProperties를 통해 Kakao registration 정보가 잘 로드되는지 확인한다.")
