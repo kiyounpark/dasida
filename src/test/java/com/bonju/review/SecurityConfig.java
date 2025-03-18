@@ -1,6 +1,7 @@
 package com.bonju.review;
 
 import com.bonju.review.user.entrypoint.JsonAuthenticationEntryPoint;
+import com.bonju.review.user.handler.CustomOAuth2AuthenticationFailureHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -10,6 +11,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 
 
 @Configuration
@@ -19,6 +21,9 @@ public class SecurityConfig {
 
     @Autowired
     JsonAuthenticationEntryPoint jsonAuthenticationEntryPoint;
+
+    @Autowired
+    AuthenticationFailureHandler authenticationFailureHandler;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -32,7 +37,10 @@ public class SecurityConfig {
                 .exceptionHandling(exception -> exception
                         .authenticationEntryPoint(jsonAuthenticationEntryPoint)
                 )
-                .oauth2Login(Customizer.withDefaults());
+                .oauth2Login(
+                        oauth2 -> oauth2.failureHandler(authenticationFailureHandler)
+                );
+
 
         return http.build();
     }
