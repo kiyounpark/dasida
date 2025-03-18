@@ -26,11 +26,7 @@ public class JsonAuthenticationEntryPoint implements AuthenticationEntryPoint {
                          HttpServletResponse response,
                          AuthenticationException authException) throws IOException {
 
-        String message = "로그인이 필요합니다.";
-
-        if (authException instanceof OAuth2AuthenticationException) {
-            message = "소셜 로그인 인증에 실패했습니다. 다시 시도해주세요.";
-        }
+        final String message = "로그인이 필요합니다.";
 
         ErrorResponse errorResponse = ErrorResponse.builder()
                 .status(HttpStatus.UNAUTHORIZED.value())
