@@ -1,5 +1,6 @@
 package com.bonju.review;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.security.oauth2.client.OAuth2ClientProperties;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -25,4 +26,7 @@ public abstract class BaseTest {
 
     @MockitoBean
     protected OAuth2UserService<OAuth2UserRequest, OAuth2User> oAuth2UserService;
+
+    @Autowired
+    protected ObjectMapper objectMapper;
 }
