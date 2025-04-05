@@ -1,10 +1,7 @@
 package com.bonju.review.user.entity;
 
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 @Entity
 @Table(name = "users")
@@ -18,12 +15,16 @@ public class User {
 
     private String kakaoId;
 
-    @Setter
     private String nickname;
 
     // Constructor for immutability
-    public User(String kakaoId, String nickname) {
+    @Builder
+    private User(String kakaoId, String nickname) {
         this.kakaoId = kakaoId;
+        this.nickname = nickname;
+    }
+
+    public void updateUserNickname(String nickname){
         this.nickname = nickname;
     }
 
