@@ -1,7 +1,7 @@
 package com.bonju.review.user.vo;
 
 public record KakaoUser(
-        Long id,
+        String id,
         String connectedAt,
         UserProperties properties
 ) {
