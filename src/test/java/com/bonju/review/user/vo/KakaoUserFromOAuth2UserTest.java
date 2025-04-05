@@ -40,7 +40,7 @@ class KakaoUserFromOAuth2UserTest extends BaseTest {
 
         // Then: 변환된 객체의 각 필드 검증
         assertThat(kaKaoUser).isNotNull();
-        assertThat(kaKaoUser.id()).isEqualTo(100L);
+        assertThat(kaKaoUser.id()).isEqualTo("100");
         assertThat(kaKaoUser.connectedAt()).isEqualTo("2025-02-15T10:34:39Z");
         assertThat(kaKaoUser.properties()).isNotNull();
         assertThat(kaKaoUser.properties().nickname()).isEqualTo("박기윤");
