@@ -12,7 +12,7 @@ public class KnowledgeMapper {
         return new Knowledge(
                 user,
                 knowledgeRequestDto.getTitle(),
-                knowledgeRequestDto.getContentHtml()
+                knowledgeRequestDto.getContent()
         );
     }
 }
