@@ -11,7 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
-public class KnowledgeServiceImpl implements KnowledgeService{
+public class KnowledgeRegisterServiceImpl implements KnowledgeRegisterService {
 
     private final KnowledgeRepository knowledgeRepository;
     private final UserService userService;
