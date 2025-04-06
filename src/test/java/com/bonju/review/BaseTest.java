@@ -1,5 +1,6 @@
 package com.bonju.review;
 
+import com.bonju.review.knowledge.converter.MarkdownConverter;
 import com.bonju.review.user.repository.UserRepository;
 import com.bonju.review.user.service.UserService;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -36,4 +37,7 @@ public abstract class BaseTest {
 
     @Autowired
     protected UserRepository userRepository;
+
+    @Autowired
+    protected MarkdownConverter markdownConverter;
 }
