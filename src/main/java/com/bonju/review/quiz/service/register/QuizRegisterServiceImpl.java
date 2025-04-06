@@ -10,9 +10,9 @@ import com.bonju.review.quiz.mapper.QuizEntityMapper;
 import com.bonju.review.quiz.mapper.QuizJsonParser;
 import com.bonju.review.quiz.repository.register.QuizRegisterRepository;
 import com.bonju.review.user.service.UserService;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -28,17 +28,17 @@ public class QuizRegisterServiceImpl implements QuizRegisterService {
     private final UserService userService;
 
     @Override
+    @Transactional
     public void createQuiz(Knowledge knowledge) {
         User user = userService.findUser();
 
-        List<String> extractImageSrc = imageExtractor.extractImageSrc(knowledge.getContentHtml());
-        String quizJson = aiClient.getQuizJson(knowledge.getContentHtml(), extractImageSrc);
+        List<String> extractImageSrc = imageExtractor.extractImageSrc(knowledge.getContent());
+        String quizJson = aiClient.getQuizJson(knowledge.getContent(), extractImageSrc);
         List<QuizDto> quizDtos = quizJsonParser.parse(quizJson);
         List<Quiz> quizzes = quizEntityMapper.convertToEntities(user, quizDtos, knowledge);
         registerQuiz(quizzes);
     }
 
-    @Transactional
     private void registerQuiz(List<Quiz> quizzes){
         quizRegisterRepository.registerQuiz(quizzes);
     }
