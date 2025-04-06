@@ -24,13 +24,13 @@ public class Knowledge {
     private String title;       // 예: "영어 단어", "수학 공식" 등
 
     @Lob
-    private String contentHtml; // 예: "토익 대비 단어 모음"
+    private String content; // 예: "토익 대비 단어 모음"
 
     private final LocalDateTime createdAt = LocalDateTime.now();
 
-    public Knowledge(User user ,String title, String contentHtml) {
+    public Knowledge(User user ,String title, String content) {
         this.user = user;
         this.title = title;
-        this.contentHtml = contentHtml;
+        this.content = content;
     }
 }
