@@ -13,5 +13,5 @@ public class KnowledgeRequestDto {
     private final String title;
 
     @NotBlank(message = "지식 내용이 비었습니다.")
-    private final String contentHtml;
+    private final String content;
 }
