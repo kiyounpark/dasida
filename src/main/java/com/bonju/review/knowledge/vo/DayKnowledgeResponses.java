@@ -28,12 +28,13 @@ public class DayKnowledgeResponses {
       for (Knowledge knowledge : knowledgeList) {
         String truncatedParagraphText = converter.convertTruncatedParagraph(knowledge.getContent());
 
-        list.add(new DayKnowledgeResponseDto(
-                dayType.getDaysAgo(),
-                knowledge.getId(),
-                knowledge.getTitle(),
-                truncatedParagraphText
-        ));
+        list.add(
+                DayKnowledgeResponseDto.builder()
+                .dayType(dayType.getDaysAgo())
+                .id(knowledge.getId())
+                .title(knowledge.getTitle())
+                .content(truncatedParagraphText)
+                .build());
       }
     }
 
@@ -44,3 +45,11 @@ public class DayKnowledgeResponses {
     return Collections.unmodifiableList(responses);
   }
 }
+
+// 여기서 발생할수 있는 예외는 뭐가 있을까?
+
+
+
+
+
+
