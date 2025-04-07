@@ -20,6 +20,7 @@ public class DayKnowledgeResponses {
 
   public static DayKnowledgeResponses from(User user, KnowledgesRepository repository, MarkdownConverter converter) {
     List<DayKnowledgeResponseDto> list = new ArrayList<>();
+
     for (DayType dayType : DayType.values()) {
       int daysAgo = dayType.getDaysAgo();
       List<Knowledge> knowledgeList = repository.findKnowledgesByDaysAgo(user, daysAgo);
