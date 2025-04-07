@@ -26,6 +26,7 @@ public class DayKnowledgeResponses {
 
       for (Knowledge knowledge : knowledgeList) {
         String truncatedParagraphText = converter.convertTruncatedParagraph(knowledge.getContent());
+
         list.add(new DayKnowledgeResponseDto(
                 dayType.getDaysAgo(),
                 knowledge.getId(),
@@ -34,6 +35,7 @@ public class DayKnowledgeResponses {
         ));
       }
     }
+
     return new DayKnowledgeResponses(list);
   }
 
