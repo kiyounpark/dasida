@@ -9,10 +9,12 @@ import org.springframework.stereotype.Component;
 public class KnowledgeMapper {
 
     public Knowledge toEntity(User user, KnowledgeRequestDto knowledgeRequestDto) {
-        return new Knowledge(
-                user,
-                knowledgeRequestDto.getTitle(),
-                knowledgeRequestDto.getContent()
-        );
+        return  Knowledge.builder()
+                .user(user)
+                .title(knowledgeRequestDto.getTitle())
+                .content(knowledgeRequestDto.getContent())
+                .build();
+
+
     }
 }

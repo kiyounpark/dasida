@@ -3,6 +3,7 @@ package com.bonju.review.knowledge.entity;
 import com.bonju.review.user.entity.User;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -26,11 +27,13 @@ public class Knowledge {
     @Lob
     private String content; // 예: "토익 대비 단어 모음"
 
-    private final LocalDateTime createdAt = LocalDateTime.now();
+    private LocalDateTime createdAt;
 
-    public Knowledge(User user ,String title, String content) {
+    @Builder
+    private Knowledge(User user ,String title, String content, LocalDateTime createdAt) {
         this.user = user;
         this.title = title;
         this.content = content;
+        this.createdAt = createdAt;
     }
 }
