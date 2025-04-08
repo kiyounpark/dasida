@@ -19,10 +19,14 @@ public class KnowledgesRepositoryJpa implements KnowledgesRepository {
     @Override
     public List<Knowledge> findKnowledgesByDaysAgo(User user, int days) {
         LocalDateTime start = LocalDate.now().minusDays(days).atStartOfDay();
-        LocalDateTime end = LocalDate.now().minusDays(days - 1).atStartOfDay();
+        LocalDateTime end = start.plusDays(1);
 
         return em.createQuery(
-                        "SELECT k FROM Knowledge k WHERE k.user = :user AND k.createdAt >= :start AND k.createdAt < :end",
+                        "SELECT k FROM Knowledge k " +
+                                "WHERE k.user = :user " +
+                                "AND k.createdAt >= :start " +
+                                "AND k.createdAt < :end " +
+                                "ORDER BY k.createdAt ASC",  // ORDER BY 절 추가
                         Knowledge.class)
                 .setParameter("user", user)
                 .setParameter("start", start)
