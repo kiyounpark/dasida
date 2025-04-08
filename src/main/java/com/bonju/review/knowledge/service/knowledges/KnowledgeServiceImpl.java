@@ -11,7 +11,6 @@ import com.google.common.collect.ImmutableList;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -26,6 +25,6 @@ public class KnowledgeServiceImpl implements KnowledgesService {
     public ImmutableList<DayKnowledgeResponseDto> getAllDayKnowledges() {
         User user = userService.findUser();
         DayKnowledgeResponses responses = DayKnowledgeResponses.from(user, knowledgesRepository, markdownConverter);
-        return responses.asList();
+        return responses.asImmutableList();
     }
 }
