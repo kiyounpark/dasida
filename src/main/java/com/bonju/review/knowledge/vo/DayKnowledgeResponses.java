@@ -46,9 +46,6 @@ public class DayKnowledgeResponses {
   }
 }
 
-// 여기서 발생할수 있는 예외는 뭐가 있을까?
-
-
 
 
 
