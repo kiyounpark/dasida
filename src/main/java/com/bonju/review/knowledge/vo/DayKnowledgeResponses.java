@@ -37,10 +37,10 @@ public class DayKnowledgeResponses {
       }
     }
 
-    return new DayKnowledgeResponses(listBuilder.build()); // ✅ ImmutableList 생성
+    return new DayKnowledgeResponses(listBuilder.build());
   }
 
-  public ImmutableList<DayKnowledgeResponseDto> asList() { // ✅ 반환도 ImmutableList
+  public ImmutableList<DayKnowledgeResponseDto> asImmutableList() {
     return responses;
   }
 }
