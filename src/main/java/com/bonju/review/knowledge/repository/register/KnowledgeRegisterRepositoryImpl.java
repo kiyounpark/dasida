@@ -8,7 +8,7 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 @RequiredArgsConstructor
-public class KnowledgeRepositoryImpl implements KnowledgeRepository {
+public class KnowledgeRegisterRepositoryImpl implements KnowledgeRegisterRepository {
 
     private final EntityManager em;
 
