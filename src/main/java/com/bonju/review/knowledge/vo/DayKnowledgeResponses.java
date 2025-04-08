@@ -6,20 +6,19 @@ import com.bonju.review.knowledge.entity.Knowledge;
 import com.bonju.review.knowledge.repository.knowledges.KnowledgesRepository;
 import com.bonju.review.user.entity.User;
 import com.bonju.review.util.enums.DayType;
-import java.util.ArrayList;
-import java.util.Collections;
+import com.google.common.collect.ImmutableList;
 import java.util.List;
 
 public class DayKnowledgeResponses {
 
-  private final List<DayKnowledgeResponseDto> responses;
+  private final ImmutableList<DayKnowledgeResponseDto> responses;
 
-  private DayKnowledgeResponses(List<DayKnowledgeResponseDto> responses) {
+  private DayKnowledgeResponses(ImmutableList<DayKnowledgeResponseDto> responses) {
     this.responses = responses;
   }
 
   public static DayKnowledgeResponses from(User user, KnowledgesRepository repository, MarkdownConverter converter) {
-    List<DayKnowledgeResponseDto> list = new ArrayList<>();
+    ImmutableList.Builder<DayKnowledgeResponseDto> listBuilder = ImmutableList.builder();
 
     for (DayType dayType : DayType.values()) {
       int daysAgo = dayType.getDaysAgo();
@@ -28,21 +27,21 @@ public class DayKnowledgeResponses {
       for (Knowledge knowledge : knowledgeList) {
         String truncatedParagraphText = converter.convertTruncatedParagraph(knowledge.getContent());
 
-        list.add(
+        listBuilder.add(
                 DayKnowledgeResponseDto.builder()
-                .dayType(dayType.getDaysAgo())
-                .id(knowledge.getId())
-                .title(knowledge.getTitle())
-                .content(truncatedParagraphText)
-                .build());
+                        .dayType(dayType.getDaysAgo())
+                        .id(knowledge.getId())
+                        .title(knowledge.getTitle())
+                        .content(truncatedParagraphText)
+                        .build());
       }
     }
 
-    return new DayKnowledgeResponses(list);
+    return new DayKnowledgeResponses(listBuilder.build()); // ✅ ImmutableList 생성
   }
 
-  public List<DayKnowledgeResponseDto> asList() {
-    return Collections.unmodifiableList(responses);
+  public ImmutableList<DayKnowledgeResponseDto> asList() { // ✅ 반환도 ImmutableList
+    return responses;
   }
 }
 

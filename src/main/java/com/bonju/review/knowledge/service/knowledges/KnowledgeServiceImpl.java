@@ -7,6 +7,7 @@ import com.bonju.review.knowledge.repository.knowledges.KnowledgesRepository;
 import com.bonju.review.knowledge.vo.DayKnowledgeResponses;
 import com.bonju.review.user.entity.User;
 import com.bonju.review.user.service.UserService;
+import com.google.common.collect.ImmutableList;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,7 +23,7 @@ public class KnowledgeServiceImpl implements KnowledgesService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<DayKnowledgeResponseDto> getAllDayKnowledges() {
+    public ImmutableList<DayKnowledgeResponseDto> getAllDayKnowledges() {
         User user = userService.findUser();
         DayKnowledgeResponses responses = DayKnowledgeResponses.from(user, knowledgesRepository, markdownConverter);
         return responses.asList();

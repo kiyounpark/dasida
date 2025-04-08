@@ -1,9 +1,8 @@
 package com.bonju.review.knowledge.service.knowledges;
 
 import com.bonju.review.knowledge.dto.DayKnowledgeResponseDto;
-
-import java.util.List;
+import com.google.common.collect.ImmutableList;
 
 public interface KnowledgesService {
-    List<DayKnowledgeResponseDto> getAllDayKnowledges();
+    ImmutableList<DayKnowledgeResponseDto> getAllDayKnowledges();
 }
