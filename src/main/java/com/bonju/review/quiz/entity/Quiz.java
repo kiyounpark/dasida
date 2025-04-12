@@ -26,16 +26,20 @@ public class Quiz {
     @JoinColumn(name = "user_id")
     private User user;
 
-    private String quiz;
+    private String question;
     private String answer;
     private String hint;
     private final LocalDateTime createdAt = LocalDateTime.now();
 
-    public Quiz(User user ,Knowledge knowledge, String quiz, String answer, String hint) {
+    public Quiz(User user ,Knowledge knowledge, String question, String answer, String hint) {
         this.user = user;
         this.knowledge = knowledge;
-        this.quiz = quiz;
+        this.question = question;
         this.answer = answer;
         this.hint = hint;
+    }
+
+    public int getAnswerLength(){
+        return answer.length();
     }
 }
