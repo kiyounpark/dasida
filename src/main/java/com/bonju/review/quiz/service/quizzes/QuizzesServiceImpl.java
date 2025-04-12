@@ -34,7 +34,15 @@ public class QuizzesServiceImpl implements QuizzesService{
             List<Quiz> quizzes = quizzesRepository.findQuizzesByDaysAgo(user, daysAgo);
             // 조회된 퀴즈를 DTO로 변환하여 결과 리스트에 추가
             for (Quiz quiz : quizzes) {
-                result.add(new DayQuizResponseDto(dayType.getDaysAgo(), quiz.getId(), quiz.getQuiz()));
+                DayQuizResponseDto dayQuizResponseDto = DayQuizResponseDto.builder()
+                        .dayType(dayType.getDaysAgo())
+                        .quizId(quiz.getId())
+                        .question(quiz.getQuestion())
+                        .answerLength(quiz.getAnswerLength())
+                        .hint(quiz.getHint())
+                        .build();
+
+                result.add(dayQuizResponseDto);
             }
         }
 
