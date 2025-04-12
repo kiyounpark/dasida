@@ -54,7 +54,7 @@ public class WrongAnswerNoteReadServiceImpl implements WrongAnswerNoteReadServic
             // 🎯 DTO 생성 시 퀴즈 정답(quiz.getAnswer())도 포함
             WrongAnswerGroupResponseDto groupDto = new WrongAnswerGroupResponseDto(
                     quizId,
-                    quiz.getQuiz(),         // 퀴즈 문제
+                    quiz.getQuestion(),         // 퀴즈 문제
                     quiz.getAnswer(),       // 퀴즈 정답 추가!
                     answerDtos
             );
