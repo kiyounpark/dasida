@@ -42,3 +42,5 @@ application.yaml
 application.yml
 application-*.yaml
 application-*.yml
+
+!application-test.yml
