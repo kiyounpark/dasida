@@ -1,10 +1,11 @@
-package com.bonju.review.knowledge.service.knowledges;
+package com.bonju.review.knowledge.service.knowledge_list;
 
 import com.bonju.review.knowledge.converter.MarkdownConverter;
 import com.bonju.review.knowledge.dto.DayKnowledgeResponseDto;
 import com.bonju.review.knowledge.entity.Knowledge;
 import com.bonju.review.knowledge.exception.KnowledgeException;
-import com.bonju.review.knowledge.repository.knowledges.KnowledgesRepository;
+import com.bonju.review.knowledge.repository.knowledge_list.KnowledgeListRepository;
+import com.bonju.review.knowledge.vo.SingleDayRange;
 import com.bonju.review.user.entity.User;
 import com.bonju.review.user.service.UserService;
 import com.bonju.review.util.enums.DayType;
@@ -14,13 +15,14 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class KnowledgeServiceImpl implements KnowledgesService {
+public class KnowledgeListServiceImpl implements KnowledgeListService {
 
-    private final KnowledgesRepository knowledgesRepository;
+    private final KnowledgeListRepository knowledgeListRepository;
     private final UserService userService;
     private final MarkdownConverter markdownConverter;
 
@@ -31,15 +33,19 @@ public class KnowledgeServiceImpl implements KnowledgesService {
         ImmutableList.Builder<DayKnowledgeResponseDto> dtoListBuilder = ImmutableList.builder();
 
         for (DayType dayType : DayType.values()) {
-            dtoListBuilder.addAll(fetchDtosByDayType(user, dayType));
+            dtoListBuilder.addAll(fetchDtoListByDayType(user, dayType));
         }
 
         return dtoListBuilder.build();
     }
 
-    private List<DayKnowledgeResponseDto> fetchDtosByDayType(User user, DayType dayType) {
+    private List<DayKnowledgeResponseDto> fetchDtoListByDayType(User user, DayType dayType) {
         try {
-            List<Knowledge> knowledgeList = knowledgesRepository.findKnowledgesByDaysAgo(user, dayType.getDaysAgo());
+            int daysAgo = dayType.getDaysAgo();
+            LocalDate start = LocalDate.now().minusDays(daysAgo);
+            SingleDayRange dayRange = new SingleDayRange(start);
+
+            List<Knowledge> knowledgeList = knowledgeListRepository.findKnowledgeListByDateRange(user, dayRange);
 
             return knowledgeList.stream()
                     .map(knowledge -> DayKnowledgeResponseDto.builder()
