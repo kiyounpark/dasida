@@ -4,5 +4,9 @@ package com.bonju.review.knowledge.exception;
     public KnowledgeException(String message, Throwable cause) {
       super(message, cause);
     }
+
+    public KnowledgeException(String message) {
+      super(message);
+    }
   }
 
