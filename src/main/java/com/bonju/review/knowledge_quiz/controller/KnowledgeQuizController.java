@@ -8,6 +8,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -16,7 +17,7 @@ public class KnowledgeQuizController {
     private final KnowledgeQuizService knowledgeQuizService;
 
     @PostMapping("/knowledge-quiz")
-    public ResponseEntity<Void> registerKnowledgeAndQuiz(@Valid @ModelAttribute KnowledgeRequestDto knowledgeRequestDto) {
+    public ResponseEntity<Void> registerKnowledgeAndQuiz(@Valid @RequestBody KnowledgeRequestDto knowledgeRequestDto) {
         knowledgeQuizService.registerKnowledgeAndQuiz(knowledgeRequestDto);
 
         // 201(Created) 상태코드만 반환 (응답 바디 없음)
