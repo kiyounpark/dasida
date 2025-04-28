@@ -41,6 +41,13 @@ dependencies {
 	implementation 'org.jsoup:jsoup:1.15.3'
 	implementation 'com.google.guava:guava:33.4.6-jre'
 
+	// 🔽 Tracing + Monitoring 관련
+	implementation 'io.micrometer:micrometer-tracing'
+	implementation 'io.micrometer:micrometer-tracing-bridge-brave'
+	implementation 'io.zipkin.reporter2:zipkin-reporter-brave'
+	implementation 'org.springframework.boot:spring-boot-starter-actuator'
+	implementation 'com.cyfrania:logback-slack-appender:1.2'
+
 	runtimeOnly 'com.h2database:h2' // H2 데이터베이스 추가
 	runtimeOnly("mysql:mysql-connector-java:8.0.33")  // ✅  MySQL 드라이버 추가
 
