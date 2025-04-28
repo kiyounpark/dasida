@@ -32,6 +32,7 @@ public class SecurityConfig {
                         .requestMatchers("/health").permitAll()
                         .requestMatchers("/h2-console/**").permitAll()
                         .requestMatchers("/oauth2/authorization/**").permitAll()
+                        .requestMatchers("/slack-test", "/slack-test/**").permitAll()
                         .requestMatchers(   "/swagger-ui/**",   // Swagger UI 경로
                                 "/v3/api-docs/**",  // OpenAPI 문서 경로
                                 "/swagger-resources/**",
@@ -44,10 +45,12 @@ public class SecurityConfig {
                         .frameOptions(HeadersConfigurer.FrameOptionsConfig::disable)
                 )
 
-                // 3. 인증되지 않은 사용자 접근 시 (세션 쿠키 없는 경우 포함), 401 에러 반환
                 .exceptionHandling(exception -> exception
-                        .authenticationEntryPoint((request, response, authException)
-                                -> response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "로그인이 필요합니다."))
+                        .authenticationEntryPoint((request, response, authException) -> {
+                          response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                          response.setContentType("application/json");
+                          response.getWriter().write("{\"message\": \"로그인이 필요합니다.\"}");
+                        })
                 )
 
                 // 4. OAuth2 로그인은 그대로 유지(선택 사항)
