@@ -7,6 +7,8 @@ import org.springframework.web.server.ResponseStatusException;
 
 public class AuthenticationHelper {
 
+    private AuthenticationHelper(){}
+
     public static String getKaKaoId() {
         try {
             OAuth2User oAuth2User = (OAuth2User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
@@ -15,5 +17,16 @@ public class AuthenticationHelper {
             // 인증 정보가 없거나 잘못된 경우 적절한 예외를 던짐
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "사용자 인증 정보를 가져올 수 없습니다.", e);
         }
+    }
+
+    public static boolean isAnonymousUser() {
+        var authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null || !authentication.isAuthenticated()) {
+            return true;
+        }
+
+        // principal이 "anonymousUser" 문자열인 경우도 고려
+        Object principal = authentication.getPrincipal();
+        return principal instanceof String;
     }
 }
