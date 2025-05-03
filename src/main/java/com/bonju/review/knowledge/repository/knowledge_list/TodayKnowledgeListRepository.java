@@ -6,6 +6,6 @@ import com.bonju.review.user.entity.User;
 
 import java.util.List;
 
-public interface KnowledgeListRepository {
+public interface TodayKnowledgeListRepository {
     List<Knowledge> findKnowledgeListByDateRange(User user, SingleDayRange dayRange);
 }

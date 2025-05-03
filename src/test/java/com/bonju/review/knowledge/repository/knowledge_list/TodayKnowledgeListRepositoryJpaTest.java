@@ -14,7 +14,7 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-class KnowledgeListRepositoryJpaTest extends BaseTest {
+class TodayKnowledgeListRepositoryJpaTest extends BaseTest {
 
   // 테스트 기준 날짜 (2023-04-10 기준)
   private static final LocalDate REFERENCE_DATE = LocalDate.of(2023, 4, 10);
@@ -39,7 +39,7 @@ class KnowledgeListRepositoryJpaTest extends BaseTest {
     createAndPersistKnowledge(user, range.getEnd());
 
     // when
-    List<Knowledge> result = knowledgeListRepository.findKnowledgeListByDateRange(user, range);
+    List<Knowledge> result = todayKnowledgeListRepository.findKnowledgeListByDateRange(user, range);
 
     // then
     assertThat(result).hasSize(1);
