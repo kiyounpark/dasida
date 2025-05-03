@@ -1,7 +1,7 @@
 package com.bonju.review;
 
 import com.bonju.review.knowledge.converter.MarkdownConverter;
-import com.bonju.review.knowledge.repository.knowledge_list.KnowledgeListRepository;
+import com.bonju.review.knowledge.repository.knowledge_list.TodayKnowledgeListRepository;
 import com.bonju.review.knowledge.repository.register.KnowledgeRegisterRepository;
 import com.bonju.review.knowledge.service.register.KnowledgeRegisterService;
 import com.bonju.review.user.repository.UserRepository;
@@ -49,7 +49,7 @@ public abstract class BaseTest {
     protected KnowledgeRegisterService knowledgeRegisterService;
 
     @Autowired
-    protected KnowledgeListRepository knowledgeListRepository;
+    protected TodayKnowledgeListRepository todayKnowledgeListRepository;
 
     @Autowired
     protected KnowledgeRegisterRepository knowledgeRegisterRepository;
