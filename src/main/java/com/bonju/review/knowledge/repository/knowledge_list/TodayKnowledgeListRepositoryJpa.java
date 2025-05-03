@@ -11,7 +11,7 @@ import java.util.List;
 
 @Repository
 @RequiredArgsConstructor
-public class KnowledgeListRepositoryJpa implements KnowledgeListRepository {
+public class TodayKnowledgeListRepositoryJpa implements TodayKnowledgeListRepository {
 
     private final EntityManager em;
 
