@@ -2,6 +2,7 @@ package com.bonju.review.knowledge.service;
 
 import com.bonju.review.knowledge.dto.KnowledgeDetailResponseDto;
 import com.bonju.review.knowledge.entity.Knowledge;
+import com.bonju.review.knowledge.exception.KnowledgeException;
 import com.bonju.review.knowledge.repository.KnowledgeReadRepository;
 import com.bonju.review.user.entity.User;
 import com.bonju.review.user.service.UserService;
@@ -18,7 +19,9 @@ public class KnowledgeReadServiceImpl implements KnowledgeReadService{
   @Override
   public KnowledgeDetailResponseDto getKnowledgeById(Long id) {
     User user = userService.findUser();
-    Knowledge knowledge = knowledgeReadRepository.findKnowledge(user, id);
+
+    Knowledge knowledge = knowledgeReadRepository.findKnowledge(user, id)
+            .orElseThrow(() -> new KnowledgeException("지식을 찾을 수 없습니다"));
 
     return KnowledgeDetailResponseDto.builder()
             .id(knowledge.getId())
@@ -27,4 +30,5 @@ public class KnowledgeReadServiceImpl implements KnowledgeReadService{
             .createdAt(knowledge.getCreatedAt())
             .build();
   }
+
 }
