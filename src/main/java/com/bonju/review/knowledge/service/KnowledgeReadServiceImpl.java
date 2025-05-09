@@ -13,6 +13,7 @@ import org.springframework.stereotype.Repository;
 @RequiredArgsConstructor
 public class KnowledgeReadServiceImpl implements KnowledgeReadService{
 
+  public static final String ERROR_MASSAGE = "지식을 찾을 수 없습니다";
   private final KnowledgeReadRepository knowledgeReadRepository;
   private final UserService userService;
 
@@ -21,7 +22,8 @@ public class KnowledgeReadServiceImpl implements KnowledgeReadService{
     User user = userService.findUser();
 
     Knowledge knowledge = knowledgeReadRepository.findKnowledge(user, id)
-            .orElseThrow(() -> new KnowledgeException("지식을 찾을 수 없습니다"));
+            .orElseThrow(() -> new KnowledgeException(ERROR_MASSAGE));
+
 
     return KnowledgeDetailResponseDto.builder()
             .id(knowledge.getId())
