@@ -1,6 +1,6 @@
 package com.bonju.review.knowledge.mapper;
 
-import com.bonju.review.knowledge.dto.KnowledgeRequestDto;
+import com.bonju.review.knowledge.dto.KnowledgeRegisterRequestDto;
 import com.bonju.review.knowledge.entity.Knowledge;
 import com.bonju.review.user.entity.User;
 import org.springframework.stereotype.Component;
@@ -10,11 +10,11 @@ import java.time.LocalDateTime;
 @Component
 public class KnowledgeMapper {
 
-    public Knowledge toEntity(User user, KnowledgeRequestDto knowledgeRequestDto) {
+    public Knowledge toEntity(User user, KnowledgeRegisterRequestDto knowledgeRegisterRequestDto) {
         return  Knowledge.builder()
                 .user(user)
-                .title(knowledgeRequestDto.getTitle())
-                .content(knowledgeRequestDto.getContent())
+                .title(knowledgeRegisterRequestDto.getTitle())
+                .content(knowledgeRegisterRequestDto.getContent())
                 .createdAt(LocalDateTime.now())
                 .build();
 

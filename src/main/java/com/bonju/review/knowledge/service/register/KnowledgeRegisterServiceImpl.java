@@ -1,6 +1,6 @@
 package com.bonju.review.knowledge.service.register;
 
-import com.bonju.review.knowledge.dto.KnowledgeRequestDto;
+import com.bonju.review.knowledge.dto.KnowledgeRegisterRequestDto;
 import com.bonju.review.knowledge.entity.Knowledge;
 import com.bonju.review.knowledge.mapper.KnowledgeMapper;
 import com.bonju.review.user.entity.User;
@@ -19,9 +19,9 @@ public class KnowledgeRegisterServiceImpl implements KnowledgeRegisterService {
     private final KnowledgeMapper knowledgeMapper;
     @Override
     @Transactional
-    public Knowledge registerKnowledge(KnowledgeRequestDto knowledgeRequestDto) {
+    public Knowledge registerKnowledge(KnowledgeRegisterRequestDto knowledgeRegisterRequestDto) {
         User user = userService.findUser();
-        Knowledge knowledge = knowledgeMapper.toEntity(user, knowledgeRequestDto);
+        Knowledge knowledge = knowledgeMapper.toEntity(user, knowledgeRegisterRequestDto);
         return knowledgeRegisterRepository.registerKnowledge(knowledge);
     }
 }
