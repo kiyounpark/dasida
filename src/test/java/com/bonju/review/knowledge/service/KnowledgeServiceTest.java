@@ -2,6 +2,7 @@ package com.bonju.review.knowledge.service;
 
 import com.bonju.review.knowledge.dto.KnowledgeDetailResponseDto;
 import com.bonju.review.knowledge.entity.Knowledge;
+import com.bonju.review.knowledge.exception.KnowledgeException;
 import com.bonju.review.knowledge.repository.KnowledgeReadRepository;
 import com.bonju.review.user.entity.User;
 import com.bonju.review.user.service.UserService;
@@ -14,9 +15,12 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
 class KnowledgeServiceTest {
@@ -36,34 +40,62 @@ class KnowledgeServiceTest {
 
   @DisplayName("쿼리 스트링으로 전달받은 지식 id와 로그인된 유저의 id의 지식을 가지고 있는 지식 하나를 불러온다.")
   @Test
-  void should_return_knowledge_detail_dto_when_valid_user_and_id_given(){
+  void should_return_knowledge_detail_dto_when_valid_user_and_id_given() {
     // given
     Long id = 1L;
+    User user = createUser();
+    Knowledge entity = createKnowledge(id, user);
 
-    User user = User.builder()
+    given(userService.findUser()).willReturn(user);
+    given(knowledgeReadRepository.findKnowledge(user, id))
+            .willReturn(Optional.of(entity)); // ✅ 수정됨
+
+    // when
+    KnowledgeDetailResponseDto response = knowledgeReadService.getKnowledgeById(id);
+
+    // then
+    verify(knowledgeReadRepository).findKnowledge(user, id);
+    assertThat(response.getId()).isEqualTo(id);
+    assertThat(response.getTitle()).isEqualTo(TITLE);
+    assertThat(response.getContent()).isEqualTo(CONTENT);
+    assertThat(response.getCreatedAt()).isEqualTo(FIXED_DATE);
+  }
+
+  @DisplayName("지식이 존재하지 않으면 KnowledgeException 을 던진다")
+  @Test
+  void should_throw_exception_when_knowledge_not_found() {
+    // given
+    Long id = 999L; // ❗ 실제 값
+    User user = createUser();
+
+    given(userService.findUser()).willReturn(user);
+    given(knowledgeReadRepository.findKnowledge(user, id))
+            .willReturn(Optional.empty()); // ✅ 빈 Optional 명확히
+
+    // when & then
+    assertThatThrownBy(() -> knowledgeReadService.getKnowledgeById(id)) // ❗ 실제 값
+            .isInstanceOf(KnowledgeException.class)
+            .hasMessageContaining("지식을 찾을 수 없습니다");
+
+    verify(knowledgeReadRepository).findKnowledge(user, id);
+  }
+
+  private User createUser() {
+
+    return User.builder()
             .kakaoId("1")
             .nickname("nickname")
             .build();
+  }
 
-    Knowledge mockKnowledge = Knowledge.builder()
+  private Knowledge createKnowledge(Long id, User user) {
+    Knowledge knowledge = Knowledge.builder()
+            .user(user)
             .title(TITLE)
             .content(CONTENT)
             .createdAt(FIXED_DATE)
             .build();
-
-    ReflectionTestUtils.setField(mockKnowledge, "id", id);
-
-    given(userService.findUser()).willReturn(user);
-    given(knowledgeReadRepository.findKnowledge(user, id)).willReturn(
-            mockKnowledge);
-
-    // when
-    KnowledgeDetailResponseDto knowledgeDetailResponseDto = knowledgeReadService.getKnowledgeById(id);
-
-    //then
-    assertThat(knowledgeDetailResponseDto.getId()).isEqualTo(1L);
-    assertThat(knowledgeDetailResponseDto.getTitle()).isEqualTo(TITLE);
-    assertThat(knowledgeDetailResponseDto.getContent()).isEqualTo(CONTENT);
-    assertThat(knowledgeDetailResponseDto.getCreatedAt()).isEqualTo(FIXED_DATE);
+    ReflectionTestUtils.setField(knowledge, "id", id);
+    return knowledge;
   }
 }
