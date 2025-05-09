@@ -1,7 +1,7 @@
 package com.bonju.review.knowledge.controller;
 
 import com.bonju.review.knowledge.dto.KnowledgeListResponseDto;
-import com.bonju.review.knowledge.dto.KnowledgeResponseDto;
+import com.bonju.review.knowledge.dto.KnowledgeItemResponseDto;
 import com.bonju.review.knowledge.service.knowledge_list.KnowledgeListService;
 import com.bonju.review.util.dto.PagingResponseDto;
 import org.junit.jupiter.api.DisplayName;
@@ -34,7 +34,7 @@ class KnowledgeListControllerTest {
   KnowledgeListService knowledgeListService;
 
   private static KnowledgeListResponseDto getKnowledgeListResponseDto() {
-    KnowledgeResponseDto knowledgeResponseDto = KnowledgeResponseDto.builder()
+    KnowledgeItemResponseDto knowledgeItemResponseDto = KnowledgeItemResponseDto.builder()
             .id((long) 1)
             .title("제목")
             .build();
@@ -45,7 +45,7 @@ class KnowledgeListControllerTest {
             .build();
 
     return KnowledgeListResponseDto.builder()
-            .knowledgeList(List.of(knowledgeResponseDto))
+            .knowledgeList(List.of(knowledgeItemResponseDto))
             .page(pagingResponseDto)
             .build();
   }

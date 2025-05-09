@@ -9,6 +9,6 @@ import java.util.List;
 @Getter
 @Builder
 public class KnowledgeListResponseDto {
-  private List<KnowledgeResponseDto> knowledgeList;
+  private List<KnowledgeItemResponseDto> knowledgeList;
   private PagingResponseDto page;
 }

@@ -1,7 +1,7 @@
 package com.bonju.review.knowledge.service.knowledge_list;
 
 import com.bonju.review.knowledge.dto.KnowledgeListResponseDto;
-import com.bonju.review.knowledge.dto.KnowledgeResponseDto;
+import com.bonju.review.knowledge.dto.KnowledgeItemResponseDto;
 import com.bonju.review.knowledge.entity.Knowledge;
 import com.bonju.review.knowledge.repository.KnowledgeListRepository;
 import com.bonju.review.user.entity.User;
@@ -32,10 +32,11 @@ public class KnowledgeListServiceImpl implements KnowledgeListService {
       entities = entities.subList(0, LIMIT);
     }
 
-    List<KnowledgeResponseDto> dtoList = entities.stream()
-            .map(knowledge -> KnowledgeResponseDto.builder()
+    List<KnowledgeItemResponseDto> dtoList = entities.stream()
+            .map(knowledge -> KnowledgeItemResponseDto.builder()
                     .id(knowledge.getId())
                     .title(knowledge.getTitle())
+                    .createAt(knowledge.getCreatedAt())
                     .build())
             .toList();
 

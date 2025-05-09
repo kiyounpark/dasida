@@ -1,7 +1,7 @@
 package com.bonju.review.knowledge.service;
 
 import com.bonju.review.knowledge.dto.KnowledgeListResponseDto;
-import com.bonju.review.knowledge.dto.KnowledgeResponseDto;
+import com.bonju.review.knowledge.dto.KnowledgeItemResponseDto;
 import com.bonju.review.knowledge.entity.Knowledge;
 import com.bonju.review.knowledge.repository.KnowledgeListRepository;
 import com.bonju.review.knowledge.service.knowledge_list.KnowledgeListServiceImpl;
@@ -75,7 +75,7 @@ class KnowledgeListServiceTest {
   void maps_firstEntityFields() {
     stub(0, 3);
 
-    KnowledgeResponseDto first = knowledgeListService.getKnowledgeList(0)
+    KnowledgeItemResponseDto first = knowledgeListService.getKnowledgeList(0)
             .getKnowledgeList().getFirst();
 
     assertThat(first.getTitle()).isEqualTo(TITLE + 1);
