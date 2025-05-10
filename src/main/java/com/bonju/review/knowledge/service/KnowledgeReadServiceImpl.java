@@ -32,5 +32,4 @@ public class KnowledgeReadServiceImpl implements KnowledgeReadService{
             .createdAt(knowledge.getCreatedAt())
             .build();
   }
-
 }
