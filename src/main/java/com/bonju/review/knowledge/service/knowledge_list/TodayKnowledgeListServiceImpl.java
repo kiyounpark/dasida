@@ -9,6 +9,7 @@ import com.bonju.review.knowledge.vo.SingleDayRange;
 import com.bonju.review.user.entity.User;
 import com.bonju.review.user.service.UserService;
 import com.bonju.review.util.enums.DayType;
+import com.bonju.review.util.enums.error_code.KnowledgeErrorCode;
 import com.google.common.collect.ImmutableList;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataAccessException;
@@ -56,7 +57,7 @@ public class TodayKnowledgeListServiceImpl implements TodayKnowledgeListService 
                             .build())
                     .toList();
         } catch (DataAccessException e) {
-            throw new KnowledgeException("지식 조회 중 오류가 발생했습니다: " + dayType.name(), e);
+            throw new KnowledgeException(KnowledgeErrorCode.NOT_FOUND, e);
         }
     }
 }
