@@ -6,6 +6,7 @@ import com.bonju.review.knowledge.exception.KnowledgeException;
 import com.bonju.review.knowledge.repository.KnowledgeReadRepository;
 import com.bonju.review.user.entity.User;
 import com.bonju.review.user.service.UserService;
+import com.bonju.review.util.enums.error_code.KnowledgeErrorCode;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
@@ -14,7 +15,6 @@ import org.springframework.stereotype.Repository;
 @RequiredArgsConstructor
 public class KnowledgeReadServiceImpl implements KnowledgeReadService{
 
-  public static final String ERROR_MASSAGE = "지식을 찾을 수 없습니다";
   private final KnowledgeReadRepository knowledgeReadRepository;
   private final UserService userService;
 
@@ -24,7 +24,7 @@ public class KnowledgeReadServiceImpl implements KnowledgeReadService{
     User user = userService.findUser();
 
     Knowledge knowledge = knowledgeReadRepository.findKnowledge(user, id)
-            .orElseThrow(() -> new KnowledgeException(ERROR_MASSAGE));
+            .orElseThrow(() -> new KnowledgeException(KnowledgeErrorCode.NOT_FOUND));
 
 
     return KnowledgeDetailResponseDto.builder()

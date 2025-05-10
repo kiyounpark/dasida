@@ -6,6 +6,7 @@ import com.bonju.review.knowledge.exception.KnowledgeException;
 import com.bonju.review.knowledge.repository.KnowledgeReadRepository;
 import com.bonju.review.user.entity.User;
 import com.bonju.review.user.service.UserService;
+import com.bonju.review.util.enums.error_code.KnowledgeErrorCode;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -75,7 +76,7 @@ class KnowledgeServiceTest {
     // when & then
     assertThatThrownBy(() -> knowledgeReadService.getKnowledgeById(id)) // ❗ 실제 값
             .isInstanceOf(KnowledgeException.class)
-            .hasMessageContaining("지식을 찾을 수 없습니다");
+            .hasMessageContaining(KnowledgeErrorCode.NOT_FOUND.getMessage());
 
     verify(knowledgeReadRepository).findKnowledge(user, id);
   }
