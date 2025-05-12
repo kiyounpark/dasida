@@ -3,11 +3,13 @@ package com.bonju.review.knowledge.service;
 import com.bonju.review.knowledge.dto.KnowledgeListResponseDto;
 import com.bonju.review.knowledge.dto.KnowledgeItemResponseDto;
 import com.bonju.review.knowledge.entity.Knowledge;
+import com.bonju.review.knowledge.exception.KnowledgeException;
 import com.bonju.review.knowledge.repository.KnowledgeListRepository;
 import com.bonju.review.knowledge.service.knowledge_list.KnowledgeListServiceImpl;
 import com.bonju.review.user.entity.User;
 import com.bonju.review.user.service.UserService;
 import com.bonju.review.util.dto.PagingResponseDto;
+import com.bonju.review.util.enums.error_code.KnowledgeErrorCode;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -15,12 +17,14 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.dao.DataAccessResourceFailureException;
 
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.IntStream;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 import static org.mockito.BDDMockito.given;
 
 @ExtendWith(MockitoExtension.class)
@@ -91,6 +95,20 @@ class KnowledgeListServiceTest {
             .getPage();
 
     assertThat(pagingResponseDto.getNextOffset()).isNull();
+  }
+
+  @Test
+  @DisplayName("Repository에서 DataAccessException이 발생하면 KnowledgeException으로 감싼다")
+  void throws_KnowledgeException_when_DataAccessException_occurs() {
+    // given
+    given(userService.findUser()).willReturn(USER);
+    given(knowledgeListRepository.findKnowledgeList(USER, 0, LIMIT + 1))
+            .willThrow(new DataAccessResourceFailureException("의도된 예외"));
+
+    // when & then
+    assertThatThrownBy(() -> knowledgeListService.getKnowledgeList(0))
+            .isInstanceOf(KnowledgeException.class)
+            .hasMessageContaining(KnowledgeErrorCode.RETRIEVE_FAILED.getMessage());
   }
 
   @Nested

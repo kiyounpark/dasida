@@ -113,6 +113,8 @@ class KnowledgeDetailIntegrationTest {
             .andExpect(status().isUnauthorized());
   }
 
+
+  // -- 헬퍼 메서드 --
   private void clearEntityManager() {
     em.flush();
     em.clear();
