@@ -13,6 +13,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.dao.DataAccessException;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import java.time.LocalDateTime;
@@ -77,6 +78,26 @@ class KnowledgeServiceTest {
     assertThatThrownBy(() -> knowledgeReadService.getKnowledgeById(id)) // ❗ 실제 값
             .isInstanceOf(KnowledgeException.class)
             .hasMessageContaining(KnowledgeErrorCode.NOT_FOUND.getMessage());
+
+    verify(knowledgeReadRepository).findKnowledge(user, id);
+  }
+
+  @DisplayName("KnowledgeReadRepository에서 DataAccessException이 발생하면 KnowledgeException(RETRIEVE_FAILED)를 던진다")
+  @Test
+  void should_throw_knowledge_exception_when_repository_throws_data_access_exception() {
+    // given
+    Long id = 1L;
+    User user = createUser();
+
+    given(userService.findUser()).willReturn(user);
+    given(knowledgeReadRepository.findKnowledge(user, id))
+            .willThrow(new DataAccessException("DB 예외 발생") {});
+
+    // when & then
+    assertThatThrownBy(() -> knowledgeReadService.getKnowledgeById(id))
+            .isInstanceOf(KnowledgeException.class)
+            .hasMessage(KnowledgeErrorCode.RETRIEVE_FAILED.getMessage())
+            .hasCauseInstanceOf(DataAccessException.class);
 
     verify(knowledgeReadRepository).findKnowledge(user, id);
   }
