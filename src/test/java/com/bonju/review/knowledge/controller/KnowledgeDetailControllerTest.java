@@ -4,6 +4,7 @@ import com.bonju.review.exception.ErrorResponse;
 import com.bonju.review.knowledge.dto.KnowledgeDetailResponseDto;
 import com.bonju.review.knowledge.exception.KnowledgeException;
 import com.bonju.review.knowledge.service.KnowledgeReadService;
+import com.bonju.review.slack.SlackErrorMessageFactory;
 import com.bonju.review.util.enums.error_code.KnowledgeErrorCode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.DisplayName;
@@ -11,7 +12,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.security.test.context.support.WithMockUser;
-import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -24,7 +24,6 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(KnowledgeDetailController.class)
-@ActiveProfiles("test")
 class KnowledgeDetailControllerTest {
   private static final LocalDateTime FIXED_TIME = LocalDateTime.of(2025, 5, 10, 0, 0,0);
   public static final String KNOWLEDGE_TITLE = "지식 제목";
@@ -41,7 +40,10 @@ class KnowledgeDetailControllerTest {
   @MockitoBean
   KnowledgeReadService knowledgeReadService;
 
-  @DisplayName("프론트엔드에서 요청한 지식 id 값이 존재한다면 KnowledgeDetailResponseDto를 반환한다.")
+  @MockitoBean
+  SlackErrorMessageFactory slackErrorMessageFactory;
+
+  @DisplayName("프론트엔드에서 요청한 지식 id 값이 존재한다면 KnowledgeDetailResponseDto 를 반환한다.")
   @Test
   @WithMockUser
   void shouldReturnKnowledgeDetailResponseDto() throws Exception {
@@ -93,6 +95,37 @@ class KnowledgeDetailControllerTest {
     assertThat(actual.getStatus()).isEqualTo(KnowledgeErrorCode.NOT_FOUND.getHttpStatus().value());
     assertThat(actual.getPath()).isEqualTo(PATH);
     assertThat(actual.getError()).isEqualTo(KnowledgeErrorCode.NOT_FOUND.getHttpStatus().getReasonPhrase());
+  }
+
+  @DisplayName("Repository 예외 발생 시 ErrorResponse 를 반환하고 슬랙 메시지를 전송한다")
+  @Test
+  @WithMockUser
+  void should_return_error_response_and_send_slack_when_exception_thrown() throws Exception {
+    // given
+    given(knowledgeReadService.getKnowledgeById(anyLong()))
+            .willThrow(new KnowledgeException(KnowledgeErrorCode.RETRIEVE_FAILED));
+
+    given(slackErrorMessageFactory.createErrorMessage(any(), any()))
+            .willReturn("슬랙 메시지 내용");
+
+    // when
+    String response = mockMvc.perform(get(PATH))
+            .andExpect(status().isInternalServerError())
+            .andReturn()
+            .getResponse()
+            .getContentAsString();
+
+    // then - 응답 구조 확인
+    ErrorResponse errorResponse = objectMapper.readValue(response, ErrorResponse.class);
+
+    assertThat(errorResponse.getStatus()).isEqualTo(KnowledgeErrorCode.RETRIEVE_FAILED.getHttpStatus().value());
+    assertThat(errorResponse.getError()).isEqualTo(KnowledgeErrorCode.RETRIEVE_FAILED.getHttpStatus().getReasonPhrase());
+    assertThat(errorResponse.getMessage()).isEqualTo(KnowledgeErrorCode.RETRIEVE_FAILED.getMessage());
+    assertThat(errorResponse.getPath()).isEqualTo(PATH);
+    assertThat(errorResponse.getTimestamp()).isNotNull();
+
+    // then - 슬랙 메시지 호출 여부 확인
+    verify(slackErrorMessageFactory).createErrorMessage(any(), any());
   }
 
   @DisplayName("id가 1 미만이면 400을 반환하고 서비스는 호출되지 않는다")
