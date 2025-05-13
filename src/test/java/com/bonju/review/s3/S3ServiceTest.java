@@ -59,7 +59,7 @@ class S3ServiceTest {
 
   @DisplayName("이미지 생성 및 public Url 반환중 ImageUploadException 발생")
   @Test
-  void xx() {
+  void uploadImage_throwsImageUploadException() {
     //given
     MockMultipartFile file = createMockMultipartFile();
     ImageUploadException exception = new ImageUploadException(ImageUploadErrorCode.UPLOAD_FAILED);
