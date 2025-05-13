@@ -1,7 +1,6 @@
 package com.bonju.review.knowledge.exception;
 
 import com.bonju.review.exception.ErrorResponse;
-import com.bonju.review.slack.SlackErrorMessage;
 import com.bonju.review.slack.SlackErrorMessageFactory;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
