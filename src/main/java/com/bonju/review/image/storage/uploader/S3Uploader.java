@@ -1,11 +1,11 @@
 package com.bonju.review.image.storage.uploader;
 
+import com.bonju.review.image.config.S3Properties;
 import com.bonju.review.image.storage.objectkey.ObjectKey;
 import com.bonju.review.image.storage.objectkey.ObjectKeyGenerator;
 import com.bonju.review.image.exception.errorcode.StorageErrorCode;
 import com.bonju.review.image.exception.exception.StorageException;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 import software.amazon.awssdk.core.exception.SdkClientException;
@@ -27,8 +27,7 @@ public class S3Uploader implements ImageStorageUploader {
 
   private final ObjectKeyGenerator objectKeyGenerator;
 
-  @Value("${cloud.aws.s3.bucket}")
-  String bucket;
+  private final S3Properties s3Properties;
 
   @Override
   public ObjectKey upload(MultipartFile file) {
@@ -37,7 +36,7 @@ public class S3Uploader implements ImageStorageUploader {
     PutObjectRequest putObjectRequest = PutObjectRequest.builder()
             .acl(PUBLIC_READ)
             .key(objectKey)
-            .bucket(bucket)
+            .bucket(s3Properties.getBucket())
             .contentType(file.getContentType())
             .build();
 
