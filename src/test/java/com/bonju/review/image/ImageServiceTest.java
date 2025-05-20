@@ -101,7 +101,6 @@ class ImageServiceTest {
   }
 
   // -- 헬퍼 메서드 --
-
   private static MockMultipartFile createMockMultipartFile(String fileName, String contentType) {
     return new MockMultipartFile(
             FIELD_NAME, fileName, contentType, FILE_CONTENT
