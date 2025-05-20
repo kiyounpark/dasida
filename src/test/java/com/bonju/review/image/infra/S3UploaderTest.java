@@ -1,5 +1,6 @@
 package com.bonju.review.image.infra;
 
+import com.bonju.review.image.config.S3Properties;
 import com.bonju.review.image.exception.exception.StorageException;
 import com.bonju.review.image.storage.objectkey.ObjectKey;
 import com.bonju.review.image.storage.objectkey.ObjectKeyGenerator;
@@ -44,6 +45,9 @@ class S3UploaderTest {
 
   @Mock
   ObjectKeyGenerator objectKeyGenerator;
+
+  @Mock
+  S3Properties s3Properties;
 
   @InjectMocks
   S3Uploader s3Uploader;
