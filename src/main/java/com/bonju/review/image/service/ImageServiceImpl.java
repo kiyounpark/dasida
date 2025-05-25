@@ -15,6 +15,7 @@ import java.util.Set;
 @RequiredArgsConstructor
 public class ImageServiceImpl implements ImageService {
 
+  private static final long MAX_FILE_SIZE = 10L * 1024 * 1024; // 10 MB
   private static final Set<String> ALLOWED_EXTENSIONS = Set.of(".jpg", ".jpeg", ".png", ".webp");
   private static final Set<String> ALLOWED_MIME_TYPES = Set.of("image/jpeg", "image/png", "image/webp");
 
@@ -29,6 +30,10 @@ public class ImageServiceImpl implements ImageService {
   private void validateImageFile(MultipartFile file) {
     String extension = FileExtensionExtractor.extract(file.getOriginalFilename()).toLowerCase();
     String contentType = file.getContentType();
+
+    if (file.getSize() > MAX_FILE_SIZE) {
+      throw new ImageException(ImageErrorCode.FILE_TOO_LARGE);
+    }
 
     if (!ALLOWED_EXTENSIONS.contains(extension)) {
       throw new ImageException(ImageErrorCode.INVALID_EXTENSION);
