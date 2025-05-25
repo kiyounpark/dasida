@@ -1,10 +1,9 @@
-package com.bonju.review.image.infra;
+package com.bonju.review.image.storage.uploader;
 
 import com.bonju.review.image.config.S3Properties;
 import com.bonju.review.image.exception.exception.StorageException;
 import com.bonju.review.image.storage.objectkey.ObjectKey;
 import com.bonju.review.image.storage.objectkey.ObjectKeyGenerator;
-import com.bonju.review.image.storage.uploader.S3Uploader;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;

@@ -1,4 +1,4 @@
-package com.bonju.review.image.infra;
+package com.bonju.review.image.properties;
 
 import com.bonju.review.image.config.S3Properties;
 import org.junit.jupiter.api.DisplayName;

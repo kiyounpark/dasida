@@ -1,10 +1,9 @@
-package com.bonju.review.image;
+package com.bonju.review.image.service;
 
 import com.bonju.review.image.dto.ImageResponseDto;
 import com.bonju.review.image.exception.errorcode.ImageErrorCode;
 import com.bonju.review.image.exception.exception.ImageException;
 import com.bonju.review.image.exception.exception.StorageException;
-import com.bonju.review.image.service.ImageServiceImpl;
 import com.bonju.review.image.storage.service.StorageService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
