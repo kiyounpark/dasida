@@ -1,5 +1,6 @@
-package com.bonju.review.image.storage.objectkey;
+package com.bonju.review.image.objectkey;
 
+import com.bonju.review.image.storage.objectkey.ObjectKey;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
