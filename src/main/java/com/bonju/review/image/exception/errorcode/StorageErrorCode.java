@@ -1,12 +1,13 @@
 package com.bonju.review.image.exception.errorcode;
 
+import com.bonju.review.util.ApiErrorCode;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 
 @RequiredArgsConstructor
 @Getter
-public enum StorageErrorCode {
+public enum StorageErrorCode  implements ApiErrorCode {
 
   /** 이미지 업로드 중 오류가 발생했을 때 */
   UPLOAD_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "이미지 업로드 오류가 발생했습니다"),
