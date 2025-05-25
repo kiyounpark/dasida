@@ -1,4 +1,4 @@
-package com.bonju.review.image.infra;
+package com.bonju.review.image.objectkey;
 
 import com.bonju.review.image.storage.objectkey.ObjectKeyGenerator;
 import com.bonju.review.image.storage.objectkey.UuidObjectKeyGenerator;
