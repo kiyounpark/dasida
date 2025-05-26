@@ -1,6 +1,6 @@
 package com.bonju.review.quiz.service.register;
 
-import com.bonju.review.quiz.client.AiClient;
+import com.bonju.review.quiz.client.AiClient1;
 import com.bonju.review.quiz.dto.QuizDto;
 import com.bonju.review.knowledge.entity.Knowledge;
 import com.bonju.review.quiz.entity.Quiz;
@@ -20,7 +20,7 @@ import java.util.List;
 @Service
 public class QuizRegisterServiceImpl implements QuizRegisterService {
 
-    private final AiClient aiClient;
+    private final AiClient1 aiClient1;
     private final ImageExtractor imageExtractor;
     private final QuizJsonParser quizJsonParser;
     private final QuizEntityMapper quizEntityMapper;
@@ -33,7 +33,7 @@ public class QuizRegisterServiceImpl implements QuizRegisterService {
         User user = userService.findUser();
 
         List<String> extractImageSrc = imageExtractor.extractImageSrc(knowledge.getContent());
-        String quizJson = aiClient.getQuizJson(knowledge.getContent(), extractImageSrc);
+        String quizJson = aiClient1.getQuizJson(knowledge.getContent(), extractImageSrc);
         List<QuizDto> quizDtos = quizJsonParser.parse(quizJson);
         List<Quiz> quizzes = quizEntityMapper.convertToEntities(user, quizDtos, knowledge);
         registerQuiz(quizzes);
