@@ -40,6 +40,8 @@ dependencies {
 	implementation 'software.amazon.awssdk:s3:2.20.46'
 	implementation 'org.jsoup:jsoup:1.15.3'
 	implementation 'com.google.guava:guava:33.4.6-jre'
+	implementation "com.vladsch.flexmark:flexmark:0.64.8"   // Markdown → HTML/AST
+	implementation "org.jsoup:jsoup:1.17.2"                 // HTML → plain text
 
 	// 🔽 Tracing + Monitoring 관련
 	implementation 'io.micrometer:micrometer-tracing'
