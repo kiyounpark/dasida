@@ -16,6 +16,7 @@ import com.bonju.review.util.HtmlUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -29,6 +30,7 @@ public class QuizAutoGeneratorServiceImpl implements QuizAutoGeneratorService {
   private final UserService userService;
 
   @Override
+  @Transactional
   public List<QuizCreationData> generateQuiz(Knowledge knowledge, String content) {
     List<ImageResource> imageResources = extractImageResources(content);
     String rawJson = aiClient.generateRawQuizJson(content, imageResources);
