@@ -1,5 +1,6 @@
 package com.bonju.review.util;
 
+import com.bonju.review.quiz.exception.QuizException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.util.MimeType;
@@ -47,7 +48,7 @@ class ContentTypeExtractorTest {
 
     for (String url : invalidUrls) {
       assertThatThrownBy(() -> ContentTypeExtractor.extractMimeType(url))
-              .isInstanceOf(IllegalArgumentException.class);
+              .isInstanceOf(QuizException.class);
     }
   }
 }

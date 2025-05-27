@@ -1,5 +1,7 @@
 package com.bonju.review.util;
 
+import com.bonju.review.quiz.exception.QuizErrorCode;
+import com.bonju.review.quiz.exception.QuizException;
 import org.springframework.util.MimeType;
 import org.springframework.util.MimeTypeUtils;
 
@@ -44,6 +46,6 @@ public class ContentTypeExtractor {
       return MIME_WEBP;
     }
     // 지원하지 않는 확장자는 예외로 처리
-    throw new IllegalArgumentException("이미지가 jpg, jpeg, png, webp 이 아닙니다. " + extension);
+    throw new QuizException(QuizErrorCode.QUIZ_MIME_FAILED);
   }
 }
