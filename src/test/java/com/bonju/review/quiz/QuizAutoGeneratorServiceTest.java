@@ -2,6 +2,8 @@ package com.bonju.review.quiz;
 
 import com.bonju.review.knowledge.entity.Knowledge;
 import com.bonju.review.quiz.client.AiClient;
+import com.bonju.review.quiz.exception.QuizErrorCode;
+import com.bonju.review.quiz.exception.QuizException;
 import com.bonju.review.quiz.mapper.QuizGenerationMapper;
 import com.bonju.review.quiz.repository.QuizAutoGenerationRepository;
 import com.bonju.review.quiz.service.QuizAutoGeneratorServiceImpl;
@@ -9,19 +11,23 @@ import com.bonju.review.quiz.vo.QuizCreationData;
 import com.bonju.review.user.entity.User;
 import com.bonju.review.user.service.UserService;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.dao.DataAccessException;
 
 import java.util.List;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.BDDMockito.given;
-import static org.mockito.BDDMockito.willDoNothing;
+import static org.mockito.BDDMockito.*;
 
+/**
+ * QuizAutoGeneratorServiceImpl 단위 테스트
+ */
 @ExtendWith(MockitoExtension.class)
 class QuizAutoGeneratorServiceTest {
 
@@ -36,68 +42,110 @@ class QuizAutoGeneratorServiceTest {
       """;
 
   @Mock
-  AiClient openAiClient;
+  private AiClient openAiClient;
 
   @Mock
-  QuizGenerationMapper quizGenerationMapper;
+  private QuizGenerationMapper quizGenerationMapper;
 
   @Mock
-  QuizAutoGenerationRepository quizAutoGenerationRepository;
+  private QuizAutoGenerationRepository quizAutoGenerationRepository;
 
   @Mock
-  UserService userService;
+  private UserService userService;
 
   @InjectMocks
-  QuizAutoGeneratorServiceImpl quizAutoGeneratorService;
+  private QuizAutoGeneratorServiceImpl quizAutoGeneratorService;
 
-  @Test
-  @DisplayName("Ai 에서 생성된 JSON이 올바르게 파싱되어 3개의 퀴즈가 반환된다.")
-  void shouldReturnThreeParsedQuizzes() {
-    // given
-    String content = "지식 내용";
+  @Nested
+  @DisplayName("정상 흐름")
+  class SuccessCases {
 
-    List<QuizCreationData> generatedQuizzes = List.of(
-            QuizCreationData.builder().question("Q1").answer("A1").hint("H1").build(),
-            QuizCreationData.builder().question("Q2").answer("A2").hint("H2").build(),
-            QuizCreationData.builder().question("Q3").answer("A3").hint("H3").build()
-    );
-    given(userService.findUser()).willReturn(User.builder().build());
-    given(openAiClient.generateRawQuizJson(anyString(), anyList())).willReturn(MOCK_QUIZ_JSON_DATA);
-    willDoNothing().given(quizAutoGenerationRepository).saveAll(anyList());
-    given(quizGenerationMapper.mapFrom(MOCK_QUIZ_JSON_DATA)).willReturn(generatedQuizzes);
+    @Test
+    @DisplayName("AI 호출 결과가 매핑되어 반환된다")
+    void shouldReturnParsedQuizzes() {
+      // given
+      String content = "지식 내용";
+      Knowledge knowledge = Knowledge.builder().build();
+      User user = User.builder().build();
+      List<QuizCreationData> generatedQuizzes = List.of(
+              QuizCreationData.builder().question("Q1").answer("A1").hint("H1").build(),
+              QuizCreationData.builder().question("Q2").answer("A2").hint("H2").build(),
+              QuizCreationData.builder().question("Q3").answer("A3").hint("H3").build()
+      );
 
-    // when
-    List<QuizCreationData> quizCreationDataList = quizAutoGeneratorService.generateQuiz(Knowledge.builder().build(), content);
+      given(userService.findUser()).willReturn(user);
+      given(openAiClient.generateRawQuizJson(anyString(), anyList()))
+              .willReturn(MOCK_QUIZ_JSON_DATA);
+      given(quizGenerationMapper.mapFrom(MOCK_QUIZ_JSON_DATA))
+              .willReturn(generatedQuizzes);
+      willDoNothing().given(quizAutoGenerationRepository).saveAll(anyList());
 
-    // then
-    assertThat(quizCreationDataList).hasSize(3);
+      // when
+      List<QuizCreationData> result =
+              quizAutoGeneratorService.generateQuiz(knowledge, content);
+
+      // then
+      assertThat(result).hasSize(3);
+    }
+
+    @Test
+    @DisplayName("매핑된 QuizCreationData의 필드가 올바르게 반환된다")
+    void shouldCorrectlyMapQuizFields() {
+      // given
+      String content = "지식 내용";
+      Knowledge knowledge = Knowledge.builder().build();
+      User user = User.builder().build();
+      QuizCreationData dto = QuizCreationData.builder()
+              .question("Q1").answer("A1").hint("H1").build();
+
+      given(userService.findUser()).willReturn(user);
+      given(openAiClient.generateRawQuizJson(anyString(), anyList()))
+              .willReturn(MOCK_QUIZ_JSON_DATA);
+      given(quizGenerationMapper.mapFrom(MOCK_QUIZ_JSON_DATA))
+              .willReturn(List.of(dto));
+      willDoNothing().given(quizAutoGenerationRepository).saveAll(anyList());
+
+      // when
+      List<QuizCreationData> result =
+              quizAutoGeneratorService.generateQuiz(knowledge, content);
+
+      // then
+      QuizCreationData actual = result.getFirst();
+      assertThat(actual.question()).isEqualTo("Q1");
+      assertThat(actual.answer()).isEqualTo("A1");
+      assertThat(actual.hint()).isEqualTo("H1");
+    }
   }
 
-  @Test
-  @DisplayName("생성된 퀴즈의 질문/답변/힌트가 올바르게 매핑된다.")
-  void shouldCorrectlyMapQuizFields() {
-    // given
-    String content = "지식 내용";
+  @Nested
+  @DisplayName("예외 처리")
+  class ExceptionCases {
 
-    String question = "Q1";
-    String answer = "A1";
-    String hint = "H1";
-    List<QuizCreationData> generatedQuizzes = List.of(
-            QuizCreationData.builder().question(question).answer(answer).hint(hint).build()
-    );
+    @Test
+    @DisplayName("저장 중 DataAccessException 발생 시 QuizException으로 래핑된다")
+    void wrapsQuizExceptionOnSaveFailure() {
+      // given
+      String content = "지식 내용";
+      Knowledge knowledge = Knowledge.builder().build();
+      User user = User.builder().build();
+      QuizCreationData dto = QuizCreationData.builder()
+              .question("Q1").answer("A1").hint("H1").build();
 
-    given(userService.findUser()).willReturn(User.builder().build());
-    given(openAiClient.generateRawQuizJson(anyString(), anyList())).willReturn(MOCK_QUIZ_JSON_DATA);
-    willDoNothing().given(quizAutoGenerationRepository).saveAll(anyList());
-    given(quizGenerationMapper.mapFrom(MOCK_QUIZ_JSON_DATA)).willReturn(generatedQuizzes);
+      given(userService.findUser()).willReturn(user);
+      given(openAiClient.generateRawQuizJson(anyString(), anyList()))
+              .willReturn(MOCK_QUIZ_JSON_DATA);
+      given(quizGenerationMapper.mapFrom(MOCK_QUIZ_JSON_DATA))
+              .willReturn(List.of(dto));
+      willThrow(new DataAccessException("DB 오류") {})
+              .given(quizAutoGenerationRepository).saveAll(anyList());
 
-    // when
-    List<QuizCreationData> quizCreationDataList = quizAutoGeneratorService.generateQuiz(Knowledge.builder().build(), content);
-    QuizCreationData creationData = quizCreationDataList.getFirst();
-
-    // then
-    assertThat(creationData.question()).isEqualTo(question);
-    assertThat(creationData.answer()).isEqualTo(answer);
-    assertThat(creationData.hint()).isEqualTo(hint);
+      // when / then
+      assertThatThrownBy(() ->
+              quizAutoGeneratorService.generateQuiz(knowledge, content)
+      )
+              .isInstanceOf(QuizException.class)
+              .extracting("errorCode")
+              .isEqualTo(QuizErrorCode.QUIZ_SAVE_FAILED);
+    }
   }
 }

@@ -3,6 +3,8 @@ package com.bonju.review.quiz.service;
 import com.bonju.review.knowledge.entity.Knowledge;
 import com.bonju.review.quiz.client.AiClient;
 import com.bonju.review.quiz.entity.Quiz;
+import com.bonju.review.quiz.exception.QuizErrorCode;
+import com.bonju.review.quiz.exception.QuizException;
 import com.bonju.review.quiz.mapper.QuizGenerationMapper;
 import com.bonju.review.quiz.repository.QuizAutoGenerationRepository;
 import com.bonju.review.quiz.vo.ImageResource;
@@ -12,6 +14,7 @@ import com.bonju.review.user.entity.User;
 import com.bonju.review.util.ContentTypeExtractor;
 import com.bonju.review.util.HtmlUtils;
 import lombok.RequiredArgsConstructor;
+import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -31,9 +34,14 @@ public class QuizAutoGeneratorServiceImpl implements QuizAutoGeneratorService {
     String rawJson = aiClient.generateRawQuizJson(content, imageResources);
     List<QuizCreationData> creationDataList = quizGenerationMapper.mapFrom(rawJson);
 
-    quizAutoGenerationRepository.saveAll(
-            mapToQuizEntities(creationDataList, knowledge)
-    );
+    try {
+      quizAutoGenerationRepository.saveAll(
+              mapToQuizEntities(creationDataList, knowledge)
+      );
+    } catch (DataAccessException e){
+      throw new QuizException(QuizErrorCode.QUIZ_SAVE_FAILED, e);
+    }
+
 
     return creationDataList;
   }
