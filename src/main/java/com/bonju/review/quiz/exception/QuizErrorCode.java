@@ -13,7 +13,9 @@ public enum QuizErrorCode {
   /**
    * AI가 생성한 퀴즈를 VO로 매핑하는 과정에서 오류 발생 시 사용
    */
-  QUIZ_MAPPING_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "AI가 생성한 퀴즈를 VO로 매핑 중 오류가 발생했습니다");
+  QUIZ_MAPPING_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "AI가 생성한 퀴즈를 VO로 매핑 중 오류가 발생했습니다"),
+
+  QUIZ_MIME_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "이미지를 MIME type 으로 반환 중 오류가 발생했습니다.");
 
   private final HttpStatus httpStatus;
   private final String message;
