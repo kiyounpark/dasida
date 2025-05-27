@@ -1,9 +1,13 @@
 package com.bonju.review.quiz;
 
+import com.bonju.review.knowledge.entity.Knowledge;
 import com.bonju.review.quiz.client.AiClient;
 import com.bonju.review.quiz.mapper.QuizGenerationMapper;
+import com.bonju.review.quiz.repository.QuizAutoGenerationRepository;
 import com.bonju.review.quiz.service.QuizAutoGeneratorServiceImpl;
 import com.bonju.review.quiz.vo.QuizCreationData;
+import com.bonju.review.user.entity.User;
+import com.bonju.review.user.service.UserService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -14,7 +18,9 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.BDDMockito.willDoNothing;
 
 @ExtendWith(MockitoExtension.class)
 class QuizAutoGeneratorServiceTest {
@@ -34,6 +40,13 @@ class QuizAutoGeneratorServiceTest {
 
   @Mock
   QuizGenerationMapper quizGenerationMapper;
+
+  @Mock
+  QuizAutoGenerationRepository quizAutoGenerationRepository;
+
+  @Mock
+  UserService userService;
+
   @InjectMocks
   QuizAutoGeneratorServiceImpl quizAutoGeneratorService;
 
@@ -48,11 +61,13 @@ class QuizAutoGeneratorServiceTest {
             QuizCreationData.builder().question("Q2").answer("A2").hint("H2").build(),
             QuizCreationData.builder().question("Q3").answer("A3").hint("H3").build()
     );
-    given(openAiClient.generateRawQuizJson(content)).willReturn(MOCK_QUIZ_JSON_DATA);
+    given(userService.findUser()).willReturn(User.builder().build());
+    given(openAiClient.generateRawQuizJson(anyString(), anyList())).willReturn(MOCK_QUIZ_JSON_DATA);
+    willDoNothing().given(quizAutoGenerationRepository).saveAll(anyList());
     given(quizGenerationMapper.mapFrom(MOCK_QUIZ_JSON_DATA)).willReturn(generatedQuizzes);
 
     // when
-    List<QuizCreationData> quizCreationDataList = quizAutoGeneratorService.generateQuiz(content);
+    List<QuizCreationData> quizCreationDataList = quizAutoGeneratorService.generateQuiz(Knowledge.builder().build(), content);
 
     // then
     assertThat(quizCreationDataList).hasSize(3);
@@ -71,16 +86,18 @@ class QuizAutoGeneratorServiceTest {
             QuizCreationData.builder().question(question).answer(answer).hint(hint).build()
     );
 
-    given(openAiClient.generateRawQuizJson(content)).willReturn(MOCK_QUIZ_JSON_DATA);
+    given(userService.findUser()).willReturn(User.builder().build());
+    given(openAiClient.generateRawQuizJson(anyString(), anyList())).willReturn(MOCK_QUIZ_JSON_DATA);
+    willDoNothing().given(quizAutoGenerationRepository).saveAll(anyList());
     given(quizGenerationMapper.mapFrom(MOCK_QUIZ_JSON_DATA)).willReturn(generatedQuizzes);
 
     // when
-    List<QuizCreationData> quizCreationDataList = quizAutoGeneratorService.generateQuiz(content);
+    List<QuizCreationData> quizCreationDataList = quizAutoGeneratorService.generateQuiz(Knowledge.builder().build(), content);
     QuizCreationData creationData = quizCreationDataList.getFirst();
 
     // then
-    assertThat(creationData.getQuestion()).isEqualTo(question);
-    assertThat(creationData.getAnswer()).isEqualTo(answer);
-    assertThat(creationData.getHint()).isEqualTo(hint);
+    assertThat(creationData.question()).isEqualTo(question);
+    assertThat(creationData.answer()).isEqualTo(answer);
+    assertThat(creationData.hint()).isEqualTo(hint);
   }
 }
