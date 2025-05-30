@@ -15,8 +15,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.argThat;
-import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
 @DisplayName("지식 등록 서비스 테스트")
@@ -35,17 +33,19 @@ class KnowledgeRegistrationServiceTest {
     String title = "테스트 제목";
     String content = "테스트 내용";
 
-    given(repository.save(any(Knowledge.class))).willReturn(1L);
+    Knowledge savedKnowledge = Knowledge.builder()
+            .title(title)
+            .content(content)
+            .build();
+
+    given(repository.save(any(Knowledge.class))).willReturn(savedKnowledge);
 
     // when
-    Long result = knowledgeRegistrationService.registerKnowledge(title, content);
+    Knowledge result = knowledgeRegistrationService.registerKnowledge(title, content);
 
     // then
-    assertThat(result).isEqualTo(1L);
-    verify(repository).save(argThat(entity ->
-            title.equals(entity.getTitle()) &&
-                    content.equals(entity.getContent())
-    ));
+    assertThat(result.getTitle()).isEqualTo(title);
+    assertThat(result.getContent()).isEqualTo(content);
   }
 
   @Test
