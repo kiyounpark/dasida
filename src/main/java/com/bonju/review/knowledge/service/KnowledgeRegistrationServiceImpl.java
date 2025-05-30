@@ -17,13 +17,14 @@ public class KnowledgeRegistrationServiceImpl implements KnowledgeRegistrationSe
 
   @Override
   @Transactional
-  public Long registerKnowledge(String title, String content) {
+  public Knowledge registerKnowledge(String title, String content) {
     try {
       Knowledge knowledge = Knowledge.builder()
               .title(title)
               .content(content)
               .build();
-      return repository.save(knowledge);
+      repository.save(knowledge);
+      return knowledge;
     } catch (DataAccessException e) {
       throw new KnowledgeException(KnowledgeErrorCode.REGISTER_FAILED, e);
     }
