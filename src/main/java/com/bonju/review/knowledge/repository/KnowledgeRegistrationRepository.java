@@ -3,5 +3,5 @@ package com.bonju.review.knowledge.repository;
 import com.bonju.review.knowledge.entity.Knowledge;
 
 public interface KnowledgeRegistrationRepository {
-  Long save(Knowledge knowledge);
+  Knowledge save(Knowledge knowledge);
 }

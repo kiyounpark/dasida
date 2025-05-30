@@ -11,8 +11,9 @@ public class KnowledgeRegistrationRepositoryJpa implements KnowledgeRegistration
 
   private final EntityManager em;
   @Override
-  public Long save(Knowledge knowledge) {
+  public Knowledge save(Knowledge knowledge) {
     em.persist(knowledge);
-    return knowledge.getId();
+    em.flush();
+    return knowledge;
   }
 }
