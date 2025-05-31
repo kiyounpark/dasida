@@ -18,6 +18,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.transaction.annotation.Transactional;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.mockito.ArgumentMatchers.any;
@@ -47,8 +48,12 @@ class KnowledgeRegistrationIntegrationTest {
   @Test
   @WithMockKakaoUser(kakaoId = "123")
   @DisplayName("정상 플로우: 201 + Knowledge/Quiz 실제 저장")
+  @Transactional
   void success_persistsEntities() throws Exception {
-    given(userService.findUser()).willReturn(dummyUser("123"));
+    em.persist(dummyUser("123"));
+    em.flush();
+    em.clear();
+
     given(aiClient.generateRawQuizJson(any(), any()))
             .willReturn("""
                     [ {"question":"Q1","answer":"A1","hint":"H1"} ]
