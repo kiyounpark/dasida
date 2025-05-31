@@ -1,10 +1,11 @@
-package com.bonju.review.quiz.exception;
+package com.bonju.review.quiz.exception.errorcode;
 
+import com.bonju.review.util.ApiErrorCode;
 import lombok.Getter;
 import org.springframework.http.HttpStatus;
 
 @Getter
-public enum QuizErrorCode {
+public enum QuizErrorCode implements ApiErrorCode {
   /**
    * 퀴즈 생성 과정에서 OpenAI 호출 실패 시 사용
    */

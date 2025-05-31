@@ -1,6 +1,6 @@
 package com.bonju.review.quiz.client;
 
-import com.bonju.review.quiz.exception.QuizException;
+import com.bonju.review.quiz.exception.exception.QuizException;
 import com.bonju.review.quiz.vo.ImageResource;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

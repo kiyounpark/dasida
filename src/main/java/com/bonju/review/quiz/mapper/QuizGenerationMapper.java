@@ -1,7 +1,7 @@
 package com.bonju.review.quiz.mapper;
 
-import com.bonju.review.quiz.exception.QuizErrorCode;
-import com.bonju.review.quiz.exception.QuizException;
+import com.bonju.review.quiz.exception.errorcode.QuizErrorCode;
+import com.bonju.review.quiz.exception.exception.QuizException;
 import com.bonju.review.quiz.vo.QuizCreationData;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;

@@ -1,8 +1,8 @@
 package com.bonju.review.quiz.client;
 
 
-import com.bonju.review.quiz.exception.QuizErrorCode;
-import com.bonju.review.quiz.exception.QuizException;
+import com.bonju.review.quiz.exception.errorcode.QuizErrorCode;
+import com.bonju.review.quiz.exception.exception.QuizException;
 import com.bonju.review.quiz.vo.ImageResource;
 import lombok.RequiredArgsConstructor;
 import org.springframework.ai.chat.client.ChatClient;

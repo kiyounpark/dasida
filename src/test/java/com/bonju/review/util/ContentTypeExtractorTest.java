@@ -1,6 +1,6 @@
 package com.bonju.review.util;
 
-import com.bonju.review.quiz.exception.QuizException;
+import com.bonju.review.quiz.exception.exception.QuizException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.util.MimeType;
