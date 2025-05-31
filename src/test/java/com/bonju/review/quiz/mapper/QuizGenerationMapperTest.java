@@ -1,7 +1,7 @@
 package com.bonju.review.quiz.mapper;
 
-import com.bonju.review.quiz.exception.QuizErrorCode;
-import com.bonju.review.quiz.exception.QuizException;
+import com.bonju.review.quiz.exception.errorcode.QuizErrorCode;
+import com.bonju.review.quiz.exception.exception.QuizException;
 import com.bonju.review.quiz.vo.QuizCreationData;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

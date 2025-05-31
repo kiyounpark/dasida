@@ -1,12 +1,11 @@
-package com.bonju.review.quiz;
+package com.bonju.review.quiz.service;
 
 import com.bonju.review.knowledge.entity.Knowledge;
 import com.bonju.review.quiz.client.AiClient;
-import com.bonju.review.quiz.exception.QuizErrorCode;
-import com.bonju.review.quiz.exception.QuizException;
+import com.bonju.review.quiz.exception.errorcode.QuizErrorCode;
+import com.bonju.review.quiz.exception.exception.QuizException;
 import com.bonju.review.quiz.mapper.QuizGenerationMapper;
 import com.bonju.review.quiz.repository.QuizAutoGenerationRepository;
-import com.bonju.review.quiz.service.QuizAutoGeneratorServiceImpl;
 import com.bonju.review.quiz.vo.QuizCreationData;
 import com.bonju.review.user.entity.User;
 import com.bonju.review.user.service.UserService;

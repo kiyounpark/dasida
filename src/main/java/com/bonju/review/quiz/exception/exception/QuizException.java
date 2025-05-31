@@ -1,5 +1,6 @@
-package com.bonju.review.quiz.exception;
+package com.bonju.review.quiz.exception.exception;
 
+import com.bonju.review.quiz.exception.errorcode.QuizErrorCode;
 import org.springframework.http.HttpStatus;
 
 public class QuizException extends RuntimeException{
