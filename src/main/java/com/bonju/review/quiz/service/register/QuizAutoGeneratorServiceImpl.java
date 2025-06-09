@@ -1,4 +1,4 @@
-package com.bonju.review.quiz.service;
+package com.bonju.review.quiz.service.register;
 
 import com.bonju.review.knowledge.entity.Knowledge;
 import com.bonju.review.quiz.client.AiClient;
@@ -6,7 +6,7 @@ import com.bonju.review.quiz.entity.Quiz;
 import com.bonju.review.quiz.exception.errorcode.QuizErrorCode;
 import com.bonju.review.quiz.exception.exception.QuizException;
 import com.bonju.review.quiz.mapper.QuizGenerationMapper;
-import com.bonju.review.quiz.repository.QuizAutoGenerationRepository;
+import com.bonju.review.quiz.repository.QuizRepository;
 import com.bonju.review.quiz.vo.ImageResource;
 import com.bonju.review.quiz.vo.QuizCreationData;
 import com.bonju.review.user.service.UserService;
@@ -26,7 +26,7 @@ public class QuizAutoGeneratorServiceImpl implements QuizAutoGeneratorService {
 
   private final AiClient aiClient;
   private final QuizGenerationMapper quizGenerationMapper;
-  private final QuizAutoGenerationRepository quizAutoGenerationRepository;
+  private final QuizRepository quizRepository;
   private final UserService userService;
 
   @Override
@@ -37,7 +37,7 @@ public class QuizAutoGeneratorServiceImpl implements QuizAutoGeneratorService {
     List<QuizCreationData> creationDataList = quizGenerationMapper.mapFrom(rawJson);
 
     try {
-      quizAutoGenerationRepository.saveAll(
+      quizRepository.saveAll(
               mapToQuizEntities(creationDataList, knowledge)
       );
     } catch (DataAccessException e){

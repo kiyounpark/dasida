@@ -1,7 +1,7 @@
 package com.bonju.review.knowledge_quiz.controller;
 
 import com.bonju.review.knowledge.dto.KnowledgeRegisterRequestDto;
-import com.bonju.review.knowledge_quiz.KnowledgeQuizCreationWorkflow;
+import com.bonju.review.knowledge_quiz.workflow.KnowledgeQuizCreationWorkflow;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

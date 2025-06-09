@@ -1,11 +1,10 @@
-package com.bonju.review.quiz.dto;
+package com.bonju.review.useranswer.dto;
 
 import lombok.Getter;
 import lombok.AllArgsConstructor;
 
 @Getter
 @AllArgsConstructor
-public class QuizAnswerResponseDto {
-    private Long userAnswerId;
+public class UserAnswerResponseDto {
     private boolean correct;
 }

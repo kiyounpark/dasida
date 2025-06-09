@@ -1,4 +1,4 @@
-package com.bonju.review.quiz.service;
+package com.bonju.review.quiz.service.register;
 
 import com.bonju.review.knowledge.entity.Knowledge;
 import com.bonju.review.quiz.vo.QuizCreationData;

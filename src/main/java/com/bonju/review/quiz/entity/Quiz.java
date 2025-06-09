@@ -55,4 +55,8 @@ public class Quiz {
     public int getAnswerLength(){
         return answer.length();
     }
+
+    public boolean isCorrectAnswer(String answerText) {
+        return answer.equals(answerText);
+    }
 }
