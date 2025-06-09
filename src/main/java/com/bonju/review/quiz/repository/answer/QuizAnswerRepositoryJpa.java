@@ -1,6 +1,6 @@
 package com.bonju.review.quiz.repository.answer;
 
-import com.bonju.review.quiz.entity.UserAnswer;
+import com.bonju.review.useranswer.entity.UserAnswer;
 import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;

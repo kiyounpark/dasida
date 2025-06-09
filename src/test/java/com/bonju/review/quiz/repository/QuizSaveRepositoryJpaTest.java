@@ -13,12 +13,12 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DataJpaTest
-@Import(QuizAutoGenerationRepositoryJpa.class)
+@Import(QuizSaveRepositoryJpa.class)
 @DisplayName("QuizAutoGenerationRepositoryJpa 통합 테스트")
-class QuizAutoGenerationRepositoryJpaTest {
+class QuizSaveRepositoryJpaTest {
 
   @Autowired
-  QuizAutoGenerationRepositoryJpa repository;
+  QuizSaveRepositoryJpa repository;
 
   @Autowired
   EntityManager em;
