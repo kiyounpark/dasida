@@ -1,8 +1,10 @@
-package com.bonju.review.quiz.entity;
+package com.bonju.review.useranswer.entity;
 
+import com.bonju.review.quiz.entity.Quiz;
 import com.bonju.review.user.entity.User;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -29,15 +31,16 @@ public class UserAnswer {
 
     private int dayType;
 
-    private boolean isWrong;
+    private boolean isCorrect;
 
-    private LocalDateTime answeredAt = LocalDateTime.now();
+    private final LocalDateTime createdAt = LocalDateTime.now();
 
-    public UserAnswer(User user, Quiz quiz, String answer, int dayType, boolean isWrong) {
+    @Builder
+    public UserAnswer(User user, Quiz quiz, String answer, int dayType, boolean isCorrect) {
         this.user = user;
         this.quiz = quiz;
         this.answer = answer;
         this.dayType = dayType;
-        this.isWrong = isWrong;
+        this.isCorrect = isCorrect;
     }
 }
