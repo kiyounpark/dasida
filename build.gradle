@@ -41,6 +41,7 @@ dependencies {
 	implementation "com.vladsch.flexmark:flexmark:0.64.8"   // Markdown → HTML/AST
 	implementation "org.jsoup:jsoup:1.17.2"                 // HTML → plain text
 
+
 	// 🔽 Tracing + Monitoring 관련
 	implementation 'io.micrometer:micrometer-tracing'
 	implementation 'io.micrometer:micrometer-tracing-bridge-brave'
@@ -51,7 +52,9 @@ dependencies {
 	runtimeOnly 'com.h2database:h2' // H2 데이터베이스 추가
 	runtimeOnly("mysql:mysql-connector-java:8.0.33")  // ✅  MySQL 드라이버 추가
 
+	compileOnly 'org.mapstruct:mapstruct:1.5.5.Final'
 	compileOnly 'org.projectlombok:lombok'
+	annotationProcessor 'org.mapstruct:mapstruct-processor:1.5.5.Final'
 	annotationProcessor 'org.projectlombok:lombok'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation 'org.springframework.security:spring-security-test'
@@ -66,4 +69,8 @@ dependencyManagement {
 
 tasks.named('test') {
 	useJUnitPlatform()
+}
+
+tasks.withType(JavaCompile).configureEach {
+	options.compilerArgs += ['-Amapstruct.defaultComponentModel=spring']
 }

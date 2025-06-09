@@ -1,6 +1,6 @@
 package com.bonju.review.wrong_answer_note.entity;
 
-import com.bonju.review.quiz.entity.UserAnswer;
+import com.bonju.review.useranswer.entity.UserAnswer;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;

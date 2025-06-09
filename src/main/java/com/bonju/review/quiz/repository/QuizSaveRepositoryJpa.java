@@ -9,7 +9,7 @@ import java.util.List;
 
 @RequiredArgsConstructor
 @Repository
-public class QuizAutoGenerationRepositoryJpa implements QuizAutoGenerationRepository {
+public class QuizSaveRepositoryJpa implements QuizRepository {
 
   private final EntityManager em;
   @Override

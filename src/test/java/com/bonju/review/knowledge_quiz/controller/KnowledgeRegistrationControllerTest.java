@@ -1,7 +1,7 @@
 package com.bonju.review.knowledge_quiz.controller;
 
 import com.bonju.review.knowledge.exception.KnowledgeException;
-import com.bonju.review.knowledge_quiz.KnowledgeQuizCreationWorkflow;
+import com.bonju.review.knowledge_quiz.workflow.KnowledgeQuizCreationWorkflow;
 import com.bonju.review.knowledge_quiz.dto.KnowledgeRegistrationRequestDto;
 import com.bonju.review.quiz.exception.errorcode.QuizErrorCode;
 import com.bonju.review.quiz.exception.exception.QuizException;
