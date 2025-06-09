@@ -6,6 +6,7 @@ import com.bonju.review.util.MDCTraceIdProvider;
 import com.bonju.review.util.TimestampProvider;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import org.springframework.core.NestedExceptionUtils;
 import org.springframework.stereotype.Component;
 
 import static java.util.Objects.requireNonNull;
@@ -34,7 +35,7 @@ public class SlackErrorMessageFactory {
             .userId(resolveUserId())
             .params(resolveParams(req))
             .exceptionName(ex.getClass().getSimpleName())
-            .exceptionMessage(ex.getMessage())
+            .exceptionMessage(NestedExceptionUtils.getMostSpecificCause(ex).getMessage())
             .timestamp(timestampProvider.formatNow())
             .traceId(resolveTraceId())
             .build()

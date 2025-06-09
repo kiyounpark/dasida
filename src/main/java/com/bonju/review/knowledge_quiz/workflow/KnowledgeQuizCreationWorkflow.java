@@ -1,8 +1,8 @@
-package com.bonju.review.knowledge_quiz;
+package com.bonju.review.knowledge_quiz.workflow;
 
 import com.bonju.review.knowledge.entity.Knowledge;
 import com.bonju.review.knowledge.service.KnowledgeRegistrationService;
-import com.bonju.review.quiz.service.QuizAutoGeneratorService;
+import com.bonju.review.quiz.service.register.QuizAutoGeneratorService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

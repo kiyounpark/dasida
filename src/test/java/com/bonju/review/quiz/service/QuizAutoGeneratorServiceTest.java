@@ -5,7 +5,8 @@ import com.bonju.review.quiz.client.AiClient;
 import com.bonju.review.quiz.exception.errorcode.QuizErrorCode;
 import com.bonju.review.quiz.exception.exception.QuizException;
 import com.bonju.review.quiz.mapper.QuizGenerationMapper;
-import com.bonju.review.quiz.repository.QuizAutoGenerationRepository;
+import com.bonju.review.quiz.repository.QuizRepository;
+import com.bonju.review.quiz.service.register.QuizAutoGeneratorServiceImpl;
 import com.bonju.review.quiz.vo.QuizCreationData;
 import com.bonju.review.user.entity.User;
 import com.bonju.review.user.service.UserService;
@@ -47,7 +48,7 @@ class QuizAutoGeneratorServiceTest {
   private QuizGenerationMapper quizGenerationMapper;
 
   @Mock
-  private QuizAutoGenerationRepository quizAutoGenerationRepository;
+  private QuizRepository quizRepository;
 
   @Mock
   private UserService userService;
@@ -77,7 +78,7 @@ class QuizAutoGeneratorServiceTest {
               .willReturn(MOCK_QUIZ_JSON_DATA);
       given(quizGenerationMapper.mapFrom(MOCK_QUIZ_JSON_DATA))
               .willReturn(generatedQuizzes);
-      willDoNothing().given(quizAutoGenerationRepository).saveAll(anyList());
+      willDoNothing().given(quizRepository).saveAll(anyList());
 
       // when
       List<QuizCreationData> result =
@@ -102,7 +103,7 @@ class QuizAutoGeneratorServiceTest {
               .willReturn(MOCK_QUIZ_JSON_DATA);
       given(quizGenerationMapper.mapFrom(MOCK_QUIZ_JSON_DATA))
               .willReturn(List.of(dto));
-      willDoNothing().given(quizAutoGenerationRepository).saveAll(anyList());
+      willDoNothing().given(quizRepository).saveAll(anyList());
 
       // when
       List<QuizCreationData> result =
@@ -136,7 +137,7 @@ class QuizAutoGeneratorServiceTest {
       given(quizGenerationMapper.mapFrom(MOCK_QUIZ_JSON_DATA))
               .willReturn(List.of(dto));
       willThrow(new DataAccessException("DB 오류") {})
-              .given(quizAutoGenerationRepository).saveAll(anyList());
+              .given(quizRepository).saveAll(anyList());
 
       // when / then
       assertThatThrownBy(() ->

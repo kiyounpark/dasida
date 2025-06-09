@@ -1,7 +1,7 @@
 package com.bonju.review.wrong_answer_note.service;
 
 import com.bonju.review.quiz.entity.Quiz;
-import com.bonju.review.quiz.entity.UserAnswer;
+import com.bonju.review.useranswer.entity.UserAnswer;
 import com.bonju.review.user.entity.User;
 import com.bonju.review.user.service.UserService;
 import com.bonju.review.wrong_answer_note.dto.WrongAnswerResponseDto;
@@ -49,7 +49,7 @@ public class WrongAnswerNoteReadServiceImpl implements WrongAnswerNoteReadServic
             // answers (사용자 답변 목록)
             List<WrongAnswerResponseDto> answerDtos = groupedNotes.stream()
                     .map(this::convertNoteToDto)
-                    .collect(Collectors.toList());
+                    .toList();
 
             // 🎯 DTO 생성 시 퀴즈 정답(quiz.getAnswer())도 포함
             WrongAnswerGroupResponseDto groupDto = new WrongAnswerGroupResponseDto(

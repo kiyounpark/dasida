@@ -1,4 +1,4 @@
-package com.bonju.review.quiz.dto;
+package com.bonju.review.useranswer.dto;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -7,10 +7,7 @@ import lombok.AllArgsConstructor;
 
 @Getter
 @AllArgsConstructor
-public class QuizAnswerRequestDto {
-
-    @NotNull(message = "퀴즈ID를 입력해주세요.")
-    private Long quizId;
+public class UserAnswerRequestDto {
 
     @NotBlank(message = "답변을 입력해주세요.")
     private String answer;
