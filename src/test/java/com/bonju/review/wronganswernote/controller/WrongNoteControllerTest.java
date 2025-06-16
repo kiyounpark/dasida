@@ -1,9 +1,9 @@
-package com.bonju.review.wrong_answer_note.controller;
+package com.bonju.review.wronganswernote.controller;
 
 import com.bonju.review.slack.SlackErrorMessageFactory;
-import com.bonju.review.wrong_answer_note.WrongNoteService;
-import com.bonju.review.wrong_answer_note.dto.WrongAnswerGroupResponseDto;
-import com.bonju.review.wrong_answer_note.dto.WrongAnswerResponseDto;
+import com.bonju.review.wronganswernote.service.WrongNoteService;
+import com.bonju.review.wronganswernote.dto.WrongAnswerGroupResponseDto;
+import com.bonju.review.wronganswernote.dto.WrongAnswerResponseDto;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

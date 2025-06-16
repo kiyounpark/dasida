@@ -1,10 +1,10 @@
-package com.bonju.review.wrong_answer_note;
+package com.bonju.review.wronganswernote.service;
 
 import com.bonju.review.quiz.entity.Quiz;
 import com.bonju.review.useranswer.entity.UserAnswer;
 import com.bonju.review.useranswer.service.UserAnswerService;
-import com.bonju.review.wrong_answer_note.dto.WrongAnswerGroupResponseDto;
-import com.bonju.review.wrong_answer_note.dto.WrongAnswerResponseDto;
+import com.bonju.review.wronganswernote.dto.WrongAnswerGroupResponseDto;
+import com.bonju.review.wronganswernote.dto.WrongAnswerResponseDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
