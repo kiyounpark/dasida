@@ -1,4 +1,4 @@
-package com.bonju.review.wrong_answer_note.dto;
+package com.bonju.review.wronganswernote.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

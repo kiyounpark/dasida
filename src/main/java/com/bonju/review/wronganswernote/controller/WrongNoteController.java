@@ -1,7 +1,7 @@
-package com.bonju.review.wrong_answer_note.controller;
+package com.bonju.review.wronganswernote.controller;
 
-import com.bonju.review.wrong_answer_note.WrongNoteService;
-import com.bonju.review.wrong_answer_note.dto.WrongAnswerGroupResponseDto;
+import com.bonju.review.wronganswernote.service.WrongNoteService;
+import com.bonju.review.wronganswernote.dto.WrongAnswerGroupResponseDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
