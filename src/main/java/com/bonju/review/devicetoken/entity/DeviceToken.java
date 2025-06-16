@@ -24,7 +24,7 @@ public class DeviceToken {
   private String token;
 
   @Column(nullable = false)
-  private boolean active;
+  private boolean active = true;
 
   @Builder
   private DeviceToken(User user, String token) {
