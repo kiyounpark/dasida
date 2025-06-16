@@ -3,6 +3,8 @@ package com.bonju.review.knowledge.service;
 import com.bonju.review.knowledge.entity.Knowledge;
 import com.bonju.review.knowledge.exception.KnowledgeException;
 import com.bonju.review.knowledge.repository.KnowledgeRegistrationRepository;
+import com.bonju.review.user.entity.User;
+import com.bonju.review.user.service.UserService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -23,6 +25,9 @@ class KnowledgeRegistrationServiceTest {
   @Mock
   private KnowledgeRegistrationRepository repository;
 
+  @Mock
+  private UserService userService;
+
   @InjectMocks
   private KnowledgeRegistrationServiceImpl knowledgeRegistrationService;
 
@@ -38,6 +43,8 @@ class KnowledgeRegistrationServiceTest {
             .content(content)
             .build();
 
+    User user = User.builder().build();
+    given(userService.findUser()).willReturn(user);
     given(repository.save(any(Knowledge.class))).willReturn(savedKnowledge);
 
     // when
@@ -52,6 +59,9 @@ class KnowledgeRegistrationServiceTest {
   @DisplayName("저장 중 DataAccessException 발생 시 KnowledgeException으로 래핑한다")
   void registerKnowledge_throwsKnowledgeException_onDataAccess() {
     // given
+    User user = User.builder().build();
+
+    given(userService.findUser()).willReturn(user);
     given(repository.save(any(Knowledge.class)))
             .willThrow(new DataAccessException("DB 오류") {});
 

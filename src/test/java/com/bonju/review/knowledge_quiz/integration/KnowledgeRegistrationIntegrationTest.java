@@ -79,7 +79,6 @@ class KnowledgeRegistrationIntegrationTest {
   @WithMockKakaoUser(kakaoId = "123")
   @DisplayName("QuizException → 500, 전체 롤백")
   void quizException_rollbackAll() throws Exception {
-    given(userService.findUser()).willReturn(dummyUser("123"));
     given(aiClient.generateRawQuizJson(any(), any())).willReturn("malformed json");
 
     String req = objectMapper.writeValueAsString(new KnowledgeRegistrationRequestDto("제목", "본문"));

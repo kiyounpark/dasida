@@ -9,6 +9,8 @@ public class WrongAnswerResponseDto {
     // UserAnswer 엔티티의 식별자
     private Long userAnswerId;
 
+    private boolean isCorrect;
+
     // 사용자가 입력한 답변
     private String userAnswer;
 

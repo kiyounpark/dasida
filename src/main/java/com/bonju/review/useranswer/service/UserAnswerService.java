@@ -16,14 +16,26 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @RequiredArgsConstructor
 @Service
 @Transactional
 public class UserAnswerService {
 
   private final QuizFindService quizFindService;
-  private final UserService          userService;
+  private final UserService userService;
   private final UserAnswerRepository userAnswerRepository;
+
+  @Transactional
+  public List<UserAnswer> findAll() {
+    User user = userService.findUser();
+    try {
+      return userAnswerRepository.findAll(user);
+    } catch (DataAccessException ex) {
+      throw new UserAnswerException(UserAnswerErrorCode.FIND_ALL_FAIL, ex);
+    }
+  }
 
   @Transactional
   public UserAnswerResponseDto submitAnswer(SubmitUserAnswerCommand command) {
@@ -44,9 +56,9 @@ public class UserAnswerService {
             .isCorrect(isCorrect)
             .build();
 
-    try{
+    try {
       userAnswerRepository.save(userAnswer);
-    } catch(DataAccessException e){
+    } catch (DataAccessException e) {
       throw new UserAnswerException(UserAnswerErrorCode.DB_SAVE_FAIL, e);
     }
   }
@@ -54,6 +66,8 @@ public class UserAnswerService {
   private boolean isAnswerCorrect(SubmitUserAnswerCommand command, Quiz quiz) {
     return command.answer().equals(quiz.getAnswer());
   }
+
 }
+
 
 
