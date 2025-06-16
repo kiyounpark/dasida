@@ -99,6 +99,22 @@ class UserAnswerServiceTest {
             .isInstanceOf(UserAnswerException.class);
   }
 
+  @Test
+  @DisplayName("DB 에서 UserAnswer 조회중 오류가 발생하면 UserAnswerException을 던진다")
+  void whenSaveFails_thenThrowUserAnswerException1() {
+    // given
+    User user = User.builder()
+            .build();
+    given(userService.findUser()).willReturn(user);
+    willThrow(new DataAccessException("저장 실패") { })
+            .given(userAnswerRepository).findAll(user);
+
+    // then
+    assertThatThrownBy(() -> userAnswerService.findAll())
+            .isInstanceOf(UserAnswerException.class);
+  }
+
+
   /* ---------- Fixture ---------- */
 
   private static SubmitUserAnswerCommand mockCommand(String answer) {

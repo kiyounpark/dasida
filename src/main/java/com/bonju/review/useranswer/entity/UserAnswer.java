@@ -43,4 +43,8 @@ public class UserAnswer {
         this.dayType = dayType;
         this.isCorrect = isCorrect;
     }
+
+    public boolean isWrong() {
+        return !this.isCorrect;
+    }
 }
