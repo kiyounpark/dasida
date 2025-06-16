@@ -8,6 +8,7 @@ import org.springframework.http.HttpStatus;
 @Getter
 @RequiredArgsConstructor
 public enum UserAnswerErrorCode implements ApiErrorCode {
+  FIND_ALL_FAIL(HttpStatus.INTERNAL_SERVER_ERROR, "DB에 문제가 발생하여 UserAnswer(퀴즈 풀이)들을 불러오는데 실패하였습니다."),
   DB_SAVE_FAIL(HttpStatus.INTERNAL_SERVER_ERROR, "DB에 문제가 발생하여 UserAnswer(퀴즈 풀이) 저장에 실패하였습니다.");
 
   private final HttpStatus httpStatus;
