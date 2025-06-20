@@ -41,12 +41,10 @@ class DeviceTokenControllerTest {
   @DisplayName("POST /token – 200 OK(본문 없음) 반환")
   @WithMockUser
   void register_returns200() throws Exception {
-    // given : void 메서드 → willDoNothing()
     willDoNothing().given(deviceTokenService).registerDeviceToken(TOKEN);
 
     DeviceTokenRequestDto request = new DeviceTokenRequestDto(TOKEN);
 
-    // when & then
     mockMvc.perform(post(END_POINT)
                     .with(csrf())
                     .contentType(MediaType.APPLICATION_JSON)
@@ -54,12 +52,29 @@ class DeviceTokenControllerTest {
             .andExpect(status().isOk());
   }
 
+  /* ─────────── 400 Bad Request 검증 ─────────── */
+  @Test
+  @DisplayName("POST /token – 요청 바디가 유효하지 않으면 400 Bad Request")
+  @WithMockUser
+  void register_invalidRequest_returns400() throws Exception {
+    // 토큰이 빈 문자열이면 @NotBlank 검증 실패
+    DeviceTokenRequestDto badRequest = new DeviceTokenRequestDto("");
+
+    mockMvc.perform(post(END_POINT)
+                    .with(csrf())
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(objectMapper.writeValueAsString(badRequest)))
+            .andExpect(status().isBadRequest());
+
+    // 서비스가 호출되지 않아야 함
+    then(deviceTokenService).should(never()).registerDeviceToken(any());
+  }
+
   /* ─────────── 500 & 래핑 예외 검증 ─────────── */
   @Test
   @DisplayName("POST /token – DB 오류 시 500, 원인 예외가 DataAccessException")
   @WithMockUser
   void register_dbFail_returns500_andWrapsCause() throws Exception {
-    // given : void 메서드 → willThrow()
     DataAccessException dataAccessEx = new DataAccessException("DB down"){};
     DeviceTokenException wrapped =
             new DeviceTokenException(DeviceTokenErrorCode.DB_FAIL, dataAccessEx);
@@ -70,14 +85,12 @@ class DeviceTokenControllerTest {
 
     DeviceTokenRequestDto request = new DeviceTokenRequestDto(TOKEN);
 
-    // when & then
     mockMvc.perform(post(END_POINT)
                     .with(csrf())
                     .contentType(MediaType.APPLICATION_JSON)
                     .content(objectMapper.writeValueAsString(request)))
             .andExpect(status().isInternalServerError());
 
-    // Slack 전송 시 전달된 예외 안의 cause 확인
     ArgumentCaptor<DeviceTokenException> captor =
             ArgumentCaptor.forClass(DeviceTokenException.class);
     verify(slackErrorMessageFactory).createErrorMessage(any(), captor.capture());
