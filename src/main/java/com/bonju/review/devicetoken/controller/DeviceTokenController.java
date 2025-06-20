@@ -1,3 +1,4 @@
+/* ────────────────── DeviceTokenController (void 반환) ────────────────── */
 package com.bonju.review.devicetoken.controller;
 
 import com.bonju.review.devicetoken.dto.DeviceTokenRequestDto;
@@ -16,7 +17,8 @@ public class DeviceTokenController {
   private final DeviceTokenService deviceTokenService;
 
   @PostMapping("/token")
-  ResponseEntity<String> getOrCreate(@RequestBody @Valid DeviceTokenRequestDto request) {
-    return ResponseEntity.ok(deviceTokenService.getOrCreateToken(request.token()));
+  ResponseEntity<Void> register(@RequestBody @Valid DeviceTokenRequestDto request) {
+    deviceTokenService.registerDeviceToken(request.token());
+    return ResponseEntity.ok().build();        // 200, 본문 없음
   }
 }
