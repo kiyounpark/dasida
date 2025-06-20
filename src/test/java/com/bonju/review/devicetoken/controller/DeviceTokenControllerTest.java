@@ -17,10 +17,9 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.verify;
+import static org.mockito.BDDMockito.*;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -28,69 +27,62 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WebMvcTest(DeviceTokenController.class)
 class DeviceTokenControllerTest {
 
-  public static final String END_POINT = "/token";
-  @Autowired
-  MockMvc mockMvc;
+  private static final String END_POINT = "/token";
+  private static final String TOKEN     = "sample-token";
 
-  @Autowired
-  ObjectMapper objectMapper;
+  @Autowired MockMvc mockMvc;
+  @Autowired ObjectMapper objectMapper;
 
-  @MockitoBean
-  DeviceTokenService deviceTokenService;
+  @MockitoBean DeviceTokenService       deviceTokenService;
+  @MockitoBean SlackErrorMessageFactory slackErrorMessageFactory;
 
-  @MockitoBean
-  SlackErrorMessageFactory slackErrorMessageFactory;
-
+  /* ─────────── 200 OK 검증 ─────────── */
   @Test
-  @DisplayName("POST /device-token – 200 OK 가 반환된다")
+  @DisplayName("POST /token – 200 OK(본문 없음) 반환")
   @WithMockUser
-  void postDeviceToken_returns200() throws Exception {
-    // given
-    String fixedToken = "sample-token";
-    given(deviceTokenService.getOrCreateToken(fixedToken))
-            .willReturn(fixedToken);
+  void register_returns200() throws Exception {
+    // given : void 메서드 → willDoNothing()
+    willDoNothing().given(deviceTokenService).registerDeviceToken(TOKEN);
 
-    DeviceTokenRequestDto request = new DeviceTokenRequestDto(fixedToken);
+    DeviceTokenRequestDto request = new DeviceTokenRequestDto(TOKEN);
 
     // when & then
-    mockMvc.perform(
-            post(END_POINT)
+    mockMvc.perform(post(END_POINT)
                     .with(csrf())
                     .contentType(MediaType.APPLICATION_JSON)
-                    .content(objectMapper.writeValueAsString(request))
-    ).andExpect(status().isOk());
+                    .content(objectMapper.writeValueAsString(request)))
+            .andExpect(status().isOk());
   }
 
+  /* ─────────── 500 & 래핑 예외 검증 ─────────── */
   @Test
-  @DisplayName("POST /token – DB 오류 시 500, 예외 내부에 DataAccessException 이 포함된다")
+  @DisplayName("POST /token – DB 오류 시 500, 원인 예외가 DataAccessException")
   @WithMockUser
-  void postDeviceToken_dbFail_wrapsDataAccessException() throws Exception {
-    // given
-    String token = "sample-token";
+  void register_dbFail_returns500_andWrapsCause() throws Exception {
+    // given : void 메서드 → willThrow()
     DataAccessException dataAccessEx = new DataAccessException("DB down"){};
     DeviceTokenException wrapped =
             new DeviceTokenException(DeviceTokenErrorCode.DB_FAIL, dataAccessEx);
 
-    given(deviceTokenService.getOrCreateToken(token)).willThrow(wrapped);
+    willThrow(wrapped).given(deviceTokenService).registerDeviceToken(TOKEN);
     given(slackErrorMessageFactory.createErrorMessage(any(), any()))
             .willReturn("dummy");
 
-    DeviceTokenRequestDto request = new DeviceTokenRequestDto(token);
+    DeviceTokenRequestDto request = new DeviceTokenRequestDto(TOKEN);
 
-    // when & then: HTTP 500
+    // when & then
     mockMvc.perform(post(END_POINT)
                     .with(csrf())
                     .contentType(MediaType.APPLICATION_JSON)
                     .content(objectMapper.writeValueAsString(request)))
             .andExpect(status().isInternalServerError());
 
-    // ── 캡처로 예외 내부 원인(DataAccessException) 확인 ──
+    // Slack 전송 시 전달된 예외 안의 cause 확인
     ArgumentCaptor<DeviceTokenException> captor =
             ArgumentCaptor.forClass(DeviceTokenException.class);
     verify(slackErrorMessageFactory).createErrorMessage(any(), captor.capture());
 
-    DeviceTokenException captured = captor.getValue();
-    assertThat(captured.getCause())
+    assertThat(captor.getValue().getCause())
             .isInstanceOf(DataAccessException.class);
   }
 }
