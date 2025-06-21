@@ -13,7 +13,6 @@ public class KnowledgeRegistrationRepositoryJpa implements KnowledgeRegistration
   @Override
   public Knowledge save(Knowledge knowledge) {
     em.persist(knowledge);
-    em.flush();
     return knowledge;
   }
 }
