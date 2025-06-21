@@ -18,10 +18,20 @@ public class UserAnswerRepositoryJpa implements UserAnswerRepository {
     em.persist(userAnswer);
   }
 
+  @Override
   public List<UserAnswer> findAll(User user) {
     return em.createQuery(
-                    "SELECT ua FROM UserAnswer ua WHERE ua.user = :user", UserAnswer.class)
+                    """
+                    SELECT ua
+                    FROM UserAnswer ua
+                    JOIN FETCH ua.quiz q
+                    JOIN FETCH ua.user u
+                    WHERE ua.user = :user
+                    """,
+                    UserAnswer.class
+            )
             .setParameter("user", user)
             .getResultList();
+    }
   }
-}
+
