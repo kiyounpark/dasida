@@ -1,7 +1,9 @@
 package com.bonju.review.knowledge_quiz.integration;
 
+import com.bonju.review.knowledge_quiz.dto.KnowledgeQuizRegistrationResponseDto;
 import com.bonju.review.knowledge_quiz.dto.KnowledgeRegistrationRequestDto;
 import com.bonju.review.quiz.client.AiClient;
+import com.bonju.review.quiz.entity.Quiz;
 import com.bonju.review.quiz.exception.errorcode.QuizErrorCode;
 import com.bonju.review.testsupport.security.WithMockKakaoUser;
 import com.bonju.review.user.entity.User;
@@ -12,7 +14,6 @@ import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
@@ -30,7 +31,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureMockMvc
-@AutoConfigureTestDatabase
 class KnowledgeRegistrationIntegrationTest {
 
   private static final String ENDPOINT = "/knowledge";
@@ -47,32 +47,72 @@ class KnowledgeRegistrationIntegrationTest {
 
   @Test
   @WithMockKakaoUser(kakaoId = "123")
-  @DisplayName("정상 플로우: 201 + Knowledge/Quiz 실제 저장")
+  @DisplayName("POST /knowledge – 퀴즈가 없을 때 201 Created와 needPushPermission=true 반환")
   @Transactional
-  void success_persistsEntities() throws Exception {
+  void registerKnowledge_withoutExistingQuiz_returns201AndPushPermissionTrue() throws Exception {
     em.persist(dummyUser("123"));
     em.flush();
     em.clear();
 
     given(aiClient.generateRawQuizJson(any(), any()))
             .willReturn("""
-                    [ {"question":"Q1","answer":"A1","hint":"H1"} ]
-                """);
+            [ {"question":"Q1","answer":"A1","hint":"H1"} ]
+        """);
 
-    String req = objectMapper.writeValueAsString(new KnowledgeRegistrationRequestDto("제목", "본문"));
-    String location = mockMvc.perform(post(ENDPOINT)
+    String request = objectMapper.writeValueAsString(
+            new KnowledgeRegistrationRequestDto("제목", "본문")
+    );
+
+    String response = mockMvc.perform(post(ENDPOINT)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(request)
+                    .with(csrf()))
+            .andExpect(status().isCreated())
+            .andReturn()
+            .getResponse()
+            .getContentAsString();
+
+    KnowledgeQuizRegistrationResponseDto actual =
+            objectMapper.readValue(response, KnowledgeQuizRegistrationResponseDto.class);
+
+    assertThat(actual.needPushPermission()).isTrue();
+  }
+
+  @Test
+  @WithMockKakaoUser(kakaoId = "123")
+  @DisplayName("퀴즈가 이미 있을 때 needPushPermission=false")
+  @Transactional
+  void success_persistsEntities_whenQuizExists() throws Exception {
+
+    User user = dummyUser("123");
+    em.persist(user);
+
+    em.persist(Quiz.builder().user(user).build());   // 이미 존재하는 퀴즈
+    em.flush();
+    em.clear();
+
+    given(userService.findUser()).willReturn(user);  // ← 반드시 스텁
+    given(aiClient.generateRawQuizJson(any(), any()))
+            .willReturn("""
+        [ {"question":"Q1","answer":"A1","hint":"H1"} ]
+        """);
+
+    String req = objectMapper.writeValueAsString(
+            new KnowledgeRegistrationRequestDto("제목", "본문"));
+
+    String res = mockMvc.perform(post(ENDPOINT)
                     .contentType(MediaType.APPLICATION_JSON)
                     .content(req)
                     .with(csrf()))
             .andExpect(status().isCreated())
             .andReturn()
             .getResponse()
-            .getHeader("Location");
+            .getContentAsString();
 
-    Long id = extractId(location);
+    KnowledgeQuizRegistrationResponseDto dto =
+            objectMapper.readValue(res, KnowledgeQuizRegistrationResponseDto.class);
 
-    assertThat(countKnowledgeById(id)).isEqualTo(1L);
-    assertThat(countQuizByKnowledgeId(id)).isGreaterThan(0L);
+    assertThat(dto.needPushPermission()).isFalse();  // ✅ 통과
   }
 
   @Test
@@ -102,24 +142,6 @@ class KnowledgeRegistrationIntegrationTest {
 
   private User dummyUser(String kakaoId) {
     return User.builder().kakaoId(kakaoId).nickname("테스트").build();
-  }
-
-  private Long extractId(String location) {
-    return Long.parseLong(location.substring(location.lastIndexOf('/') + 1));
-  }
-
-  private long countKnowledgeById(Long id) {
-    return em.createQuery(
-                    "select count(k) from Knowledge k where k.id = :id", Long.class)
-            .setParameter("id", id)
-            .getSingleResult();
-  }
-
-  private long countQuizByKnowledgeId(Long id) {
-    return em.createQuery(
-                    "select count(q) from Quiz q where q.knowledge.id = :id", Long.class)
-            .setParameter("id", id)
-            .getSingleResult();
   }
 
   private long countAllKnowledge() {
