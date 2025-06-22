@@ -27,7 +27,6 @@ public class UserAnswerService {
   private final UserService userService;
   private final UserAnswerRepository userAnswerRepository;
 
-  @Transactional
   public List<UserAnswer> findAll() {
     User user = userService.findUser();
     try {
@@ -37,7 +36,6 @@ public class UserAnswerService {
     }
   }
 
-  @Transactional
   public UserAnswerResponseDto submitAnswer(SubmitUserAnswerCommand command) {
     User user = userService.findUser();
     Quiz quiz = quizFindService.findQuizByIdAndUser(command.quizId(), user);
