@@ -35,8 +35,8 @@ class QuizFindRepositoryJpaTest {
     em.clear();
 
     /* ─── when & then ─── */
-    assertThat(quizFindRepository.isQuizListEmptyByUser(userWithQuiz)).isTrue();
-    assertThat(quizFindRepository.isQuizListEmptyByUser(userWithoutQuiz)).isFalse();
+    assertThat(quizFindRepository.isQuizListEmptyByUser(userWithQuiz)).isFalse();
+    assertThat(quizFindRepository.isQuizListEmptyByUser(userWithoutQuiz)).isTrue();
   }
 
   /* ---------- 테스트용 헬퍼 ---------- */
