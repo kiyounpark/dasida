@@ -48,6 +48,8 @@ dependencies {
 	implementation 'io.zipkin.reporter2:zipkin-reporter-brave'
 	implementation 'org.springframework.boot:spring-boot-starter-actuator'
 	implementation 'com.cyfrania:logback-slack-appender:1.2'
+	// Firebase Admin SDK (FCM 메시지 전송용)
+	implementation "com.google.firebase:firebase-admin:11.9.1"
 
 	runtimeOnly 'com.h2database:h2' // H2 데이터베이스 추가
 	runtimeOnly("mysql:mysql-connector-java:8.0.33")  // ✅  MySQL 드라이버 추가
