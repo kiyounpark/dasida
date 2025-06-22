@@ -1,6 +1,7 @@
 package com.bonju.review.knowledge_quiz.controller;
 
 import com.bonju.review.knowledge.exception.KnowledgeException;
+import com.bonju.review.knowledge_quiz.dto.KnowledgeQuizRegistrationResponseDto;
 import com.bonju.review.knowledge_quiz.workflow.KnowledgeQuizCreationWorkflow;
 import com.bonju.review.knowledge_quiz.dto.KnowledgeRegistrationRequestDto;
 import com.bonju.review.quiz.exception.errorcode.QuizErrorCode;
@@ -19,6 +20,7 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
@@ -44,25 +46,31 @@ class KnowledgeRegistrationControllerTest {
   @MockitoBean SlackErrorMessageFactory slackErrorMessageFactory;
 
   @Test
-  @DisplayName("지식을 등록하면 201 Created 와 Location 헤더(/knowledge/{id})를 반환한다")
+  @DisplayName("POST /knowledge – 지식 등록 시 201 Created와 푸시 권한 요청 여부 플래그를 반환한다")
   @WithMockUser
-  void registerKnowledge_returnsCreatedWithLocation() throws Exception {
+  void registerKnowledge_returnsCreatedAndPushPermissionFlag() throws Exception {
     // given
-    long savedId = 1L;
+    KnowledgeQuizRegistrationResponseDto knowledgeQuizRegistrationResponseDto =
+            new KnowledgeQuizRegistrationResponseDto(true);
+
     given(workflow.registerKnowledgeAndGenerateQuizList(anyString(), anyString()))
-            .willReturn(savedId);
+            .willReturn(knowledgeQuizRegistrationResponseDto);
 
     String body = objectMapper.writeValueAsString(new KnowledgeRegistrationRequestDto(TITLE, CONTENT));
 
     // when
-    mockMvc.perform(post(ENDPOINT)
+    String response = mockMvc.perform(post(ENDPOINT)
                     .contentType(MediaType.APPLICATION_JSON)
                     .content(body)
                     .with(csrf()))
             // then
             .andExpect(status().isCreated())
-            .andExpect(header().string("Location", ENDPOINT + "/" + savedId))
-            .andExpect(content().string(""));
+            .andReturn()
+            .getResponse()
+            .getContentAsString();
+
+    KnowledgeQuizRegistrationResponseDto actual = objectMapper.readValue(response, KnowledgeQuizRegistrationResponseDto.class);
+    assertThat(actual.needPushPermission()).isTrue();
   }
 
   @Nested
