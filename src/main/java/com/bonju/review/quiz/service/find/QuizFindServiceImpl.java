@@ -32,7 +32,7 @@ public class QuizFindServiceImpl implements QuizFindService {
     public boolean hasQuizByUser() {
         User user = userService.findUser();
         try {
-            return quizFindRepository.existsQuizByUser(user);
+            return quizFindRepository.isQuizListEmptyByUser(user);
         } catch (DataAccessException e){
             throw new QuizException(QuizErrorCode.QUIZ_FIND_FAILED, e);
         }

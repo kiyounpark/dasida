@@ -34,14 +34,14 @@ class QuizFindServiceImplTest {
     // given
     User user = User.builder().build();
     given(userService.findUser()).willReturn(user);
-    given(quizFindRepository.existsQuizByUser(user)).willReturn(true);
+    given(quizFindRepository.isQuizListEmptyByUser(user)).willReturn(true);
 
     // when
     boolean actual = quizFindService.hasQuizByUser();
 
     // then
     assertThat(actual).isTrue();
-    verify(quizFindRepository).existsQuizByUser(user);
+    verify(quizFindRepository).isQuizListEmptyByUser(user);
   }
 
   /* ─────────── 존재하지 않는 경우 ─────────── */
@@ -51,14 +51,14 @@ class QuizFindServiceImplTest {
     // given
     User user = User.builder().build();
     given(userService.findUser()).willReturn(user);
-    given(quizFindRepository.existsQuizByUser(user)).willReturn(false);
+    given(quizFindRepository.isQuizListEmptyByUser(user)).willReturn(false);
 
     // when
     boolean actual = quizFindService.hasQuizByUser();
 
     // then
     assertThat(actual).isFalse();
-    verify(quizFindRepository).existsQuizByUser(user);
+    verify(quizFindRepository).isQuizListEmptyByUser(user);
   }
 
   /* ─────────── DB 계층 예외 래핑 검증 ─────────── */
@@ -69,13 +69,13 @@ class QuizFindServiceImplTest {
     User user = User.builder().build();
     given(userService.findUser()).willReturn(user);
     willThrow(new DataAccessResourceFailureException("DB down"))
-            .given(quizFindRepository).existsQuizByUser(user);
+            .given(quizFindRepository).isQuizListEmptyByUser(user);
 
     // when & then
     assertThatThrownBy(() -> quizFindService.hasQuizByUser())
             .isInstanceOf(QuizException.class)
             .hasFieldOrPropertyWithValue("errorCode", QuizErrorCode.QUIZ_FIND_FAILED);
 
-    verify(quizFindRepository).existsQuizByUser(user);
+    verify(quizFindRepository).isQuizListEmptyByUser(user);
   }
 }
