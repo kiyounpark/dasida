@@ -40,9 +40,6 @@ dependencies {
 	implementation 'com.google.guava:guava:33.4.6-jre'
 	implementation "com.vladsch.flexmark:flexmark:0.64.8"   // Markdown → HTML/AST
 	implementation "org.jsoup:jsoup:1.17.2"                 // HTML → plain text
-	implementation "io.netty:netty-common:4.1.118.Final"
-	implementation "io.netty:netty-handler:4.1.118.Final"
-	implementation "org.apache.httpcomponents.client5:httpclient5:5.4.3"
 	implementation "com.google.firebase:firebase-admin:9.5.0"
 
 	// 🔽 Tracing + Monitoring 관련
