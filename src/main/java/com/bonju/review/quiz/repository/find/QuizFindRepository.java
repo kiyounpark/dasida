@@ -6,5 +6,5 @@ import com.bonju.review.user.entity.User;
 public interface QuizFindRepository {
     Quiz findById(Long id);
 
-    boolean existsQuizByUser(User user);
+    boolean isQuizListEmptyByUser(User user);
 }

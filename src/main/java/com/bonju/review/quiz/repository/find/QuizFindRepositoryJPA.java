@@ -19,7 +19,7 @@ public class QuizFindRepositoryJPA implements QuizFindRepository {
     }
 
     @Override
-    public boolean existsQuizByUser(User user) {
+    public boolean isQuizListEmptyByUser(User user) {
         String jpql = """
                 SELECT 1
                   FROM Quiz q
@@ -33,6 +33,6 @@ public class QuizFindRepositoryJPA implements QuizFindRepository {
                 .setMaxResults(1)
                 .getResultList();
 
-        return !result.isEmpty();
+        return result.isEmpty();
     }
 }
