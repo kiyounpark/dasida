@@ -6,4 +6,7 @@ import com.bonju.review.user.entity.User;
 public interface QuizFindService {
 
     Quiz findQuizByIdAndUser(Long quizId, User user);
+
+    boolean hasQuizByUser();
+
 }
