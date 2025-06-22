@@ -40,7 +40,10 @@ dependencies {
 	implementation 'com.google.guava:guava:33.4.6-jre'
 	implementation "com.vladsch.flexmark:flexmark:0.64.8"   // Markdown → HTML/AST
 	implementation "org.jsoup:jsoup:1.17.2"                 // HTML → plain text
-
+	implementation "io.netty:netty-common:4.1.118.Final"
+	implementation "io.netty:netty-handler:4.1.118.Final"
+	implementation "org.apache.httpcomponents.client5:httpclient5:5.4.3"
+	implementation "com.google.firebase:firebase-admin:9.5.0"
 
 	// 🔽 Tracing + Monitoring 관련
 	implementation 'io.micrometer:micrometer-tracing'
@@ -49,7 +52,7 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-actuator'
 	implementation 'com.cyfrania:logback-slack-appender:1.2'
 	// Firebase Admin SDK (FCM 메시지 전송용)
-	implementation "com.google.firebase:firebase-admin:11.9.1"
+
 
 	runtimeOnly 'com.h2database:h2' // H2 데이터베이스 추가
 	runtimeOnly("mysql:mysql-connector-java:8.0.33")  // ✅  MySQL 드라이버 추가
