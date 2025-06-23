@@ -36,10 +36,9 @@ public class DeviceTokenService {
   }
 
   @Transactional(readOnly = true)
-  public DeviceToken findDeviceToken(String token) {
-    User user = userService.findUser();
+  public DeviceToken findDeviceToken(User user) {
     try {
-      return deviceTokenRepository.findByUserIdAndToken(user, token)
+      return deviceTokenRepository.findByUser(user)
               .orElseThrow(() ->
                       new DeviceTokenException(DeviceTokenErrorCode.NOT_FOUND)
               );
