@@ -27,10 +27,10 @@ import static org.mockito.Mockito.verify;
 @ExtendWith(MockitoExtension.class)
 class DeviceTokenServiceTest {
 
-  @Mock UserService userService;
+  @Mock UserService           userService;
   @Mock DeviceTokenRepository deviceTokenRepository;
-
-  @InjectMocks DeviceTokenService deviceTokenService;
+  @InjectMocks
+  DeviceTokenService          deviceTokenService;
 
   private static final String TOKEN = "AAA.BBB.CCC";
 
@@ -53,8 +53,8 @@ class DeviceTokenServiceTest {
       // then
       ArgumentCaptor<DeviceToken> captor = ArgumentCaptor.forClass(DeviceToken.class);
       verify(deviceTokenRepository).save(captor.capture());
-
       DeviceToken saved = captor.getValue();
+
       assertThat(saved.getUser()).isSameAs(user);
       assertThat(saved.getToken()).isEqualTo(TOKEN);
     }
@@ -66,7 +66,7 @@ class DeviceTokenServiceTest {
       User user = User.builder().build();
       given(userService.findUser()).willReturn(user);
       given(deviceTokenRepository.save(any(DeviceToken.class)))
-              .willThrow(new DataAccessResourceFailureException("DB down"));
+              .willThrow(new DataAccessResourceFailureException("boom"));
 
       // when & then
       assertThatThrownBy(() -> deviceTokenService.registerDeviceToken(TOKEN))
@@ -76,21 +76,20 @@ class DeviceTokenServiceTest {
   }
 
   @Nested
-  @DisplayName("findDeviceToken() 동작 검증")
+  @DisplayName("findDeviceToken(User) 동작 검증")
   class FindDeviceTokenTests {
 
     @Test
-    @DisplayName("성공: 등록된 토큰을 반환한다")
+    @DisplayName("성공: 주어진 사용자의 토큰을 반환한다")
     void returnsEntity() {
       // given
       User user = User.builder().kakaoId("456").nickname("finder").build();
       DeviceToken dt = DeviceToken.builder().user(user).token(TOKEN).build();
-      given(userService.findUser()).willReturn(user);
-      given(deviceTokenRepository.findByUserIdAndToken(user, TOKEN))
+      given(deviceTokenRepository.findByUser(user))
               .willReturn(Optional.of(dt));
 
       // when
-      DeviceToken result = deviceTokenService.findDeviceToken(TOKEN);
+      DeviceToken result = deviceTokenService.findDeviceToken(user);
 
       // then
       assertThat(result).isSameAs(dt);
@@ -101,12 +100,11 @@ class DeviceTokenServiceTest {
     void notFoundThrowsException() {
       // given
       User user = User.builder().build();
-      given(userService.findUser()).willReturn(user);
-      given(deviceTokenRepository.findByUserIdAndToken(user, TOKEN))
+      given(deviceTokenRepository.findByUser(user))
               .willReturn(Optional.empty());
 
       // when & then
-      assertThatThrownBy(() -> deviceTokenService.findDeviceToken(TOKEN))
+      assertThatThrownBy(() -> deviceTokenService.findDeviceToken(user))
               .isInstanceOf(DeviceTokenException.class)
               .hasFieldOrPropertyWithValue("errorCode", DeviceTokenErrorCode.NOT_FOUND);
     }
@@ -116,12 +114,11 @@ class DeviceTokenServiceTest {
     void dbErrorThrowsException() {
       // given
       User user = User.builder().build();
-      given(userService.findUser()).willReturn(user);
-      given(deviceTokenRepository.findByUserIdAndToken(user, TOKEN))
-              .willThrow(new DataAccessResourceFailureException("DB down"));
+      given(deviceTokenRepository.findByUser(user))
+              .willThrow(new DataAccessResourceFailureException("boom"));
 
       // when & then
-      assertThatThrownBy(() -> deviceTokenService.findDeviceToken(TOKEN))
+      assertThatThrownBy(() -> deviceTokenService.findDeviceToken(user))
               .isInstanceOf(DeviceTokenException.class)
               .hasFieldOrPropertyWithValue("errorCode", DeviceTokenErrorCode.DB_FAIL);
     }
