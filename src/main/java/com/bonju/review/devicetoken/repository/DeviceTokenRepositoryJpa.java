@@ -13,6 +13,24 @@ import java.util.Optional;
 public class DeviceTokenRepositoryJpa implements DeviceTokenRepository {
 
   private final EntityManager em;
+
+  /**
+   * 해당 사용자의 디바이스 토큰 하나만 Optional 로 반환한다.
+   */
+  @Override
+  public Optional<DeviceToken> findByUser(User user) {
+    return em.createQuery(
+                    "select d " +
+                            "from DeviceToken d " +
+                            "where d.user = :user " +
+                            "order by d.id desc",
+                    DeviceToken.class)
+            .setParameter("user", user)
+            .setMaxResults(1)
+            .getResultStream()
+            .findFirst();
+  }
+
   public Optional<DeviceToken> findByUserIdAndToken(User user, String token) {
     return em.createQuery(
                     "select d " +
