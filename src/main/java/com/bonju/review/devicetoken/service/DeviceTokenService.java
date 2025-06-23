@@ -34,4 +34,17 @@ public class DeviceTokenService {
      throw new DeviceTokenException(DeviceTokenErrorCode.DB_FAIL, e);
     }
   }
+
+  @Transactional(readOnly = true)
+  public DeviceToken findDeviceToken(String token) {
+    User user = userService.findUser();
+    try {
+      return deviceTokenRepository.findByUserIdAndToken(user, token)
+              .orElseThrow(() ->
+                      new DeviceTokenException(DeviceTokenErrorCode.NOT_FOUND)
+              );
+    } catch (DataAccessException e) {
+      throw new DeviceTokenException(DeviceTokenErrorCode.DB_FAIL, e);
+    }
+  }
 }
