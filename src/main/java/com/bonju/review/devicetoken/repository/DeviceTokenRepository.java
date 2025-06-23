@@ -6,6 +6,8 @@ import com.bonju.review.user.entity.User;
 import java.util.Optional;
 
 public interface DeviceTokenRepository {
+
+  Optional<DeviceToken> findByUser(User user);
   Optional<DeviceToken> findByUserIdAndToken(User user, String token);
 
   DeviceToken save(DeviceToken token);
