@@ -18,6 +18,7 @@ public enum QuizErrorCode implements ApiErrorCode {
   QUIZ_SAVE_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "퀴즈를 DB에 저장하는 도중 문제가 발생하였습니다."),
 
   QUIZ_MIME_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "이미지를 MIME type 으로 반환 중 오류가 발생했습니다."),
+  QUIZ_TODAY_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "오늘의 퀴즈를 불러오는 도중 오류가 발생하였습니다."),
   QUIZ_FIND_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "퀴즈를 불러오는 도중 오류가 발생하였습니다.");
 
   private final HttpStatus httpStatus;
