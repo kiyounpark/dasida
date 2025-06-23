@@ -20,12 +20,15 @@ public class FcmConfig {
 
   @Bean
   public FirebaseApp firebaseApp() throws IOException {
-    try (var in = credentials.getInputStream()) {
-      FirebaseOptions opts = FirebaseOptions.builder()
-              .setCredentials(GoogleCredentials.fromStream(in))
-              .build();
-      return FirebaseApp.initializeApp(opts);
+    if(FirebaseApp.getApps().isEmpty()){
+      try (var in = credentials.getInputStream()) {
+        FirebaseOptions opts = FirebaseOptions.builder()
+                .setCredentials(GoogleCredentials.fromStream(in))
+                .build();
+        return FirebaseApp.initializeApp(opts);
+      }
     }
+    return FirebaseApp.getInstance();
   }
 
   @Bean
