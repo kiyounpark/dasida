@@ -1,5 +1,6 @@
 package com.bonju.review.quiz.service.today;
 
+import com.bonju.review.quiz.entity.Quiz;
 import com.bonju.review.quiz.exception.errorcode.QuizErrorCode;
 import com.bonju.review.quiz.exception.exception.QuizException;
 import com.bonju.review.quiz.repository.QuizTodayRepository;
@@ -20,28 +21,29 @@ import static org.mockito.BDDMockito.given;
 @ExtendWith(MockitoExtension.class)
 class QuizTodayServiceTest {
 
-  @Mock QuizTodayRepository quizTodayRepository;
-  @InjectMocks QuizTodayService quizTodayService;
+  @Mock QuizTodayRepository repo;
+  @InjectMocks QuizTodayService service;
 
   @Test
-  @DisplayName("findTodayQuizIds() 성공 시 – 레포지토리 결과를 그대로 반환한다")
-  void findTodayQuizIds_returns_repository_result() {
-    List<Long> expected = List.of(1L, 2L);
+  @DisplayName("성공: 오늘 퀴즈 엔티티 목록을 반환한다")
+  void findTodayQuizzes_success() {
+    // given
+    List<Long> ids = List.of(1L, 2L);
+    List<Quiz> quizzes = List.of(Quiz.builder().build(), Quiz.builder().build());
 
-    given(quizTodayRepository.findTodayQuizIds()).willReturn(expected);
+    given(repo.findTodayQuizIds()).willReturn(ids);
+    given(repo.findByIdsWithUser(ids)).willReturn(quizzes);
 
-    List<Long> actual = quizTodayService.findTodayQuizIds();
-
-    assertThat(actual).containsExactlyElementsOf(expected);
+    // when / then
+    assertThat(service.findTodayQuizList()).isEqualTo(quizzes);
   }
 
   @Test
-  @DisplayName("findTodayQuizIds() 실패 시 – DataAccessException을 QuizException으로 래핑한다")
-  void findTodayQuizIds_wraps_DataAccessException() {
-    given(quizTodayRepository.findTodayQuizIds())
-            .willThrow(new DataAccessResourceFailureException("boom"));
+  @DisplayName("레포지토리 예외 시 QuizException 으로 래핑된다")
+  void findTodayQuizzes_wraps_exception() {
+    given(repo.findTodayQuizIds()).willThrow(new DataAccessResourceFailureException("boom"));
 
-    assertThatThrownBy(() -> quizTodayService.findTodayQuizIds())
+    assertThatThrownBy(() -> service.findTodayQuizList())
             .isInstanceOf(QuizException.class)
             .extracting("errorCode")
             .isEqualTo(QuizErrorCode.QUIZ_TODAY_FAILED);
