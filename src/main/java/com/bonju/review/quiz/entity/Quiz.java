@@ -3,16 +3,14 @@ package com.bonju.review.quiz.entity;
 import com.bonju.review.user.entity.User;
 import com.bonju.review.knowledge.entity.Knowledge;
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.LocalDateTime;
 
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@EqualsAndHashCode(of = "id")
 public class Quiz {
 
     @Id

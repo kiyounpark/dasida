@@ -3,47 +3,64 @@ package com.bonju.review.quiz.service.quizzes;
 
 import com.bonju.review.quiz.dto.DayQuizResponseDto;
 import com.bonju.review.quiz.entity.Quiz;
+import com.bonju.review.quiz.exception.errorcode.QuizErrorCode;
+import com.bonju.review.quiz.exception.exception.QuizException;
 import com.bonju.review.user.entity.User;
 import com.bonju.review.util.enums.DayType;
 import com.bonju.review.quiz.repository.quizzes.QuizzesRepository;
 import com.bonju.review.user.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class QuizzesServiceImpl implements QuizzesService{
+public class QuizzesServiceImpl implements QuizzesService {
+
     private final QuizzesRepository quizzesRepository;
     private final UserService userService;
 
     /**
-     * 0일차, 3일차, 7일차, 30일차에 해당하는 퀴즈를 모두 조회하여 하나의 DTO 리스트로 반환합니다.
-     * 특정 일차에 해당하는 데이터가 없으면, 해당 일차는 결과에 포함되지 않습니다.
+     * 0·3·7·30일차 “미풀이 or 오답” 퀴즈를 조회해 DTO로 반환한다.
+     * 0번째 요소(※0일차)만 고정, 나머지는 무작위 순서로 섞는다.
      */
+    @Override
+    @Transactional(readOnly = true)
     public List<DayQuizResponseDto> getAllDayQuizzes() {
+
         User user = userService.findUser();
         List<DayQuizResponseDto> result = new ArrayList<>();
 
-        // DayType Enum을 순회 (ZERO, THREE, SEVEN, THIRTY)
         for (DayType dayType : DayType.values()) {
-            int daysAgo = dayType.getDaysAgo();  // 예: 0, 3, 7, 30
-            // Repository를 통해 해당 날짜 범위의 퀴즈 조회
-            List<Quiz> quizzes = quizzesRepository.findQuizzesByDaysAgo(user, daysAgo);
-            // 조회된 퀴즈를 DTO로 변환하여 결과 리스트에 추가
+
+            List<Quiz> quizzes;
+
+            try {
+                quizzes = quizzesRepository.findUnsolvedOrAlwaysWrongQuizzes(
+                        user, dayType.getDaysAgo());
+            } catch (DataAccessException e) {
+                throw new QuizException(QuizErrorCode.QUIZ_TODAY_FAILED, e);
+            }
+
             for (Quiz quiz : quizzes) {
-                DayQuizResponseDto dayQuizResponseDto = DayQuizResponseDto.builder()
+                result.add(DayQuizResponseDto.builder()
                         .dayType(dayType.getDaysAgo())
                         .quizId(quiz.getId())
                         .question(quiz.getQuestion())
                         .answerLength(quiz.getAnswerLength())
                         .hint(quiz.getHint())
-                        .build();
-
-                result.add(dayQuizResponseDto);
+                        .build());
             }
+        }
+
+        // ❸ 0번째는 고정, 이후 구간만 셔플
+        if (result.size() > 2) {                      // 섞을 대상이 2개 이상일 때만
+            Collections.shuffle(result.subList(1, result.size()));
         }
 
         return result;
