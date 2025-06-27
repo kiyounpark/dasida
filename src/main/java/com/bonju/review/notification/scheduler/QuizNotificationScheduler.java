@@ -36,7 +36,7 @@ public class QuizNotificationScheduler {
         User user = quiz.getUser();
         DeviceToken deviceToken = deviceTokenService.findDeviceToken(user);
 
-        fcmService.pushToToken(deviceToken.getToken(), NOTIFICATION_TITLE, quiz.getQuestion());
+        fcmService.pushQuiz(deviceToken.getToken(), NOTIFICATION_TITLE, quiz.getQuestion(), quiz.getId());
       }
     } catch (Exception e) {
       log.error("알림 전송 중 오류가 발생하였습니다." + e);
