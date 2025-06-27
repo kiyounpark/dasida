@@ -88,6 +88,30 @@ class QuizTodayRepositoryTest {
     }
   }
 
+  /* ──────────────────────────────── 4 */
+  @Test
+  @DisplayName("createdAt 이 동일하면 id 가 더 큰 퀴즈가 선택된다")
+  void picks_largest_id_when_same_createdAt() {
+    User user = newUser();
+
+    // 같은 시각으로 강제 고정
+    LocalDateTime ts = LocalDateTime.now();
+
+    Quiz first  = newQuiz(user, 0);   // id 작음
+    Quiz second = newQuiz(user, 0);   // id 큼 (뒤에 insert)
+
+    ReflectionTestUtils.setField(first,  "createdAt", ts);
+    ReflectionTestUtils.setField(second, "createdAt", ts);
+
+    flushAndClear();
+
+    List<Long> ids = repository.findTodayQuizIds();
+
+    // 한 건만 선택되고, 그것이 id 큰(second) 이어야 한다
+    assertThat(ids)
+            .containsExactly(second.getId());
+  }
+
   /* ------------------------------------------------------------------
    * 시나리오별 테스트 – 패치 조인 조회
    * ------------------------------------------------------------------ */
