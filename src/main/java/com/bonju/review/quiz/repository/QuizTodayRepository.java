@@ -23,33 +23,35 @@ public class QuizTodayRepository {
   @PersistenceContext
   private final EntityManager em;
 
+  /** 0‧3‧7‧30 일차 + 미풀이 퀴즈 중 사용자별 가장 최신(createdAt max) 1건 선택 */
   private static final String TODAY_QUIZ_JPQL = """
-    select q.id
-    from   Quiz q
-    where  cast(q.createdAt as date) in (:d3, :d7, :d30)
-      and  not exists (
-             select 1
-             from   UserAnswer ua
-             where  ua.quiz = q
-               and  cast(ua.createdAt as date) = :today
-           )
-      and  q.createdAt = (
-             select max(q2.createdAt)
-             from   Quiz q2
-             where  q2.user = q.user
-               and  cast(q2.createdAt as date) in (:d3, :d7, :d30)
-               and  not exists (
-                      select 1
-                      from   UserAnswer ua2
-                      where  ua2.quiz = q2
-                        and  cast(ua2.createdAt as date) = :today
-                    )
-           )
-    """;
+        select q.id
+        from   Quiz q
+        where  cast(q.createdAt as date) in (:d0, :d3, :d7, :d30)
+          and  not exists (          
+                 select 1
+                 from   UserAnswer ua
+                 where  ua.quiz = q
+                   and  cast(ua.createdAt as date) = :today
+               )
+          and  q.createdAt = (       
+                 select max(q2.createdAt)
+                 from   Quiz q2
+                 where  q2.user = q.user
+                   and  cast(q2.createdAt as date) in (:d0, :d3, :d7, :d30)
+                   and  not exists (
+                          select 1
+                          from   UserAnswer ua2
+                          where  ua2.quiz = q2
+                            and  cast(ua2.createdAt as date) = :today
+                        )
+               )
+        """;
 
   public List<Long> findTodayQuizIds() {
     LocalDate today = LocalDate.now();
     return em.createQuery(TODAY_QUIZ_JPQL, Long.class)
+            .setParameter("d0",  today)
             .setParameter("d3",  today.minusDays(3))
             .setParameter("d7",  today.minusDays(7))
             .setParameter("d30", today.minusDays(30))
