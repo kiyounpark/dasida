@@ -6,5 +6,5 @@ import com.bonju.review.user.entity.User;
 import java.util.List;
 
 public interface QuizzesRepository {
-    List<Quiz> findQuizzesByDaysAgo(User user, int days);
+    List<Quiz> findUnsolvedOrAlwaysWrongQuizzes(User user, int days);
 }
