@@ -23,30 +23,38 @@ public class QuizTodayRepository {
   @PersistenceContext
   private final EntityManager em;
 
-  /** 0‧3‧7‧30 일차 + 미풀이 퀴즈 중 사용자별 가장 최신(createdAt max) 1건 선택 */
+  /** 0‧3‧7‧30 일차 + 미풀이 퀴즈 중
+   *   사용자별로 가장 최근(createdAt max) 퀴즈 1건을 고르되,
+   *   같은 시각이면 id 가 더 큰 행을 우선 */
   private static final String TODAY_QUIZ_JPQL = """
-        select q.id
-        from   Quiz q
-        where  cast(q.createdAt as date) in (:d0, :d3, :d7, :d30)
-          and  not exists (          
-                 select 1
-                 from   UserAnswer ua
-                 where  ua.quiz = q
-                   and  cast(ua.createdAt as date) = :today
-               )
-          and  q.createdAt = (       
-                 select max(q2.createdAt)
-                 from   Quiz q2
-                 where  q2.user = q.user
-                   and  cast(q2.createdAt as date) in (:d0, :d3, :d7, :d30)
-                   and  not exists (
-                          select 1
-                          from   UserAnswer ua2
-                          where  ua2.quiz = q2
-                            and  cast(ua2.createdAt as date) = :today
-                        )
-               )
-        """;
+    select q.id
+    from   Quiz q
+    where  cast(q.createdAt as date) in (:d0, :d3, :d7, :d30)
+      and  not exists (                          
+             select 1
+             from   UserAnswer ua
+             where  ua.quiz = q
+               and  cast(ua.createdAt as date) = :today
+           )
+      and  q.createdAt = (
+             select max(q2.createdAt)
+             from   Quiz q2
+             where  q2.user = q.user
+               and  cast(q2.createdAt as date) in (:d0, :d3, :d7, :d30)
+               and  not exists (
+                      select 1
+                      from   UserAnswer ua2
+                      where  ua2.quiz = q2
+                        and  cast(ua2.createdAt as date) = :today
+                    )
+           )
+      and  q.id = (
+             select max(q3.id)
+             from   Quiz q3
+             where  q3.user       = q.user
+               and  q3.createdAt  = q.createdAt   
+           )
+    """;
 
   public List<Long> findTodayQuizIds() {
     LocalDate today = LocalDate.now();
