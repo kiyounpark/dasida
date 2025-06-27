@@ -43,7 +43,8 @@ class QuizTodayRepositoryTest {
       User user1 = newUser();
       User user2 = newUser();
 
-      Quiz quiz3dUser1  = newQuiz(user1, 3);   // 선택 대상
+      Quiz quiz0dUser1  = newQuiz(user1, 0);   // 선택 대상
+      newQuiz(user1, 3);   // 3일차라 0일차한테 밀림
       Quiz quiz7dUser1  = newQuiz(user1, 7);   // 오늘 풀이됨 → 제외
       Quiz quiz30dUser2 = newQuiz(user2, 30);  // 선택 대상
 
@@ -53,7 +54,7 @@ class QuizTodayRepositoryTest {
       List<Long> resultIds = repository.findTodayQuizIds();
 
       assertThat(resultIds)
-              .containsExactlyInAnyOrder(quiz3dUser1.getId(), quiz30dUser2.getId());
+              .containsExactlyInAnyOrder(quiz0dUser1.getId(), quiz30dUser2.getId());
     }
 
     @Test
@@ -71,18 +72,19 @@ class QuizTodayRepositoryTest {
               .doesNotContain(quiz1d.getId());
     }
 
+    /* ──────────────────────────────── 3 */
     @Test
     @DisplayName("여러 미풀이 후보가 있을 때 최근(createdAt max) 1개만 선택한다")
     void picks_latest_when_multiple_unsolved() {
       User user = newUser();
       newQuiz(user, 30);
       newQuiz(user, 7);
-      Quiz quiz3d = newQuiz(user, 3); // 기대값
+      Quiz quiz0d = newQuiz(user, 0);          // 🔹 가장 최근(선택 예상)
       flushAndClear();
 
       List<Long> ids = repository.findTodayQuizIds();
 
-      assertThat(ids).containsExactly(quiz3d.getId());
+      assertThat(ids).containsExactly(quiz0d.getId());
     }
   }
 
