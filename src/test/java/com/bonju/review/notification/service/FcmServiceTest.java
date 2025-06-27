@@ -37,7 +37,7 @@ class FcmServiceTest {
     given(firebaseMessaging.send(any(Message.class))).willReturn(MSG_ID);
 
     // when
-    String actual = fcmService.pushQuiz(TOKEN, TITLE, BODY, 1L);
+    String actual = fcmService.pushToToken(TOKEN, TITLE, BODY);
 
     // then
     assertThat(actual).isEqualTo(MSG_ID);
@@ -53,7 +53,7 @@ class FcmServiceTest {
             .willThrow(new RuntimeException("network down"));
 
     // when & then
-    assertThatThrownBy(() -> fcmService.pushQuiz(TOKEN, TITLE, BODY, 1L))
+    assertThatThrownBy(() -> fcmService.pushToToken(TOKEN, TITLE, BODY))
             .isInstanceOf(FcmException.class)
             .hasFieldOrPropertyWithValue("errorCode", FcmErrorCode.PUSH_FAILED);
 
