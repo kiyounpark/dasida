@@ -1,6 +1,7 @@
 package com.bonju.review.notification.integration;
 
 import com.bonju.review.notification.service.FcmService;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,14 +24,15 @@ class FcmOneTimeIntegrationTest {
 
 
   @Test
-//  @Disabled("한 번만 실행 후 Disabled 풀어주세요")
+  @Disabled("한 번만 실행 후 Disabled 풀어주세요")
   @DisplayName("FCM 단발 실행: 디바이스 토큰으로 실제 알림 보내보기")
   void sendOnePush() {
 
-    String messageId = fcmService.pushToToken(
+    String messageId = fcmService.pushQuiz(
             "eF-sfNXh-Pd-5EFauXqtJX:APA91bEjItKOVkg8dZuEUAY7ORbC--p5yeK1N2XXw391VdTQM3GUf2TGy23K0Ez-s3EAxs87kUGQeChrdi7FMg6V5Qf1rWjrqr1yvw1yNrojAiNYpGfaxTs",
             "테스트 알림",
-            "한 번만 실행하는 푸시 테스트입니다"
+            "한 번만 실행하는 푸시 테스트입니다",
+            1L
     );
     System.out.println("FCM messageId: " + messageId);
   }
