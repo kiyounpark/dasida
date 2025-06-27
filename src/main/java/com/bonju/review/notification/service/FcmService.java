@@ -15,13 +15,16 @@ import org.springframework.stereotype.Service;
 public class FcmService {
 
   private final FirebaseMessaging firebaseMessaging;
-  public String pushToToken(String token, String title, String body) {
+
+  /** quizId를 data 로 포함해서 전송 */
+  public String pushQuiz(String token, String title, String body, Long quizId) {
     Message msg = Message.builder()
             .setToken(token)
             .setNotification(Notification.builder()
                     .setTitle(title)
                     .setBody(body)
                     .build())
+            .putData("quizId", quizId.toString())      // 👈 data 채워 넣기
             .build();
     try {
       return firebaseMessaging.send(msg);
