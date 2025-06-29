@@ -1,6 +1,6 @@
 package com.bonju.review.user.service;
 
-import com.bonju.review.user.dto.SignUpAvailabilityResponse;
+import com.bonju.review.user.dto.SignUpAvailabilityResponseDto;
 import com.bonju.review.user.exception.UserErrorCode;
 import com.bonju.review.user.exception.UserException;
 import com.bonju.review.user.repository.UserRepository;
@@ -44,7 +44,7 @@ class SignUpLimitServiceTest {
       given(userRepository.count()).willReturn(MAX_USER_COUNT - 1);
 
       // when
-      SignUpAvailabilityResponse res = signUpLimitService.checkSignUpAvailability();
+      SignUpAvailabilityResponseDto res = signUpLimitService.checkSignUpAvailability();
 
       // then
       assertThat(res.canSignUp()).isTrue();
@@ -58,7 +58,7 @@ class SignUpLimitServiceTest {
       given(userRepository.count()).willReturn(MAX_USER_COUNT);
 
       // when
-      SignUpAvailabilityResponse res = signUpLimitService.checkSignUpAvailability();
+      SignUpAvailabilityResponseDto res = signUpLimitService.checkSignUpAvailability();
 
       // then
       assertThat(res.canSignUp()).isFalse();
