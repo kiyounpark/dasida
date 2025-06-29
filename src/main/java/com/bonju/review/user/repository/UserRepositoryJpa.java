@@ -30,4 +30,11 @@ public class UserRepositoryJpa implements UserRepository {
             return em.merge(user);
         }
     }
+
+    @Override
+    public long count() {
+        // JPQL 로 전체 사용자 수 반환
+        return em.createQuery("select count(u) from User u", Long.class)
+                .getSingleResult();
+    }
 }
