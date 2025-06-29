@@ -1,6 +1,6 @@
 package com.bonju.review.user.service;
 
-import com.bonju.review.user.dto.SignUpAvailabilityResponse;
+import com.bonju.review.user.dto.SignUpAvailabilityResponseDto;
 import com.bonju.review.user.exception.UserErrorCode;
 import com.bonju.review.user.exception.UserException;
 import com.bonju.review.user.repository.UserRepository;
@@ -18,10 +18,10 @@ public class SignUpLimitService {
   public static final int MAX_USER_COUNT = 1000;
 
   @Transactional(readOnly = true)
-  public SignUpAvailabilityResponse checkSignUpAvailability() {
+  public SignUpAvailabilityResponseDto checkSignUpAvailability() {
     try {
       long current = userRepository.count();          // 예외 발생 가능 지점
-      return new SignUpAvailabilityResponse(current < MAX_USER_COUNT);
+      return new SignUpAvailabilityResponseDto(current < MAX_USER_COUNT);
     } catch (DataAccessException e) {
       // 로깅 · 모니터링 후 도메인 예외로 변환
       throw new UserException(UserErrorCode.COUNT_FAIL, e);
