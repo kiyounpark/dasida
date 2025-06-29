@@ -30,6 +30,7 @@ public class SecurityConfig {
                 // 1. 요청 권한 설정
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers("/health").permitAll()
+                        .requestMatchers("/login-enabled").permitAll()
                         .requestMatchers("/h2-console/**").permitAll()
                         .requestMatchers("/oauth2/authorization/**").permitAll()
                         .requestMatchers("/slack-test", "/slack-test/**").permitAll()
