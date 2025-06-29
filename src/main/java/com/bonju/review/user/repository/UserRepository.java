@@ -9,4 +9,6 @@ public interface UserRepository {
     Optional<User> findByKaKaoId(String kakaoId);
 
     User save(User user);
+
+    long count();
 }
