@@ -44,10 +44,10 @@ public class QuizzesRepositoryJpa implements QuizzesRepository {
                          WHERE  ua.quiz      = q
                            AND  ua.user      = :user
                            AND  ua.isCorrect = true
-                           AND  ua.createdAt >= :start   
+                           AND  ua.createdAt >= :start
                            AND  ua.createdAt <  :end
                        )
-                ORDER BY q.createdAt DESC,  
+                ORDER BY q.createdAt DESC,
                          q.id        DESC
                 """, Quiz.class)
                 .setParameter("user",  user)
