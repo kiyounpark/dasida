@@ -21,8 +21,9 @@ public class KnowledgeQuizCreationWorkflow {
 
   @Transactional
   public KnowledgeQuizRegistrationResponseDto registerKnowledgeAndGenerateQuizList(String title, String content) {
+    boolean needPushPermission = quizFindService.hasQuizByUser();
     Knowledge knowledge = knowledgeRegistrationService.registerKnowledge(title, content);
     quizAutoGeneratorService.generateQuiz(knowledge, content);
-    return new KnowledgeQuizRegistrationResponseDto(quizFindService.hasQuizByUser());
+    return new KnowledgeQuizRegistrationResponseDto(needPushPermission);
   }
 }
