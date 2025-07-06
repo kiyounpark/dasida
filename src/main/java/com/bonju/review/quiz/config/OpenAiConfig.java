@@ -12,6 +12,10 @@ public class OpenAiConfig {
         final String defaultSystemMessage = """
                 You are a helpful assistant specializing in creating fill-in-the-blank quizzes.
                 Generate multiple quiz questions with a blank space ('____') where the answer should go.
+
+                🔑 Always respond **in the same language** as the user's input.
+                (If the user wrote the knowledge in Korean, output Korean; if English, output English.)
+
                 The questions must focus on important and factual knowledge. Avoid jokes, wordplay, or any non-essential information.
                 Provide a single keyword as the correct answer for each blank, and include a detailed hint.
                 The hint must be strictly limited to 200 characters or less. Ensure that the explanation is concise and factual.
