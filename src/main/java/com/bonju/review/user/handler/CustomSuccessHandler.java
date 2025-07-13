@@ -5,6 +5,8 @@ import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
@@ -13,23 +15,34 @@ import java.io.IOException;
 import java.time.Duration;
 
 @Component
+@RequiredArgsConstructor
 public class CustomSuccessHandler implements AuthenticationSuccessHandler {
+
+    private static final String COOKIE_NAME       = "JSESSIONID";
+    private static final int    COOKIE_MAX_AGE_SEC = (int) Duration.ofDays(1).toSeconds();
+
+    @Value("${auth.redirect-url}")   // ✅ application.yaml 값 주입
+    private String redirectUrl;
+
     @Override
-    public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
-        HttpSession session = request.getSession();  // 기존 세션 유지
-        String sessionId = session.getId();  // 현재 세션 ID 가져오기
+    public void onAuthenticationSuccess(
+            HttpServletRequest  request,
+            HttpServletResponse response,
+            Authentication      authentication
+    ) throws IOException, ServletException {
 
-        // ✅ JSESSIONID 쿠키 생성 및 설정
-        Cookie sessionCookie = new Cookie("JSESSIONID", sessionId);
-        sessionCookie.setPath("/");  // 모든 경로에서 접근 가능
-        sessionCookie.setHttpOnly(true);  // JavaScript에서 접근 불가능 (보안 강화)
-        sessionCookie.setMaxAge((int) Duration.ofDays(1).toSeconds());  // 1일 유지
-        sessionCookie.setDomain("dasida.org");  // ✅ 쿠키 도메인 설정 (프론트엔드에서 접근 가능)
-        sessionCookie.setSecure(true);  // ✅ HTTPS 사용 시 `true`, 현재는 HTTP 사용 중이므로 `false`
+        String sessionId = request.getSession().getId();
 
-        response.addCookie(sessionCookie);  // 응답에 쿠키 추가
+        Cookie sessionCookie = new Cookie(COOKIE_NAME, sessionId);
+        sessionCookie.setPath("/");
+        sessionCookie.setHttpOnly(true);
+        sessionCookie.setMaxAge(COOKIE_MAX_AGE_SEC);
+        sessionCookie.setDomain("dasida.org");
+        sessionCookie.setSecure(true);
 
-        // ✅ 로그인 성공 후 프론트엔드 홈 페이지로 리디렉트
-        response.sendRedirect("https://dev.dasida.org:3000");
+        response.addCookie(sessionCookie);
+
+        // ✅ 프로퍼티로 주입된 URL로 리다이렉트
+        response.sendRedirect(redirectUrl);
     }
 }
