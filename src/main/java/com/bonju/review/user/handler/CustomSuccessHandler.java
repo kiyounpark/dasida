@@ -5,20 +5,23 @@ import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
+import org.springframework.security.web.authentication.RememberMeServices;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
-import java.time.Duration;
 
 @Component
 @RequiredArgsConstructor
+@Slf4j
 public class CustomSuccessHandler implements AuthenticationSuccessHandler {
 
+    private final RememberMeServices rememberMeServices;
+
     private static final String COOKIE_NAME       = "JSESSIONID";
-    private static final int    COOKIE_MAX_AGE_SEC = (int) Duration.ofDays(1).toSeconds();
 
     @Value("${auth.redirect-url}")   // ✅ application.yaml 값 주입
     private String redirectUrl;
@@ -35,11 +38,11 @@ public class CustomSuccessHandler implements AuthenticationSuccessHandler {
         Cookie sessionCookie = new Cookie(COOKIE_NAME, sessionId);
         sessionCookie.setPath("/");
         sessionCookie.setHttpOnly(true);
-        sessionCookie.setMaxAge(COOKIE_MAX_AGE_SEC);
         sessionCookie.setDomain("dasida.org");
         sessionCookie.setSecure(true);
 
         response.addCookie(sessionCookie);
+        rememberMeServices.loginSuccess(request, response, authentication);
 
         // ✅ 프로퍼티로 주입된 URL로 리다이렉트
         response.sendRedirect(redirectUrl);
