@@ -42,7 +42,6 @@ public class CustomSuccessHandler implements AuthenticationSuccessHandler {
         sessionCookie.setSecure(true);
 
         response.addCookie(sessionCookie);
-        rememberMeServices.loginSuccess(request, response, authentication);
 
         // ✅ 프로퍼티로 주입된 URL로 리다이렉트
         response.sendRedirect(redirectUrl);
