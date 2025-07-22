@@ -8,7 +8,8 @@ import org.springframework.http.HttpStatus;
 @RequiredArgsConstructor
 @Getter
 public enum UserErrorCode implements ApiErrorCode {
-  COUNT_FAIL(HttpStatus.INTERNAL_SERVER_ERROR, "전체 유저에 인원수를 파악하다 에러가 발생하였습니다.");
+  COUNT_FAIL(HttpStatus.INTERNAL_SERVER_ERROR, "전체 유저에 인원수를 파악하다 에러가 발생하였습니다."),
+  USER_NOT_FOUND(HttpStatus.UNAUTHORIZED, "유저를 찾지 못하였습니다.");
 
   private final HttpStatus httpStatus;
   private final String message;
