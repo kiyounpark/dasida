@@ -1,6 +1,8 @@
 package com.bonju.review.home.controller;
 
+import com.bonju.review.home.workflow.HomeWorkflow;
 import com.bonju.review.knowledge.dto.DayKnowledgeResponseDto;
+import com.bonju.review.knowledge.service.KnowledgeReadService;
 import com.bonju.review.quiz.dto.DayQuizResponseDto;
 import com.bonju.review.home.dto.HomeResponseDto;
 import com.bonju.review.knowledge.service.knowledge_list.TodayKnowledgeListService;
@@ -17,13 +19,10 @@ import java.util.List;
 @RequiredArgsConstructor
 public class HomeController {
 
-    private final QuizzesService quizzesService;
-    private final TodayKnowledgeListService todayKnowledgeListService;
+    private final HomeWorkflow homeWorkflow;
 
     @GetMapping
     public HomeResponseDto getQuizzesAndKnowledge() {
-        List<DayQuizResponseDto> dayQuizzes = quizzesService.getAllDayQuizzes();
-        List<DayKnowledgeResponseDto> dayKnowledges = todayKnowledgeListService.getAllDayKnowledges();
-        return new HomeResponseDto(dayQuizzes, dayKnowledges);
+        return homeWorkflow.buildHomeResponse();
     }
 }

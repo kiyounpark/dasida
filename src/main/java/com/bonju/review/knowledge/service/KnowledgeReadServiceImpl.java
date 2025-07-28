@@ -39,4 +39,16 @@ public class KnowledgeReadServiceImpl implements KnowledgeReadService{
       throw new KnowledgeException(KnowledgeErrorCode.RETRIEVE_FAILED, e);
     }
   }
+
+  @Override
+  @Transactional(readOnly = true)
+  public boolean hasRegisteredKnowledge() {
+    User user = userService.findUser();
+
+    try {
+      return knowledgeReadRepository.hasRegisteredKnowledge(user);
+    } catch (DataAccessException e) {
+      throw new KnowledgeException(KnowledgeErrorCode.RETRIEVE_FAILED, e);
+    }
+  }
 }

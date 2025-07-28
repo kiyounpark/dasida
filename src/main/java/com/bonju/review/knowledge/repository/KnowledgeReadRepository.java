@@ -8,4 +8,6 @@ import java.util.Optional;
 public interface KnowledgeReadRepository {
 
   Optional<Knowledge> findKnowledge(User user, Long id);
+
+  boolean hasRegisteredKnowledge(User user);
 }
