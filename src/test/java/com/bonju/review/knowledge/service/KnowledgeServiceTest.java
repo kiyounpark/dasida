@@ -102,6 +102,56 @@ class KnowledgeServiceTest {
     verify(knowledgeReadRepository).findKnowledge(user, id);
   }
 
+  @DisplayName("유저가 지식을 하나라도 등록했다면 true를 반환한다")
+  @Test
+  void hasRegisteredKnowledge_returns_true_when_exists() {
+    // given
+    User user = createUser();
+    given(userService.findUser()).willReturn(user);
+    given(knowledgeReadRepository.hasRegisteredKnowledge(user)).willReturn(true);
+
+    // when
+    boolean actual = knowledgeReadService.hasRegisteredKnowledge();
+
+    // then
+    assertThat(actual).isTrue();
+    verify(knowledgeReadRepository).hasRegisteredKnowledge(user);
+  }
+
+  @DisplayName("유저가 지식을 하나도 등록하지 않았다면 false를 반환한다")
+  @Test
+  void hasRegisteredKnowledge_returns_false_when_empty() {
+    // given
+    User user = createUser();
+    given(userService.findUser()).willReturn(user);
+    given(knowledgeReadRepository.hasRegisteredKnowledge(user)).willReturn(false);
+
+    // when
+    boolean actual = knowledgeReadService.hasRegisteredKnowledge();
+
+    // then
+    assertThat(actual).isFalse();
+    verify(knowledgeReadRepository).hasRegisteredKnowledge(user);
+  }
+
+  @DisplayName("Repository에서 DataAccessException이 발생하면 KnowledgeException(RETRIEVE_FAILED)을 던진다")
+  @Test
+  void hasRegisteredKnowledge_throws_knowledge_exception_when_repository_fails() {
+    // given
+    User user = createUser();
+    given(userService.findUser()).willReturn(user);
+    given(knowledgeReadRepository.hasRegisteredKnowledge(user))
+            .willThrow(new DataAccessException("DB 예외 발생") {});
+
+    // when & then
+    assertThatThrownBy(() -> knowledgeReadService.hasRegisteredKnowledge())
+            .isInstanceOf(KnowledgeException.class)
+            .hasMessage(KnowledgeErrorCode.RETRIEVE_FAILED.getMessage())
+            .hasCauseInstanceOf(DataAccessException.class);
+
+    verify(knowledgeReadRepository).hasRegisteredKnowledge(user);
+  }
+
   private User createUser() {
 
     return User.builder()

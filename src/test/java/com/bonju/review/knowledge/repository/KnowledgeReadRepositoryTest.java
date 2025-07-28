@@ -83,6 +83,35 @@ class KnowledgeReadRepositoryTest {
     assertThat(optionalKnowledge).isEmpty();
   }
 
+  @DisplayName("지식을 하나도 등록하지 않았다면 hasRegisteredKnowledge는 false를 반환한다")
+  @Test
+  void hasRegisteredKnowledge_returns_false_when_empty() {
+    // given
+    User mockUser = registerMockUser("1", "박기윤");
+    clearEntityManager();
+
+    // when
+    boolean actual = knowledgeReadRepository.hasRegisteredKnowledge(mockUser);
+
+    // then
+    assertThat(actual).isFalse();
+  }
+
+  @DisplayName("지식을 하나라도 등록했다면 hasRegisteredKnowledge는 true를 반환한다")
+  @Test
+  void hasRegisteredKnowledge_returns_true_when_exists() {
+    // given
+    User mockUser = registerMockUser("1", "박기윤");
+    registerMockKnowledge(mockUser);
+    clearEntityManager();
+
+    // when
+    boolean actual = knowledgeReadRepository.hasRegisteredKnowledge(mockUser);
+
+    // then
+    assertThat(actual).isTrue();
+  }
+
 
   // ---- 헬퍼 메서드 ----
   private void clearEntityManager() {

@@ -10,6 +10,7 @@ import java.util.List;
 @Getter
 @RequiredArgsConstructor
 public class HomeResponseDto {
+    private final boolean hasRegisteredKnowledge;
     private final List<DayQuizResponseDto> quizzes;
     private final List<DayKnowledgeResponseDto> knowledges;
 }

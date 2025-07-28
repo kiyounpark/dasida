@@ -5,4 +5,6 @@ import com.bonju.review.knowledge.dto.KnowledgeDetailResponseDto;
 public interface KnowledgeReadService {
 
   KnowledgeDetailResponseDto getKnowledgeById(Long id);
+
+  boolean hasRegisteredKnowledge();
 }
