@@ -27,7 +27,6 @@ public class RememberMeConfig {
 
     rememberMeServices.setAlwaysRemember(true);
     rememberMeServices.setTokenValiditySeconds(VALIDITY_SEC);
-    rememberMeServices.setCookieDomain("dasida.org");
     rememberMeServices.setUseSecureCookie(true);
     return rememberMeServices;
   }

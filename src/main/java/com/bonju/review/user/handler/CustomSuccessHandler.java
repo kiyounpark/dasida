@@ -1,7 +1,6 @@
 package com.bonju.review.user.handler;
 
 import jakarta.servlet.ServletException;
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -32,16 +31,6 @@ public class CustomSuccessHandler implements AuthenticationSuccessHandler {
             HttpServletResponse response,
             Authentication      authentication
     ) throws IOException, ServletException {
-
-        String sessionId = request.getSession().getId();
-
-        Cookie sessionCookie = new Cookie(COOKIE_NAME, sessionId);
-        sessionCookie.setPath("/");
-        sessionCookie.setHttpOnly(true);
-        sessionCookie.setDomain("dasida.org");
-        sessionCookie.setSecure(true);
-
-        response.addCookie(sessionCookie);
 
         // ✅ 프로퍼티로 주입된 URL로 리다이렉트
         response.sendRedirect(redirectUrl);
