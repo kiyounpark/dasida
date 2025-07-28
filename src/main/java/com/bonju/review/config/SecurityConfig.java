@@ -1,6 +1,7 @@
 package com.bonju.review.config;
 
 import com.bonju.review.user.service.CustomOAuth2UserService;
+
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -23,48 +24,28 @@ public class SecurityConfig {
   private final CustomOAuth2UserService customOAuth2UserService;
   private final RememberMeServices rememberMeServices;
 
-
   @Bean
   public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
     http
-
-            .csrf(AbstractHttpConfigurer::disable) // CSRF 보호 비활성화
+            .securityContext(ctx -> ctx.requireExplicitSave(false))
+            .csrf(AbstractHttpConfigurer::disable)
             .cors(Customizer.withDefaults())
-            // 1. 요청 권한 설정
-            .authorizeHttpRequests(authorize -> authorize
-                    .requestMatchers("/health").permitAll()
-                    .requestMatchers("/login-enabled").permitAll()
-                    .requestMatchers("/h2-console/**").permitAll()
-                    .requestMatchers("/oauth2/authorization/**").permitAll()
-                    .requestMatchers("/slack-test", "/slack-test/**").permitAll()
-                    .requestMatchers("/swagger-ui/**",   // Swagger UI 경로
-                            "/v3/api-docs/**",  // OpenAPI 문서 경로
-                            "/swagger-resources/**",
-                            "/webjars/**"       // Swagger 관련 정적 리소스
-                    ).permitAll()
+            .authorizeHttpRequests(auth -> auth
+                    .requestMatchers("/health", "/login-enabled", "/h2-console/**",
+                            "/oauth2/authorization/**", "/slack-test", "/slack-test/**",
+                            "/swagger-ui/**", "/v3/api-docs/**", "/swagger-resources/**", "/webjars/**")
+                    .permitAll()
                     .anyRequest().authenticated()
             )
-
-            .headers(headers -> headers
-                    .frameOptions(HeadersConfigurer.FrameOptionsConfig::disable)
+            .headers(h -> h.frameOptions(HeadersConfigurer.FrameOptionsConfig::disable))
+            .exceptionHandling(ex -> ex.authenticationEntryPoint((req, res, e) -> {
+              res.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+              res.setContentType("application/json");
+              res.getWriter().write("{\"message\": \"로그인이 필요합니다.\"}");
+            }))
+            .rememberMe(rem -> rem.rememberMeServices(rememberMeServices)
             )
-
-            .exceptionHandling(exception -> exception
-                    .authenticationEntryPoint((request, response, authException) -> {
-                      response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-                      response.setContentType("application/json");
-                      response.getWriter().write("{\"message\": \"로그인이 필요합니다.\"}");
-                    })
-            )
-            .rememberMe(rem -> rem
-                    .rememberMeServices(rememberMeServices)
-            )
-
-            // 4. OAuth2 로그인은 그대로 유지(선택 사항)
-            .oauth2Login(oauth2 -> oauth2
-                    .successHandler(successHandler)
-                    .failureHandler(failureHandler)
-            );
+            .oauth2Login(oauth2 -> oauth2.successHandler(successHandler).failureHandler(failureHandler));
 
     return http.build();
   }
