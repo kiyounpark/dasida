@@ -8,12 +8,14 @@ import com.bonju.review.knowledge.service.knowledge_list.TodayKnowledgeListServi
 import com.bonju.review.quiz.dto.DayQuizResponseDto;
 import com.bonju.review.quiz.service.quizzes.QuizzesService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 @Transactional
 @RequiredArgsConstructor
+@Component
 public class HomeWorkflow {
 
   private final QuizzesService quizzesService;
