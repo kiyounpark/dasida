@@ -13,6 +13,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 @Component
 @RequiredArgsConstructor
@@ -27,16 +28,17 @@ public class QuizNotificationScheduler {
   private final QuizTodayService quizTodayService;
   private final DeviceTokenService deviceTokenService;
 
-  @Transactional
-  @Scheduled(cron = CRON_EVERY_DAY_07_30, zone = ASIA_SEOUL)
+//  @Scheduled(cron = CRON_EVERY_DAY_07_30, zone = ASIA_SEOUL)
+  @Scheduled(cron = "0 0/1 * * * *", zone = ASIA_SEOUL)  // 매 1분마다
+
   public void pushTodayQuizNotifications() {
     try {
       List<Quiz> todayQuizList = quizTodayService.findTodayQuizList();
       for (Quiz quiz : todayQuizList) {
-        User user = quiz.getUser();
-        DeviceToken deviceToken = deviceTokenService.findDeviceToken(user);
+        deviceTokenService.findOptionalDeviceToken(quiz.getUser())
+                .ifPresent(deviceToken ->
+                        fcmService.pushToToken(deviceToken.getToken(), NOTIFICATION_TITLE, quiz.getQuestion()));
 
-        fcmService.pushToToken(deviceToken.getToken(), NOTIFICATION_TITLE, quiz.getQuestion());
       }
     } catch (Exception e) {
       log.error("알림 전송 중 오류가 발생하였습니다." + e);
