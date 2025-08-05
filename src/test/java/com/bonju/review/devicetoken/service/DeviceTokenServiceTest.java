@@ -34,12 +34,13 @@ class DeviceTokenServiceTest {
 
   private static final String TOKEN = "AAA.BBB.CCC";
 
+  /* ---------- registerDeviceToken() ---------- */
+
   @Nested
   @DisplayName("registerDeviceToken() 동작 검증")
   class RegisterDeviceTokenTests {
 
-    @Test
-    @DisplayName("정상: 토큰을 저장한다")
+    @Test @DisplayName("정상: 토큰을 저장한다")
     void savesToken() {
       // given
       User user = User.builder().kakaoId("123").nickname("tester").build();
@@ -59,68 +60,60 @@ class DeviceTokenServiceTest {
       assertThat(saved.getToken()).isEqualTo(TOKEN);
     }
 
-    @Test
-    @DisplayName("DB 예외: DeviceTokenException(DB_FAIL)로 변환된다")
+    @Test @DisplayName("DB 예외: DeviceTokenException(DB_FAIL)로 변환된다")
     void dbErrorThrowsException() {
-      // given
       User user = User.builder().build();
       given(userService.findUser()).willReturn(user);
       given(deviceTokenRepository.save(any(DeviceToken.class)))
               .willThrow(new DataAccessResourceFailureException("boom"));
 
-      // when & then
       assertThatThrownBy(() -> deviceTokenService.registerDeviceToken(TOKEN))
               .isInstanceOf(DeviceTokenException.class)
               .hasFieldOrPropertyWithValue("errorCode", DeviceTokenErrorCode.DB_FAIL);
     }
   }
 
+
+
+  /* ---------- findOptionalDeviceToken() ---------- */
+
   @Nested
-  @DisplayName("findDeviceToken(User) 동작 검증")
-  class FindDeviceTokenTests {
+  @DisplayName("findOptionalDeviceToken(User) 동작 검증")
+  class FindOptionalDeviceTokenTests {
 
-    @Test
-    @DisplayName("성공: 주어진 사용자의 토큰을 반환한다")
-    void returnsEntity() {
-      // given
-      User user = User.builder().kakaoId("456").nickname("finder").build();
+    @Test @DisplayName("성공: Optional.of(entity) 반환")
+    void returnsPresent() {
+      User user = User.builder().kakaoId("X").nickname("opt").build();
       DeviceToken dt = DeviceToken.builder().user(user).token(TOKEN).build();
-      given(deviceTokenRepository.findByUser(user))
-              .willReturn(Optional.of(dt));
+      given(deviceTokenRepository.findByUser(user)).willReturn(Optional.of(dt));
 
-      // when
-      DeviceToken result = deviceTokenService.findDeviceToken(user);
+      Optional<DeviceToken> result =
+              deviceTokenService.findOptionalDeviceToken(user);
 
-      // then
-      assertThat(result).isSameAs(dt);
+      assertThat(result).contains(dt);
     }
 
-    @Test
-    @DisplayName("토큰 없음: DeviceTokenException(NOT_FOUND) 발생")
-    void notFoundThrowsException() {
-      // given
+    @Test @DisplayName("토큰 없음: Optional.empty() 반환")
+    void returnsEmptyWhenNotFound() {
       User user = User.builder().build();
-      given(deviceTokenRepository.findByUser(user))
-              .willReturn(Optional.empty());
+      given(deviceTokenRepository.findByUser(user)).willReturn(Optional.empty());
 
-      // when & then
-      assertThatThrownBy(() -> deviceTokenService.findDeviceToken(user))
-              .isInstanceOf(DeviceTokenException.class)
-              .hasFieldOrPropertyWithValue("errorCode", DeviceTokenErrorCode.NOT_FOUND);
+      Optional<DeviceToken> result =
+              deviceTokenService.findOptionalDeviceToken(user);
+
+      assertThat(result).isEmpty();
     }
 
-    @Test
-    @DisplayName("DB 예외: DeviceTokenException(DB_FAIL)로 래핑된다")
-    void dbErrorThrowsException() {
-      // given
+    @Test @DisplayName("DB 예외: Optional.empty() 반환")
+    void returnsEmptyOnDbError() {
       User user = User.builder().build();
       given(deviceTokenRepository.findByUser(user))
               .willThrow(new DataAccessResourceFailureException("boom"));
 
-      // when & then
-      assertThatThrownBy(() -> deviceTokenService.findDeviceToken(user))
-              .isInstanceOf(DeviceTokenException.class)
-              .hasFieldOrPropertyWithValue("errorCode", DeviceTokenErrorCode.DB_FAIL);
+      Optional<DeviceToken> result =
+              deviceTokenService.findOptionalDeviceToken(user);
+
+      assertThat(result).isEmpty();
     }
   }
 }

@@ -7,12 +7,16 @@ import com.bonju.review.devicetoken.repository.DeviceTokenRepository;
 import com.bonju.review.user.entity.User;
 import com.bonju.review.user.service.UserService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Optional;
+
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class DeviceTokenService {
 
   private final UserService userService;
@@ -36,14 +40,12 @@ public class DeviceTokenService {
   }
 
   @Transactional(readOnly = true)
-  public DeviceToken findDeviceToken(User user) {
+  public Optional<DeviceToken> findOptionalDeviceToken(User user) {
     try {
-      return deviceTokenRepository.findByUser(user)
-              .orElseThrow(() ->
-                      new DeviceTokenException(DeviceTokenErrorCode.NOT_FOUND)
-              );
+      return deviceTokenRepository.findByUser(user);
     } catch (DataAccessException e) {
-      throw new DeviceTokenException(DeviceTokenErrorCode.DB_FAIL, e);
+      log.error("토큰 조회 DB 오류", e);
+      return Optional.empty();
     }
   }
 }
