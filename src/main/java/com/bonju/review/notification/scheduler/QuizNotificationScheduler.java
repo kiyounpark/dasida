@@ -28,9 +28,7 @@ public class QuizNotificationScheduler {
   private final QuizTodayService quizTodayService;
   private final DeviceTokenService deviceTokenService;
 
-//  @Scheduled(cron = CRON_EVERY_DAY_07_30, zone = ASIA_SEOUL)
-  @Scheduled(cron = "0 0/1 * * * *", zone = ASIA_SEOUL)  // 매 1분마다
-
+  @Scheduled(cron = CRON_EVERY_DAY_07_30, zone = ASIA_SEOUL)
   public void pushTodayQuizNotifications() {
     try {
       List<Quiz> todayQuizList = quizTodayService.findTodayQuizList();
