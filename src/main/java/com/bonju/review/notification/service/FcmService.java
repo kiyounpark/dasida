@@ -26,6 +26,7 @@ public class FcmService {
     try {
       return firebaseMessaging.send(msg);
     } catch (Exception e) {
+      log.error("[FCM] pushToToken() 실패 → token={}, title={}, body={}", token, title, body, e);
       throw new FcmException(FcmErrorCode.PUSH_FAILED, e);
     }
   }
