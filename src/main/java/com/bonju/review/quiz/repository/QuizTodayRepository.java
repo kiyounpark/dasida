@@ -2,7 +2,6 @@ package com.bonju.review.quiz.repository;
 
 import com.bonju.review.quiz.entity.Quiz;
 import jakarta.persistence.EntityManager;
-import jakarta.persistence.PersistenceContext;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
@@ -20,7 +19,6 @@ import java.util.List;
 @RequiredArgsConstructor
 public class QuizTodayRepository {
 
-  @PersistenceContext
   private final EntityManager em;
 
   /** 0‧3‧7‧30 일차 + 미풀이 퀴즈 중
