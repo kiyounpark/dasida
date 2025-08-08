@@ -21,14 +21,16 @@ import java.util.Optional;
 public class QuizNotificationScheduler {
 
   public static final String NOTIFICATION_TITLE = "다시다";
-  private static final String CRON_EVERY_DAY_07_30 = "0 30 7 * * *";
+//  private static final String CRON_EVERY_DAY_07_30 = "0 30 7 * * *";
+  private static final String CRON_EVERY_MINUTE = "0 * * * * *";
   public static final String ASIA_SEOUL = "Asia/Seoul";
 
   private final FcmService fcmService;
   private final QuizTodayService quizTodayService;
   private final DeviceTokenService deviceTokenService;
 
-  @Scheduled(cron = CRON_EVERY_DAY_07_30, zone = ASIA_SEOUL)
+//  @Scheduled(cron = CRON_EVERY_DAY_07_30, zone = ASIA_SEOUL)
+  @Scheduled(cron = CRON_EVERY_MINUTE, zone = ASIA_SEOUL)
   public void pushTodayQuizNotifications() {
     try {
       List<Quiz> todayQuizList = quizTodayService.findTodayQuizList();
