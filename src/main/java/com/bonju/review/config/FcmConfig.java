@@ -4,6 +4,7 @@ import com.google.auth.oauth2.GoogleCredentials;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
 import com.google.firebase.messaging.FirebaseMessaging;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -12,6 +13,7 @@ import org.springframework.core.io.Resource;
 import java.io.IOException;
 
 @Configuration
+@Slf4j
 public class FcmConfig {
 
   /** service-account 경로를 application.yml 에서 주입 */
@@ -20,16 +22,22 @@ public class FcmConfig {
 
   @Bean
   public FirebaseApp firebaseApp() throws IOException {
-    if(FirebaseApp.getApps().isEmpty()){
+    if (FirebaseApp.getApps().isEmpty()) {
+      log.info("[FCM] Initializing FirebaseApp with credentials resource={}", credentials);
       try (var in = credentials.getInputStream()) {
         FirebaseOptions opts = FirebaseOptions.builder()
                 .setCredentials(GoogleCredentials.fromStream(in))
                 .build();
-        return FirebaseApp.initializeApp(opts);
+        FirebaseApp app = FirebaseApp.initializeApp(opts);
+        log.info("[FCM] FirebaseApp initialized: name={}", app.getName());
+        return app;
       }
     }
-    return FirebaseApp.getInstance();
+    FirebaseApp app = FirebaseApp.getInstance();
+    log.info("[FCM] FirebaseApp already exists: name={}", app.getName());
+    return app;
   }
+
 
   @Bean
   public FirebaseMessaging firebaseMessaging(FirebaseApp app) {
