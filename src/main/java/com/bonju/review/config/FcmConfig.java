@@ -20,21 +20,21 @@ public class FcmConfig {
   @Value("${firebase.credentials}")
   private Resource credentials;
 
+  // FcmConfig.java (@Slf4j)
   @Bean
   public FirebaseApp firebaseApp() throws IOException {
     if (FirebaseApp.getApps().isEmpty()) {
-      log.info("[FCM] Initializing FirebaseApp with credentials resource={}", credentials);
       try (var in = credentials.getInputStream()) {
         FirebaseOptions opts = FirebaseOptions.builder()
                 .setCredentials(GoogleCredentials.fromStream(in))
                 .build();
         FirebaseApp app = FirebaseApp.initializeApp(opts);
-        log.info("[FCM] FirebaseApp initialized: name={}", app.getName());
+        log.info("[FCM] Firebase projectId={}", app.getOptions().getProjectId());
         return app;
       }
     }
     FirebaseApp app = FirebaseApp.getInstance();
-    log.info("[FCM] FirebaseApp already exists: name={}", app.getName());
+    log.info("[FCM] Firebase projectId={}", app.getOptions().getProjectId());
     return app;
   }
 
