@@ -24,12 +24,19 @@ public class FcmService {
             .putHeader("Urgency", "high")
             .build();
 
+    ApnsConfig apnsConfig = ApnsConfig.builder()
+            .setAps(Aps.builder()
+                    .setAlert(ApsAlert.builder().setTitle(title).setBody(body).build())
+                    .build())
+            .build();
+
     Message msg = Message.builder()
             .setToken(token)
             // 기존 알림도 유지 (Android/Chrome 호환)
             .setNotification(Notification.builder().setTitle(title).setBody(body).build())
             // iOS PWA 안정화용 webpush 블록 추가
             .setWebpushConfig(webpush)
+            .setApnsConfig(apnsConfig)
             .build();
 
     try {
