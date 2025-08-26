@@ -51,11 +51,16 @@ class FcmServiceUnregisteredTest {
     ReflectionTestUtils.setField(quiz, "id", 1L);
 
     when(quizTodayService.findTodayQuizList()).thenReturn(List.of(quiz));
-    when(deviceTokenService.findOptionalDeviceToken(user))
-            .thenReturn(Optional.of(deviceToken), Optional.empty());
 
-    FirebaseMessagingException ex = new FirebaseMessagingException(
-            MessagingErrorCode.UNREGISTERED, "unregistered"){};
+    // 연속 호출: 1회차 present, 2회차 empty
+    when(deviceTokenService.findOptionalDeviceToken(user))
+            .thenReturn(Optional.of(deviceToken))
+            .thenReturn(Optional.empty());
+
+    // final + 생성자 접근 불가 → 목으로 대체
+    FirebaseMessagingException ex = mock(FirebaseMessagingException.class);
+    when(ex.getMessagingErrorCode()).thenReturn(MessagingErrorCode.UNREGISTERED);
+
     doThrow(ex).when(firebaseMessaging).send(any(Message.class));
 
     assertDoesNotThrow(() -> scheduler.pushTodayQuizNotifications());
@@ -64,4 +69,6 @@ class FcmServiceUnregisteredTest {
     verify(deviceTokenService).deleteByToken(tokenStr);
     verify(firebaseMessaging).send(any(Message.class));
   }
+
+
 }
