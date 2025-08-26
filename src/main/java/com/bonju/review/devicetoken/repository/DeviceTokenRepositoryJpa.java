@@ -50,4 +50,11 @@ public class DeviceTokenRepositoryJpa implements DeviceTokenRepository {
     em.persist(token);
     return token;
   }
+
+  @Override
+  public void deleteByToken(String token) {
+    em.createQuery("delete from DeviceToken d where d.token = :token")
+            .setParameter("token", token)
+            .executeUpdate();
+  }
 }
