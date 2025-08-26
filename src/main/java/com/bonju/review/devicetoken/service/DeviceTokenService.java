@@ -48,4 +48,13 @@ public class DeviceTokenService {
       return Optional.empty();
     }
   }
+
+  @Transactional
+  public void deleteByToken(String token) {
+    try {
+      deviceTokenRepository.deleteByToken(token);
+    } catch (DataAccessException e) {
+      log.error("토큰 삭제 DB 오류", e);
+    }
+  }
 }

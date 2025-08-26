@@ -3,6 +3,7 @@ package com.bonju.review.notification.service;
 
 import com.bonju.review.notification.exception.FcmErrorCode;
 import com.bonju.review.notification.exception.FcmException;
+import com.bonju.review.devicetoken.service.DeviceTokenService;
 import com.google.firebase.messaging.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -14,6 +15,7 @@ import org.springframework.stereotype.Service;
 public class FcmService {
 
   private final FirebaseMessaging firebaseMessaging;
+  private final DeviceTokenService deviceTokenService;
 
   public String pushToToken(String token, String title, String body) {
     // iOS PWA(WebPush) 친화 설정
@@ -39,6 +41,10 @@ public class FcmService {
     } catch (FirebaseMessagingException e) {
       log.error("[FCM] FAIL code={} msg={} tokenHash={}",
               e.getMessagingErrorCode(), e.getMessage(), token.hashCode(), e);
+      if (e.getMessagingErrorCode() == MessagingErrorCode.UNREGISTERED) {
+        deviceTokenService.deleteByToken(token);
+        log.info("[FCM] deleted invalid token tokenHash={} ", token.hashCode());
+      }
       throw new FcmException(FcmErrorCode.PUSH_FAILED, e);
     } catch (Exception e) {
       log.error("[FCM] FAIL unexpected tokenHash={}", token.hashCode(), e);

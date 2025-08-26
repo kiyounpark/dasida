@@ -11,4 +11,6 @@ public interface DeviceTokenRepository {
   Optional<DeviceToken> findByUserIdAndToken(User user, String token);
 
   DeviceToken save(DeviceToken token);
+
+  void deleteByToken(String token);
 }
