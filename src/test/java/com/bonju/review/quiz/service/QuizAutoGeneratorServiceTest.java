@@ -64,8 +64,7 @@ class QuizAutoGeneratorServiceTest {
     @DisplayName("AI 호출 결과가 매핑되어 반환된다")
     void shouldReturnParsedQuizzes() {
       // given
-      String content = "지식 내용";
-      Knowledge knowledge = Knowledge.builder().build();
+      Knowledge knowledge = Knowledge.builder().content("지식 내용").build();
       User user = User.builder().build();
       List<QuizCreationData> generatedQuizzes = List.of(
               QuizCreationData.builder().question("Q1").answer("A1").hint("H1").build(),
@@ -82,7 +81,7 @@ class QuizAutoGeneratorServiceTest {
 
       // when
       List<QuizCreationData> result =
-              quizAutoGeneratorService.generateQuiz(knowledge, content);
+              quizAutoGeneratorService.generateQuiz(knowledge);
 
       // then
       assertThat(result).hasSize(3);
@@ -92,8 +91,7 @@ class QuizAutoGeneratorServiceTest {
     @DisplayName("매핑된 QuizCreationData의 필드가 올바르게 반환된다")
     void shouldCorrectlyMapQuizFields() {
       // given
-      String content = "지식 내용";
-      Knowledge knowledge = Knowledge.builder().build();
+      Knowledge knowledge = Knowledge.builder().content("지식 내용").build();
       User user = User.builder().build();
       QuizCreationData dto = QuizCreationData.builder()
               .question("Q1").answer("A1").hint("H1").build();
@@ -107,7 +105,7 @@ class QuizAutoGeneratorServiceTest {
 
       // when
       List<QuizCreationData> result =
-              quizAutoGeneratorService.generateQuiz(knowledge, content);
+              quizAutoGeneratorService.generateQuiz(knowledge);
 
       // then
       QuizCreationData actual = result.getFirst();
@@ -125,8 +123,7 @@ class QuizAutoGeneratorServiceTest {
     @DisplayName("저장 중 DataAccessException 발생 시 QuizException으로 래핑된다")
     void wrapsQuizExceptionOnSaveFailure() {
       // given
-      String content = "지식 내용";
-      Knowledge knowledge = Knowledge.builder().build();
+      Knowledge knowledge = Knowledge.builder().content("지식 내용").build();
       User user = User.builder().build();
       QuizCreationData dto = QuizCreationData.builder()
               .question("Q1").answer("A1").hint("H1").build();
@@ -141,7 +138,7 @@ class QuizAutoGeneratorServiceTest {
 
       // when / then
       assertThatThrownBy(() ->
-              quizAutoGeneratorService.generateQuiz(knowledge, content)
+              quizAutoGeneratorService.generateQuiz(knowledge)
       )
               .isInstanceOf(QuizException.class)
               .extracting("errorCode")

@@ -23,7 +23,7 @@ public class KnowledgeQuizCreationWorkflow {
   public KnowledgeQuizRegistrationResponseDto registerKnowledgeAndGenerateQuizList(String title, String content) {
     boolean needPushPermission = quizFindService.hasQuizByUser();
     Knowledge knowledge = knowledgeRegistrationService.registerKnowledge(title, content);
-    quizAutoGeneratorService.generateQuiz(knowledge, content);
+    quizAutoGeneratorService.generateQuiz(knowledge);
     return new KnowledgeQuizRegistrationResponseDto(needPushPermission);
   }
 }

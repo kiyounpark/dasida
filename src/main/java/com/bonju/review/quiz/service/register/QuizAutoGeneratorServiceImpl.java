@@ -31,9 +31,9 @@ public class QuizAutoGeneratorServiceImpl implements QuizAutoGeneratorService {
 
   @Override
   @Transactional
-  public List<QuizCreationData> generateQuiz(Knowledge knowledge, String content) {
-    List<ImageResource> imageResources = extractImageResources(content);
-    String rawJson = aiClient.generateRawQuizJson(content, imageResources);
+  public List<QuizCreationData> generateQuiz(Knowledge knowledge) {
+    List<ImageResource> imageResources = extractImageResources(knowledge.getContent());
+    String rawJson = aiClient.generateRawQuizJson(knowledge.getContent(), imageResources);
     List<QuizCreationData> creationDataList = quizGenerationMapper.mapFrom(rawJson);
 
     try {
