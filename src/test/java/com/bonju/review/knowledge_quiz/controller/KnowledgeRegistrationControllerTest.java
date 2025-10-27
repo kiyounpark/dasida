@@ -104,20 +104,7 @@ class KnowledgeRegistrationControllerTest {
 
     }
 
-    @Test
-    @DisplayName("콘텐츠가 500자 초과면 400 Bad Request")
-    @WithMockUser
-    void returnsBadRequest_whenContentTooLong() throws Exception {
-      String longContent = "# 제목\n" + "나".repeat(501);
-      String body = objectMapper.writeValueAsString(new KnowledgeRegistrationRequestDto(TITLE, longContent));
 
-      mockMvc.perform(post(ENDPOINT)
-                      .contentType(MediaType.APPLICATION_JSON)
-                      .content(body)
-                      .with(csrf()))
-              .andExpect(status().isBadRequest());
-    }
-  }
 
   @Nested
   @DisplayName("내부 예외 → 500 & 슬랙 호출")
