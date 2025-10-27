@@ -139,7 +139,7 @@ class KnowledgeSearchIntegrationTest {
     Knowledge knowledge = Knowledge.builder()
             .user(user)
             .title(title)
-            .content("지식 내용")
+            .text("지식 내용")
             .createdAt(FIXED_DATE)
             .build();
     em.persist(knowledge);

@@ -47,7 +47,7 @@ class KnowledgeReadRepositoryTest {
     assertThat(optionalKnowledge)
             .hasValueSatisfying(knowledge -> {
               assertThat(knowledge.getTitle()).isEqualTo(KNOWLEDGE_TITLE);
-              assertThat(knowledge.getContent()).isEqualTo(KNOWLEDGE_CONTENT);
+              assertThat(knowledge.getText()).isEqualTo(KNOWLEDGE_CONTENT);
               assertThat(knowledge.getCreatedAt()).isEqualTo(FIXED_TIME);
               assertThat(knowledge.getUser().getNickname()).isEqualTo(nickname);
             });
@@ -131,7 +131,7 @@ class KnowledgeReadRepositoryTest {
     return Knowledge.builder()
             .user(user)
             .title(KNOWLEDGE_TITLE)
-            .content(KNOWLEDGE_CONTENT)
+            .text(KNOWLEDGE_CONTENT)
             .createdAt(FIXED_TIME)
             .build();
   }

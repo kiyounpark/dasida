@@ -45,7 +45,7 @@ class KnowledgeListIntegrationTest {
             Knowledge.builder()
                     .user(user)
                     .title("지식 " + i)
-                    .content("내용 " + i)
+                    .text("내용 " + i)
                     .createdAt(FIXED_CREATED_AT)
                     .build()
     ));

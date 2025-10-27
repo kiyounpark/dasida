@@ -164,7 +164,7 @@ class KnowledgeServiceTest {
     Knowledge knowledge = Knowledge.builder()
             .user(user)
             .title(TITLE)
-            .content(CONTENT)
+            .text(CONTENT)
             .createdAt(FIXED_DATE)
             .build();
     ReflectionTestUtils.setField(knowledge, "id", id);

@@ -53,7 +53,7 @@ class WrongNoteIntegrationTest {
     Knowledge knowledge = Knowledge.builder()
             .user(user)
             .title("산수")
-            .content("2+2 단원")
+            .text("2+2 단원")
             .createdAt(LocalDateTime.now())
             .build();
     em.persist(knowledge);
@@ -124,7 +124,7 @@ class WrongNoteIntegrationTest {
     Knowledge knowledge = Knowledge.builder()
             .user(user)
             .title("산수")
-            .content("2+2 단원")
+            .text("2+2 단원")
             .createdAt(LocalDateTime.now())
             .build();
     em.persist(knowledge);

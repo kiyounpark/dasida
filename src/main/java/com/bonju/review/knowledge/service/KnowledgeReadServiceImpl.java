@@ -31,7 +31,7 @@ public class KnowledgeReadServiceImpl implements KnowledgeReadService{
       return KnowledgeDetailResponseDto.builder()
               .id(knowledge.getId())
               .title(knowledge.getTitle())
-              .content(knowledge.getContent())
+              .content(knowledge.getText())
               .createdAt(knowledge.getCreatedAt())
               .build();
 

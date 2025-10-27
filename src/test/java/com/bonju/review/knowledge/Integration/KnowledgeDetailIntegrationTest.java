@@ -131,7 +131,7 @@ class KnowledgeDetailIntegrationTest {
     return Knowledge.builder()
             .user(user)
             .title(KNOWLEDGE_TITLE)
-            .content(KNOWLEDGE_CONTENT)
+            .text(KNOWLEDGE_CONTENT)
             .createdAt(FIXED_DATE)
             .build();
   }

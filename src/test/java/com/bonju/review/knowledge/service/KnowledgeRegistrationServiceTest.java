@@ -40,7 +40,7 @@ class KnowledgeRegistrationServiceTest {
 
     Knowledge savedKnowledge = Knowledge.builder()
             .title(title)
-            .content(content)
+            .text(content)
             .build();
 
     User user = User.builder().build();
@@ -52,7 +52,7 @@ class KnowledgeRegistrationServiceTest {
 
     // then
     assertThat(result.getTitle()).isEqualTo(title);
-    assertThat(result.getContent()).isEqualTo(content);
+    assertThat(result.getText()).isEqualTo(content);
   }
 
   @Test

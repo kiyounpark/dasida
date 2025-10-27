@@ -128,7 +128,7 @@ class KnowledgeSearchRepositoryTest {
     return Knowledge.builder()
             .user(user)
             .title(title)
-            .content(DEFAULT_CONTENT)
+            .text(DEFAULT_CONTENT)
             .createdAt(fixedDate)
             .build();
   }

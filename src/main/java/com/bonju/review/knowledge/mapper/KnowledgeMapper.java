@@ -14,7 +14,7 @@ public class KnowledgeMapper {
         return  Knowledge.builder()
                 .user(user)
                 .title(knowledgeRegisterRequestDto.getTitle())
-                .content(knowledgeRegisterRequestDto.getContent())
+                .text(knowledgeRegisterRequestDto.getContent())
                 .createdAt(LocalDateTime.now())
                 .build();
 

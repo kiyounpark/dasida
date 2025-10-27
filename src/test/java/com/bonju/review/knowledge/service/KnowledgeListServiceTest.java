@@ -50,7 +50,7 @@ class KnowledgeListServiceTest {
             .mapToObj(i -> Knowledge.builder()
                     .user(USER)
                     .title(TITLE + i)
-                    .content(CONTENT + i)
+                    .text(CONTENT + i)
                     .createdAt(BASE_TIME.plusDays(i))
                     .build())
             .toList();

@@ -50,7 +50,7 @@ class KnowledgeListRepositoryTest {
             .mapToObj(i -> Knowledge.builder()
                     .user(user)
                     .title("지식 " + i)
-                    .content("지식 " + i)
+                    .text("지식 " + i)
                     .createdAt(now.plusDays(i))
                     .build())
             .toList();
@@ -96,7 +96,7 @@ class KnowledgeListRepositoryTest {
             .mapToObj(i -> Knowledge.builder()
                     .user(kiyoon)
                     .createdAt(FIXED_TIME)
-                    .content("지식 " + i)
+                    .text("지식 " + i)
                     .title("제목 " + i)
                     .build()
             ).toList();
@@ -106,7 +106,7 @@ class KnowledgeListRepositoryTest {
             .mapToObj(i -> Knowledge.builder()
                     .user(wonhee)
                     .createdAt(FIXED_TIME)
-                    .content("지식 " + i)
+                    .text("지식 " + i)
                     .title("제목 " + i)
                     .build()
             ).toList();
@@ -152,7 +152,7 @@ class KnowledgeListRepositoryTest {
               .user(wonhee)
               .createdAt(FIXED_TIME)
               .title("제목")
-              .content("내용")
+              .text("내용")
               .build();
 
       em.persist(wonheeKnowledge);
@@ -179,7 +179,7 @@ class KnowledgeListRepositoryTest {
             .user(user)
             .createdAt(FIXED_TIME)
             .title("제목")
-            .content("내용")
+            .text("내용")
             .build();
 
     em.persist(user);

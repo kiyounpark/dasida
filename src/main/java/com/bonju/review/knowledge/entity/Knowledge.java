@@ -25,15 +25,15 @@ public class Knowledge {
     private String title;       // 예: "영어 단어", "수학 공식" 등
 
     @Lob
-    private String content; // 예: "토익 대비 단어 모음"
+    private String text; // 예: "토익 대비 단어 모음"
 
     private LocalDateTime createdAt;
 
     @Builder
-    private Knowledge(User user ,String title, String content, LocalDateTime createdAt) {
+    private Knowledge(User user , String title, String text, LocalDateTime createdAt) {
         this.user = user;
         this.title = title;
-        this.content = content;
+        this.text = text;
         this.createdAt = createdAt;
     }
 }

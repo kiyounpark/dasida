@@ -28,7 +28,7 @@ public class KnowledgeRegistrationServiceImpl implements KnowledgeRegistrationSe
       Knowledge knowledge = Knowledge.builder()
               .user(user)
               .title(title)
-              .content(content)
+              .text(content)
               .createdAt(LocalDateTime.now())
               .build();
       repository.save(knowledge);

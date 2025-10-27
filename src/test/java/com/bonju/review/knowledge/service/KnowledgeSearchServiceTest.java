@@ -143,7 +143,7 @@ class KnowledgeSearchServiceTest {
     return Knowledge.builder()
             .user(user)
             .title(title)
-            .content("내용")
+            .text("내용")
             .createdAt(FIXED_DATE)
             .build();
   }
