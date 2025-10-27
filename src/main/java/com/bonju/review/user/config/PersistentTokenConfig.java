@@ -16,7 +16,6 @@ public class PersistentTokenConfig {
   public PersistentTokenRepository tokenRepoLocal(DataSource datasource) {
     JdbcTokenRepositoryImpl tokenRepository = new JdbcTokenRepositoryImpl();
     tokenRepository.setDataSource(datasource);
-    tokenRepository.setCreateTableOnStartup(true);
     return tokenRepository;
   }
 
