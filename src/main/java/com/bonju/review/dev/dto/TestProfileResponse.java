@@ -7,6 +7,7 @@ public record TestProfileResponse(
     String nickname,
     String email,
     String profileImageUrl,
+    String status,
     LocalDateTime createdAt
 ) {
 }
