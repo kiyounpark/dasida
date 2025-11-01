@@ -45,4 +45,5 @@ application-*.yml
 
 !application-test.yml
 
-src/main/resources/logback-spring.xmlsrc/main/resources/firebase/*.json
+src/main/resources/logback-spring.xml
+src/main/resources/firebase/*.json
