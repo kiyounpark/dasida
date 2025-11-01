@@ -1,5 +1,6 @@
 package com.bonju.review.knowledge_quiz.controller;
 
+import com.bonju.review.knowledge.dto.KnowledgeRegisterRequestDto;
 import com.bonju.review.knowledge.exception.KnowledgeException;
 import com.bonju.review.knowledge_quiz.dto.KnowledgeQuizRegistrationResponseDto;
 import com.bonju.review.knowledge_quiz.workflow.KnowledgeQuizCreationWorkflow;
@@ -20,12 +21,13 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.util.List;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.verify;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.times;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -37,6 +39,13 @@ class KnowledgeRegistrationControllerTest {
   private static final String ENDPOINT = "/knowledge";
   private static final String TITLE    = "테스트 제목";
   private static final String CONTENT  = "###테스트 내용";
+
+  private static final KnowledgeRegistrationRequestDto REQUEST_BODY =
+          new KnowledgeRegistrationRequestDto(
+                  TITLE,
+                  CONTENT,
+                  List.of("https://cdn.test/knowledge-image.png")
+          );
 
   @Autowired MockMvc mockMvc;
   @Autowired ObjectMapper objectMapper;
@@ -53,10 +62,10 @@ class KnowledgeRegistrationControllerTest {
     KnowledgeQuizRegistrationResponseDto knowledgeQuizRegistrationResponseDto =
             new KnowledgeQuizRegistrationResponseDto(true);
 
-    given(workflow.registerKnowledgeAndGenerateQuizList(anyString(), anyString()))
+    given(workflow.registerKnowledgeAndGenerateQuizList(any(KnowledgeRegisterRequestDto.class)))
             .willReturn(knowledgeQuizRegistrationResponseDto);
 
-    String body = objectMapper.writeValueAsString(new KnowledgeRegistrationRequestDto(TITLE, CONTENT));
+    String body = objectMapper.writeValueAsString(REQUEST_BODY);
 
     // when
     String response = mockMvc.perform(post(ENDPOINT)
@@ -81,7 +90,9 @@ class KnowledgeRegistrationControllerTest {
     @DisplayName("타이틀이 공백이면 400 Bad Request")
     @WithMockUser
     void returnsBadRequest_whenTitleBlank() throws Exception {
-      String body = objectMapper.writeValueAsString(new KnowledgeRegistrationRequestDto(" ", CONTENT));
+      String body = objectMapper.writeValueAsString(
+              new KnowledgeRegistrationRequestDto(" ", CONTENT, REQUEST_BODY.images())
+      );
 
       mockMvc.perform(post(ENDPOINT)
                       .contentType(MediaType.APPLICATION_JSON)
@@ -94,7 +105,9 @@ class KnowledgeRegistrationControllerTest {
     @DisplayName("콘텐츠가 공백이면 400 Bad Request")
     @WithMockUser
     void returnsBadRequest_whenContentBlank() throws Exception {
-      String body = objectMapper.writeValueAsString(new KnowledgeRegistrationRequestDto(TITLE, " "));
+      String body = objectMapper.writeValueAsString(
+              new KnowledgeRegistrationRequestDto(TITLE, " ", REQUEST_BODY.images())
+      );
 
       mockMvc.perform(post(ENDPOINT)
                       .contentType(MediaType.APPLICATION_JSON)
@@ -119,14 +132,13 @@ class KnowledgeRegistrationControllerTest {
               KnowledgeErrorCode.REGISTER_FAILED,
               new RuntimeException("DB down")
       );
-      given(workflow.registerKnowledgeAndGenerateQuizList(anyString(), anyString()))
+      given(workflow.registerKnowledgeAndGenerateQuizList(any(KnowledgeRegisterRequestDto.class)))
               .willThrow(ex);
 
       given(slackErrorMessageFactory.createErrorMessage(any(), any()))
               .willReturn("dummy slack message");
 
-      String body = objectMapper.writeValueAsString(
-              new KnowledgeRegistrationRequestDto(TITLE, CONTENT));
+      String body = objectMapper.writeValueAsString(REQUEST_BODY);
 
       // when
       String response = mockMvc.perform(post(ENDPOINT)
@@ -155,14 +167,13 @@ class KnowledgeRegistrationControllerTest {
               QuizErrorCode.QUIZ_SAVE_FAILED,
               new RuntimeException("insert fail")
       );
-      given(workflow.registerKnowledgeAndGenerateQuizList(anyString(), anyString()))
+      given(workflow.registerKnowledgeAndGenerateQuizList(any(KnowledgeRegisterRequestDto.class)))
               .willThrow(ex);
 
       given(slackErrorMessageFactory.createErrorMessage(any(), any()))
               .willReturn("dummy slack message");
 
-      String body = objectMapper.writeValueAsString(
-              new KnowledgeRegistrationRequestDto(TITLE, CONTENT));
+      String body = objectMapper.writeValueAsString(REQUEST_BODY);
 
       // when
       String response = mockMvc.perform(post(ENDPOINT)

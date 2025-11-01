@@ -1,5 +1,6 @@
 package com.bonju.review.knowledge_quiz.workflow;
 
+import com.bonju.review.knowledge.dto.KnowledgeRegisterRequestDto;
 import com.bonju.review.knowledge.entity.Knowledge;
 import com.bonju.review.knowledge.service.KnowledgeRegistrationService;
 import com.bonju.review.knowledge_quiz.dto.KnowledgeQuizRegistrationResponseDto;
@@ -9,20 +10,20 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-
 @Service
 @RequiredArgsConstructor
 public class KnowledgeQuizCreationWorkflow {
 
   private final KnowledgeRegistrationService knowledgeRegistrationService;
   private final QuizAutoGeneratorService quizAutoGeneratorService;
-  private final QuizFindService  quizFindService;
-
+  private final QuizFindService quizFindService;
 
   @Transactional
-  public KnowledgeQuizRegistrationResponseDto registerKnowledgeAndGenerateQuizList(String title, String content) {
+  public KnowledgeQuizRegistrationResponseDto registerKnowledgeAndGenerateQuizList(
+          KnowledgeRegisterRequestDto knowledgeRegisterRequestDto
+  ) {
     boolean needPushPermission = quizFindService.hasQuizByUser();
-    Knowledge knowledge = knowledgeRegistrationService.registerKnowledge(title, content);
+    Knowledge knowledge = knowledgeRegistrationService.registerKnowledge(knowledgeRegisterRequestDto);
     quizAutoGeneratorService.generateQuiz(knowledge);
     return new KnowledgeQuizRegistrationResponseDto(needPushPermission);
   }
