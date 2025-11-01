@@ -21,11 +21,12 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -60,7 +61,11 @@ class KnowledgeRegistrationIntegrationTest {
         """);
 
     String request = objectMapper.writeValueAsString(
-            new KnowledgeRegistrationRequestDto("제목", "본문")
+            new KnowledgeRegistrationRequestDto(
+                    "제목",
+                    "본문",
+                    List.of("https://cdn.test/knowledge-image.png")
+            )
     );
 
     String response = mockMvc.perform(post(ENDPOINT)
@@ -98,7 +103,12 @@ class KnowledgeRegistrationIntegrationTest {
         """);
 
     String req = objectMapper.writeValueAsString(
-            new KnowledgeRegistrationRequestDto("제목", "본문"));
+            new KnowledgeRegistrationRequestDto(
+                    "제목",
+                    "본문",
+                    List.of("https://cdn.test/knowledge-image.png")
+            )
+    );
 
     String res = mockMvc.perform(post(ENDPOINT)
                     .contentType(MediaType.APPLICATION_JSON)
@@ -121,7 +131,13 @@ class KnowledgeRegistrationIntegrationTest {
   void quizException_rollbackAll() throws Exception {
     given(aiClient.generateRawQuizJson(any(), any())).willReturn("malformed json");
 
-    String req = objectMapper.writeValueAsString(new KnowledgeRegistrationRequestDto("제목", "본문"));
+    String req = objectMapper.writeValueAsString(
+            new KnowledgeRegistrationRequestDto(
+                    "제목",
+                    "본문",
+                    List.of("https://cdn.test/knowledge-image.png")
+            )
+    );
 
     String body = mockMvc.perform(post(ENDPOINT)
                     .contentType(MediaType.APPLICATION_JSON)

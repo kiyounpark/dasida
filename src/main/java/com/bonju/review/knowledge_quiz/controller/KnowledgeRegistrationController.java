@@ -20,9 +20,8 @@ public class KnowledgeRegistrationController {
   public ResponseEntity<KnowledgeQuizRegistrationResponseDto> register(
           @RequestBody @Valid KnowledgeRegisterRequestDto req
   ) {
-    // 워크플로우 메서드가 KnowledgeQuizRegistrationResponseDto 를 반환하도록 변경했다고 가정
     KnowledgeQuizRegistrationResponseDto dto =
-            workflow.registerKnowledgeAndGenerateQuizList(req.getTitle(), req.getText());
+            workflow.registerKnowledgeAndGenerateQuizList(req);
 
     // 201 Created 상태로 응답
     return ResponseEntity

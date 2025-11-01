@@ -8,6 +8,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -29,11 +31,36 @@ public class Knowledge {
 
     private LocalDateTime createdAt;
 
+    @OneToMany(mappedBy = "knowledge", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<KnowledgeImage> knowledgeImages = new ArrayList<>();
+
     @Builder
-    private Knowledge(User user , String title, String text, LocalDateTime createdAt) {
+    private Knowledge(User user, String title, String text, LocalDateTime createdAt, List<KnowledgeImage> knowledgeImages) {
         this.user = user;
         this.title = title;
         this.text = text;
         this.createdAt = createdAt;
+        addKnowledgeImages(knowledgeImages);
+    }
+
+    private void addKnowledgeImages(List<KnowledgeImage> knowledgeImages) {
+        if (knowledgeImages == null) {
+            return;
+        }
+
+        knowledgeImages.forEach(this::addKnowledgeImage);
+    }
+
+    public void addKnowledgeImage(KnowledgeImage knowledgeImage) {
+        if (knowledgeImage == null) {
+            return;
+        }
+
+        if (this.knowledgeImages.contains(knowledgeImage)) {
+            return;
+        }
+
+        this.knowledgeImages.add(knowledgeImage);
+        knowledgeImage.assignKnowledge(this);
     }
 }

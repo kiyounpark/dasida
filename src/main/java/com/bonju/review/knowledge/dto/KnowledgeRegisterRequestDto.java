@@ -1,8 +1,8 @@
 package com.bonju.review.knowledge.dto;
 
-
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
@@ -10,6 +10,7 @@ import java.util.List;
 
 @RequiredArgsConstructor
 @Getter
+@Builder
 public class KnowledgeRegisterRequestDto {
 
     @NotBlank(message = "지식 제목 값이 비었습니다.")
