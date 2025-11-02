@@ -29,7 +29,7 @@ class KnowledgeServiceTest {
 
   private static final LocalDateTime FIXED_DATE = LocalDateTime.of(2025, 5, 9, 0, 0);
   private static final String TITLE = "제목";
-  private static final String CONTENT = "내용";
+  private static final String TEXT = "내용";
 
   @InjectMocks
   KnowledgeReadServiceImpl knowledgeReadService;
@@ -59,7 +59,7 @@ class KnowledgeServiceTest {
     verify(knowledgeReadRepository).findKnowledge(user, id);
     assertThat(response.getId()).isEqualTo(id);
     assertThat(response.getTitle()).isEqualTo(TITLE);
-    assertThat(response.getContent()).isEqualTo(CONTENT);
+    assertThat(response.getText()).isEqualTo(TEXT);
     assertThat(response.getCreatedAt()).isEqualTo(FIXED_DATE);
   }
 
@@ -164,7 +164,7 @@ class KnowledgeServiceTest {
     Knowledge knowledge = Knowledge.builder()
             .user(user)
             .title(TITLE)
-            .text(CONTENT)
+            .text(TEXT)
             .createdAt(FIXED_DATE)
             .build();
     ReflectionTestUtils.setField(knowledge, "id", id);

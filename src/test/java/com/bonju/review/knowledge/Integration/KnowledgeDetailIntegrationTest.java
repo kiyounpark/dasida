@@ -32,7 +32,7 @@ class KnowledgeDetailIntegrationTest {
   public static final String KAKAO_ID = "123";
   public static final LocalDateTime FIXED_DATE = LocalDateTime.of(2025, 5, 10, 0, 0);
   public static final String KNOWLEDGE_TITLE = "지식 제목";
-  public static final String KNOWLEDGE_CONTENT = "지식 내용";
+  public static final String KNOWLEDGE_TEXT = "지식 내용";
   public static final String PATH = "/knowledge/1";
   public static final String NON_EXISTING_KNOWLEDGE_PATH = "/knowledge/999";
   @Autowired
@@ -66,7 +66,7 @@ class KnowledgeDetailIntegrationTest {
     assertThat(actual.getId()).isEqualTo(savedKnowledge.getId());
     assertThat(actual.getCreatedAt()).isEqualTo(FIXED_DATE);
     assertThat(actual.getTitle()).isEqualTo(KNOWLEDGE_TITLE);
-    assertThat(actual.getContent()).isEqualTo(KNOWLEDGE_CONTENT);
+    assertThat(actual.getText()).isEqualTo(KNOWLEDGE_TEXT);
   }
 
   @DisplayName("존재하지 않는 지식 ID로 요청하면 404를 반환한다")
@@ -131,7 +131,7 @@ class KnowledgeDetailIntegrationTest {
     return Knowledge.builder()
             .user(user)
             .title(KNOWLEDGE_TITLE)
-            .text(KNOWLEDGE_CONTENT)
+            .text(KNOWLEDGE_TEXT)
             .createdAt(FIXED_DATE)
             .build();
   }

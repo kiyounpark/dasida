@@ -10,6 +10,6 @@ import java.time.LocalDateTime;
 public class KnowledgeDetailResponseDto {
   private Long id;
   private String title;
-  private String content;
+  private String text;
   private LocalDateTime createdAt;
 }
