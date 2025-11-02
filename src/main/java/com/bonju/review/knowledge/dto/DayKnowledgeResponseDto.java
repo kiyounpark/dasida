@@ -9,13 +9,13 @@ public class DayKnowledgeResponseDto {
     private final int dayType; // "0일차", "3일차", "7일차", "30일차"
     private final Long id;
     private final String title;
-    private final String content;
+    private final String text;
 
     @Builder
-    private DayKnowledgeResponseDto(int dayType, Long id, String title, String content) {
+    private DayKnowledgeResponseDto(int dayType, Long id, String title, String text) {
         this.dayType = dayType;
         this.id = id;
         this.title = title;
-        this.content = content;
+        this.text = text;
     }
 }

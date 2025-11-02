@@ -27,7 +27,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class KnowledgeDetailControllerTest {
   private static final LocalDateTime FIXED_TIME = LocalDateTime.of(2025, 5, 10, 0, 0,0);
   public static final String KNOWLEDGE_TITLE = "지식 제목";
-  public static final String KNOWLEDGE_CONTENT = "지식 내용";
+  public static final String KNOWLEDGE_TEXT = "지식 내용";
   public static final String PATH = "/knowledge/1";
   public static final String BAD_PATH = "/knowledge/0";
 
@@ -51,7 +51,7 @@ class KnowledgeDetailControllerTest {
     KnowledgeDetailResponseDto expected = KnowledgeDetailResponseDto.builder()
             .id(1L)
             .title(KNOWLEDGE_TITLE)
-            .content(KNOWLEDGE_CONTENT)
+            .text(KNOWLEDGE_TEXT)
             .createdAt(FIXED_TIME)
             .build();
 
@@ -69,7 +69,7 @@ class KnowledgeDetailControllerTest {
 
     assertThat(actual.getId()).isEqualTo(expected.getId());
     assertThat(actual.getTitle()).isEqualTo(expected.getTitle());
-    assertThat(actual.getContent()).isEqualTo(expected.getContent());
+    assertThat(actual.getText()).isEqualTo(expected.getText());
     assertThat(actual.getCreatedAt()).isEqualTo(expected.getCreatedAt());
   }
 

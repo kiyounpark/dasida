@@ -53,7 +53,7 @@ public class TodayKnowledgeListServiceImpl implements TodayKnowledgeListService 
                             .dayType(dayType.getDaysAgo())
                             .id(knowledge.getId())
                             .title(knowledge.getTitle())
-                            .content(markdownConverter.convertTruncatedParagraph(knowledge.getText()))
+                            .text(markdownConverter.convertTruncatedParagraph(knowledge.getText()))
                             .build())
                     .toList();
         } catch (DataAccessException e) {
