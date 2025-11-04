@@ -1,7 +1,7 @@
 package com.bonju.review.knowledge_quiz.integration;
 
+import com.bonju.review.knowledge.dto.KnowledgeRegisterRequestDto;
 import com.bonju.review.knowledge_quiz.dto.KnowledgeQuizRegistrationResponseDto;
-import com.bonju.review.knowledge_quiz.dto.KnowledgeRegistrationRequestDto;
 import com.bonju.review.quiz.client.AiClient;
 import com.bonju.review.quiz.entity.Quiz;
 import com.bonju.review.quiz.exception.errorcode.QuizErrorCode;
@@ -61,7 +61,7 @@ class KnowledgeRegistrationIntegrationTest {
         """);
 
     String request = objectMapper.writeValueAsString(
-            new KnowledgeRegistrationRequestDto(
+            new KnowledgeRegisterRequestDto(
                     "제목",
                     "본문",
                     List.of("https://cdn.test/knowledge-image.png")
@@ -103,7 +103,7 @@ class KnowledgeRegistrationIntegrationTest {
         """);
 
     String req = objectMapper.writeValueAsString(
-            new KnowledgeRegistrationRequestDto(
+            new KnowledgeRegisterRequestDto(
                     "제목",
                     "본문",
                     List.of("https://cdn.test/knowledge-image.png")
@@ -132,7 +132,7 @@ class KnowledgeRegistrationIntegrationTest {
     given(aiClient.generateRawQuizJson(any(), any())).willReturn("malformed json");
 
     String req = objectMapper.writeValueAsString(
-            new KnowledgeRegistrationRequestDto(
+            new KnowledgeRegisterRequestDto(
                     "제목",
                     "본문",
                     List.of("https://cdn.test/knowledge-image.png")

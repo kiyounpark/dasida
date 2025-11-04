@@ -4,7 +4,6 @@ import com.bonju.review.knowledge.dto.KnowledgeRegisterRequestDto;
 import com.bonju.review.knowledge.exception.KnowledgeException;
 import com.bonju.review.knowledge_quiz.dto.KnowledgeQuizRegistrationResponseDto;
 import com.bonju.review.knowledge_quiz.workflow.KnowledgeQuizCreationWorkflow;
-import com.bonju.review.knowledge_quiz.dto.KnowledgeRegistrationRequestDto;
 import com.bonju.review.quiz.exception.errorcode.QuizErrorCode;
 import com.bonju.review.quiz.exception.exception.QuizException;
 import com.bonju.review.slack.SlackErrorMessageFactory;
@@ -38,12 +37,12 @@ class KnowledgeRegistrationControllerTest {
 
   private static final String ENDPOINT = "/knowledge";
   private static final String TITLE    = "테스트 제목";
-  private static final String CONTENT  = "###테스트 내용";
+  private static final String TEXT = "###테스트 내용";
 
-  private static final KnowledgeRegistrationRequestDto REQUEST_BODY =
-          new KnowledgeRegistrationRequestDto(
+  private static final KnowledgeRegisterRequestDto REQUEST_BODY =
+          new KnowledgeRegisterRequestDto(
                   TITLE,
-                  CONTENT,
+                  TEXT,
                   List.of("https://cdn.test/knowledge-image.png")
           );
 
@@ -91,7 +90,7 @@ class KnowledgeRegistrationControllerTest {
     @WithMockUser
     void returnsBadRequest_whenTitleBlank() throws Exception {
       String body = objectMapper.writeValueAsString(
-              new KnowledgeRegistrationRequestDto(" ", CONTENT, REQUEST_BODY.images())
+              new KnowledgeRegisterRequestDto(" ", TEXT, REQUEST_BODY.getImages())
       );
 
       mockMvc.perform(post(ENDPOINT)
@@ -106,7 +105,7 @@ class KnowledgeRegistrationControllerTest {
     @WithMockUser
     void returnsBadRequest_whenContentBlank() throws Exception {
       String body = objectMapper.writeValueAsString(
-              new KnowledgeRegistrationRequestDto(TITLE, " ", REQUEST_BODY.images())
+              new KnowledgeRegisterRequestDto(TITLE, " ", REQUEST_BODY.getImages())
       );
 
       mockMvc.perform(post(ENDPOINT)
