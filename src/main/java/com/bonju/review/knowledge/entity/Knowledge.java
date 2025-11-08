@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 @Getter
@@ -63,4 +64,15 @@ public class Knowledge {
         this.knowledgeImages.add(knowledgeImage);
         knowledgeImage.assignKnowledge(this);
     }
+
+    public List<String> getImageUrls() {
+        if (knowledgeImages == null || knowledgeImages.isEmpty()) return List.of();
+        return knowledgeImages.stream()
+                .map(KnowledgeImage::getImageUrl)
+                .filter(Objects::nonNull)
+                .map(String::trim)
+                .filter(s -> !s.isEmpty())
+                .toList();
+    }
+
 }
