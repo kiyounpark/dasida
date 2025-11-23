@@ -2,7 +2,7 @@
 
 DASIDA는 학습 메모를 기반으로 복습 타이밍을 계산하고, AI가 생성한 퀴즈를 푸시 알림으로 전달해 주는 PWA의 백엔드입니다. "기록만 해두면, 적절한 타이밍에 짧은 퀴즈로 복습을 끝낼 수 있는 구조"를 목표로 설계되었습니다.
 
-## What this repository provides
+## 이 repository가 제공하는 기능
 - Spring Boot 3 기반의 REST API 서버
 - 학습 메모 → 퀴즈 생성 파이프라인 (Spring AI + OpenAI)
 - 복습 시점 계산 및 리마인더 스케줄링
@@ -10,7 +10,7 @@ DASIDA는 학습 메모를 기반으로 복습 타이밍을 계산하고, AI가 
 - OAuth2 로그인, 리멤버 미, CSRF 해제 등 PWA 친화적인 인증 설정
 - 5xx 중심의 Slack 장애 알림, Actuator 기반 헬스체크
 
-## Architecture at a glance
+## 아키텍처 한눈에 보기
 ```
 Client (PWA)
  ├─ React + Vite
@@ -29,7 +29,7 @@ Backend (이 저장소)
  └─ Slack 알림 + Actuator 헬스체크
 ```
 
-## Domain capabilities
+## 도메인 기능
 - **Knowledge 관리**: 사용자가 기록한 학습 메모(텍스트·이미지)를 저장하고, 이미지 리소스를 추출해 퀴즈 생성에 활용합니다. (`com.bonju.review.knowledge`)
 - **퀴즈 자동 생성**: OpenAI ChatClient를 통해 빈칸 채우기 형식의 퀴즈 JSON을 생성하고, JPA로 영속화합니다. (`com.bonju.review.quiz`)
 - **리마인더 스케줄링**: 리마인더 시점을 계산하고, 예약된 푸시를 발송합니다. (`com.bonju.review.notification`)
@@ -37,7 +37,7 @@ Backend (이 저장소)
 - **오답·정답 기록**: 사용자 풀이 기록과 오답 노트를 저장해 후속 퀴즈 추천에 활용할 수 있는 구조를 제공합니다. (`com.bonju.review.useranswer`, `com.bonju.review.wronganswernote`)
 - **운영 편의**: Slack 에러 메시지 포맷터와 테스트 엔드포인트, `/health` 헬스체크, Swagger UI를 제공합니다. (`com.bonju.review.slack`, `com.bonju.review.healthcheck`)
 
-## Technology stack
+## 기술 스택
 - Java 21, Spring Boot 3.4.1
 - Spring Data JPA (MySQL 기본, H2 인메모리 지원)
 - Spring Security, OAuth2 Client, Remember-Me
@@ -45,7 +45,7 @@ Backend (이 저장소)
 - Firebase Admin SDK (FCM), AWS SDK v2 (S3)
 - Lombok, MapStruct, Springdoc OpenAPI
 
-## Getting started
+## 시작하기.
 1. **필수 환경 변수/설정**
    - `spring.datasource.url`, `spring.datasource.username`, `spring.datasource.password`: MySQL 연결 정보.
    - `spring.ai.openai.api-key`: OpenAI API Key (Spring AI 기본 키 사용).
@@ -63,7 +63,7 @@ Backend (이 저장소)
    ./gradlew test
    ```
 
-## Folder overview
+## 폴더 구조
 ```
 com/bonju/review
  ├─ config           # 보안, CORS, Swagger, FCM 설정
