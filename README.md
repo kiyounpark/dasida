@@ -45,24 +45,6 @@ Backend (이 저장소)
 - Firebase Admin SDK (FCM), AWS SDK v2 (S3)
 - Lombok, MapStruct, Springdoc OpenAPI
 
-## 시작하기.
-1. **필수 환경 변수/설정**
-   - `spring.datasource.url`, `spring.datasource.username`, `spring.datasource.password`: MySQL 연결 정보.
-   - `spring.ai.openai.api-key`: OpenAI API Key (Spring AI 기본 키 사용).
-   - `firebase.credentials`: 서비스 계정 JSON 파일 경로. (`classpath:` 또는 파일 경로)
-   - `cloud.aws.region.static`, `cloud.aws.s3.bucket`: 이미지 업로드용 S3 설정.
-2. **로컬 실행**
-   ```bash
-   ./gradlew bootRun
-   ```
-   - 기본 프로파일이 없다면 H2 인메모리 DB로 실행됩니다. MySQL을 사용하려면 위의 데이터소스 속성을 지정해 주세요.
-3. **API 문서**
-   - 애플리케이션을 띄운 후 `/swagger-ui/index.html`에서 Swagger UI를 확인할 수 있습니다.
-4. **테스트**
-   ```bash
-   ./gradlew test
-   ```
-
 ## 폴더 구조
 ```
 com/bonju/review
