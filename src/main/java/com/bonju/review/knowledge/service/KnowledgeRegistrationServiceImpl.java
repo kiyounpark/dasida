@@ -11,6 +11,7 @@ import com.bonju.review.user.helper.AuthenticationHelper;
 import com.bonju.review.user.service.UserService;
 import com.bonju.review.util.enums.error_code.KnowledgeErrorCode;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
@@ -18,7 +19,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class KnowledgeRegistrationServiceImpl implements KnowledgeRegistrationService {
+
+  private static final String DEMO_KAKAO_ID_PREFIX = "demo-";
 
   private final KnowledgeRegistrationRepository repository;
   private final UserService userService;
@@ -49,20 +53,21 @@ public class KnowledgeRegistrationServiceImpl implements KnowledgeRegistrationSe
   private User findOrCreateUser() {
     String kakaoId = AuthenticationHelper.getKaKaoId();
 
-    // 디버그 로그
-    System.out.println("====== findOrCreateUser DEBUG ======");
-    System.out.println("kakaoId: " + kakaoId);
-    System.out.println("demoUserService is null: " + (demoUserService == null));
-    System.out.println("====================================");
+    log.debug("====== findOrCreateUser DEBUG ======");
+    log.debug("kakaoId: {}", kakaoId);
+    log.debug("demoUserService is null: {}", demoUserService == null);
+    log.debug("====================================");
 
-    // YouTube 시연용: demo- 프리픽스인 경우 (DevApiKeyFilter에서 설정)
-    if (demoUserService != null && kakaoId.startsWith("demo-")) {
-      System.out.println(">>> Using DemoUserService");
+    if (isDemoUser(kakaoId)) {
+      log.debug(">>> Using DemoUserService");
       return demoUserService.findOrCreateDemoUser(kakaoId);
     }
 
-    // 일반 개발자: 카카오 로그인 사용자 조회
-    System.out.println(">>> Using UserService");
+    log.debug(">>> Using UserService");
     return userService.findUser();
+  }
+
+  private boolean isDemoUser(String kakaoId) {
+    return demoUserService != null && kakaoId.startsWith(DEMO_KAKAO_ID_PREFIX);
   }
 }

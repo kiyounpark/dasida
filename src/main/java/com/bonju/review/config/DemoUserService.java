@@ -18,6 +18,10 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class DemoUserService {
 
+    private static final String DEMO_KAKAO_ID_PREFIX = "demo-";
+    private static final String DEMO_NICKNAME_PREFIX = "데모유저-";
+    private static final int DEMO_PREFIX_LENGTH = 5; // "demo-".length()
+
     private final UserRepository userRepository;
 
     /**
@@ -40,15 +44,23 @@ public class DemoUserService {
      * @return 새로 생성된 User 엔티티
      */
     private User createDemoUser(String kakaoId) {
-        // IP 정보 추출 (demo-192-168-1-100 -> 192-168-1-100)
-        String ipInfo = kakaoId.substring(5); // "demo-" 제거
+        String ipInfo = extractIpInfo(kakaoId);
+        String nickname = createDemoNickname(ipInfo);
 
         User demoUser = User.builder()
             .kakaoId(kakaoId)
-            .nickname("데모유저-" + ipInfo)
+            .nickname(nickname)
             .build();
 
         return userRepository.save(demoUser);
+    }
+
+    private String extractIpInfo(String kakaoId) {
+        return kakaoId.substring(DEMO_PREFIX_LENGTH);
+    }
+
+    private String createDemoNickname(String ipInfo) {
+        return DEMO_NICKNAME_PREFIX + ipInfo;
     }
 
     /**
@@ -59,7 +71,7 @@ public class DemoUserService {
     public boolean isDemoUser() {
         try {
             String kakaoId = AuthenticationHelper.getKaKaoId();
-            return kakaoId.startsWith("demo-");
+            return kakaoId.startsWith(DEMO_KAKAO_ID_PREFIX);
         } catch (Exception e) {
             return false;
         }

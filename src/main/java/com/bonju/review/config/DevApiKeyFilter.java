@@ -5,6 +5,7 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Profile;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -24,10 +25,20 @@ import java.util.Map;
  */
 @Component
 @Profile("dev")  // 개발 환경에서만 활성화
+@Slf4j
 public class DevApiKeyFilter extends OncePerRequestFilter {
 
     private static final String DEV_API_KEY = "dasida-dev-demo-key-2024";
     private static final String API_KEY_HEADER = "X-API-Key";
+    private static final String DEMO_KAKAO_ID_PREFIX = "demo-";
+    private static final String DEMO_NICKNAME_PREFIX = "데모유저-";
+    private static final String KNOWLEDGE_PATH = "/knowledge";
+    private static final String IMAGE_PATH = "/image";
+    private static final String HTTP_METHOD_POST = "POST";
+    private static final String RATE_LIMIT_ERROR_MESSAGE = "{\"message\": \"지식 등록은 최대 3회까지만 가능합니다.\"}";
+    private static final String OAUTH_PROVIDER_KAKAO = "kakao";
+    private static final String IP_SEPARATOR = ".";
+    private static final String KAKAO_ID_SEPARATOR = "-";
 
     private final RateLimitService rateLimitService;
     private final IpExtractor ipExtractor;
@@ -44,61 +55,86 @@ public class DevApiKeyFilter extends OncePerRequestFilter {
         String requestPath = request.getRequestURI();
         String method = request.getMethod();
 
-        System.out.println("====== DevApiKeyFilter 진입 ======");
-        System.out.println("요청 경로: " + method + " " + requestPath);
+        log.debug("====== DevApiKeyFilter 진입 ======");
+        log.debug("요청 경로: {} {}", method, requestPath);
 
-        // /knowledge POST 요청인 경우만 제한 (조회/이미지는 제한 없음)
-        if ("POST".equals(method) && requestPath.startsWith("/knowledge")) {
-            System.out.println("→ POST /knowledge 요청 감지");
-
-            String clientIp = ipExtractor.getClientIp(request);
-            String apiKey = request.getHeader(API_KEY_HEADER);
-
-            System.out.println("clientIp: " + clientIp);
-            System.out.println("API Key: " + (apiKey != null ? "존재함" : "없음"));
-
-            // API Key 검증
-            if (!DEV_API_KEY.equals(apiKey)) {
-                System.out.println("✗ API Key 불일치 - 401 반환");
-                response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Invalid API Key");
-                return;
-            }
-            System.out.println("✓ API Key 검증 통과");
-
-            // IP별 요청 횟수 체크
-            if (!rateLimitService.isAllowed(clientIp)) {
-                System.out.println("✗ Rate Limit 초과 - 403 반환");
-                response.setStatus(HttpServletResponse.SC_FORBIDDEN);
-                response.setContentType("application/json; charset=UTF-8");
-                response.getWriter().write("{\"message\": \"지식 등록은 최대 3회까지만 가능합니다.\"}");
-                return;
-            }
-            System.out.println("✓ Rate Limit 통과");
-
-            // 요청 횟수 증가
-            rateLimitService.incrementCount(clientIp);
-
-            // IP 기반 임시 인증 정보 설정
-            setAuthentication(clientIp);
-            System.out.println("✓ 인증 정보 설정 완료");
-
-        } else if (requestPath.startsWith("/knowledge") || requestPath.startsWith("/image")) {
-            System.out.println("→ GET 요청 또는 이미지 요청");
-            // GET /knowledge 또는 /image 엔드포인트는 API Key만 체크
-            String apiKey = request.getHeader(API_KEY_HEADER);
-            if (DEV_API_KEY.equals(apiKey)) {
-                String clientIp = ipExtractor.getClientIp(request);
-                setAuthentication(clientIp);
-                System.out.println("✓ 인증 정보 설정 완료");
-            } else {
-                System.out.println("→ API Key 없음, 인증 설정 스킵");
-            }
+        if (isKnowledgePostRequest(method, requestPath)) {
+            handleKnowledgePostRequest(request, response);
+        } else if (isReadOnlyRequest(requestPath)) {
+            handleReadOnlyRequest(request);
         } else {
-            System.out.println("→ DevApiKeyFilter 대상 아님, 패스");
+            log.debug("→ DevApiKeyFilter 대상 아님, 패스");
         }
 
-        System.out.println("====== DevApiKeyFilter 종료 ======");
+        log.debug("====== DevApiKeyFilter 종료 ======");
         filterChain.doFilter(request, response);
+    }
+
+    private boolean isKnowledgePostRequest(String method, String requestPath) {
+        return HTTP_METHOD_POST.equals(method) && requestPath.startsWith(KNOWLEDGE_PATH);
+    }
+
+    private boolean isReadOnlyRequest(String requestPath) {
+        return requestPath.startsWith(KNOWLEDGE_PATH) || requestPath.startsWith(IMAGE_PATH);
+    }
+
+    private void handleKnowledgePostRequest(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        log.debug("→ POST /knowledge 요청 감지");
+
+        String clientIp = ipExtractor.getClientIp(request);
+        String apiKey = request.getHeader(API_KEY_HEADER);
+
+        log.debug("clientIp: {}", clientIp);
+        log.debug("API Key: {}", apiKey != null ? "존재함" : "없음");
+
+        if (isInvalidApiKey(apiKey)) {
+            log.debug("✗ API Key 불일치 - 401 반환");
+            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Invalid API Key");
+            return;
+        }
+        log.debug("✓ API Key 검증 통과");
+
+        if (isRateLimitExceeded(clientIp)) {
+            log.debug("✗ Rate Limit 초과 - 403 반환");
+            sendRateLimitError(response);
+            return;
+        }
+        log.debug("✓ Rate Limit 통과");
+
+        rateLimitService.incrementCount(clientIp);
+        setAuthentication(clientIp);
+        log.debug("✓ 인증 정보 설정 완료");
+    }
+
+    private void handleReadOnlyRequest(HttpServletRequest request) {
+        log.debug("→ GET 요청 또는 이미지 요청");
+
+        String apiKey = request.getHeader(API_KEY_HEADER);
+        if (isValidApiKey(apiKey)) {
+            String clientIp = ipExtractor.getClientIp(request);
+            setAuthentication(clientIp);
+            log.debug("✓ 인증 정보 설정 완료");
+        } else {
+            log.debug("→ API Key 없음, 인증 설정 스킵");
+        }
+    }
+
+    private boolean isInvalidApiKey(String apiKey) {
+        return !DEV_API_KEY.equals(apiKey);
+    }
+
+    private boolean isValidApiKey(String apiKey) {
+        return DEV_API_KEY.equals(apiKey);
+    }
+
+    private boolean isRateLimitExceeded(String clientIp) {
+        return !rateLimitService.isAllowed(clientIp);
+    }
+
+    private void sendRateLimitError(HttpServletResponse response) throws IOException {
+        response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+        response.setContentType("application/json; charset=UTF-8");
+        response.getWriter().write(RATE_LIMIT_ERROR_MESSAGE);
     }
 
     /**
@@ -108,34 +144,46 @@ public class DevApiKeyFilter extends OncePerRequestFilter {
      * @param clientIp 클라이언트 IP 주소
      */
     private void setAuthentication(String clientIp) {
-        // IP 기반 고유 kakaoId 생성 (예: "demo-192-168-1-100")
-        String demoKakaoId = "demo-" + clientIp.replace(".", "-");
-        String demoNickname = "데모유저-" + clientIp;
+        String demoKakaoId = createDemoKakaoId(clientIp);
+        String demoNickname = createDemoNickname(clientIp);
 
-        // 디버그 로그
-        System.out.println("====== DevApiKeyFilter.setAuthentication ======");
-        System.out.println("clientIp: " + clientIp);
-        System.out.println("demoKakaoId: " + demoKakaoId);
-        System.out.println("==============================================");
+        log.debug("====== DevApiKeyFilter.setAuthentication ======");
+        log.debug("clientIp: {}", clientIp);
+        log.debug("demoKakaoId: {}", demoKakaoId);
+        log.debug("==============================================");
 
-        // OAuth2User 형태로 인증 정보 생성 (AuthenticationHelper가 OAuth2User를 우선 처리)
+        OAuth2User oauth2User = createOAuth2User(demoKakaoId, demoNickname);
+        OAuth2AuthenticationToken auth = createAuthenticationToken(oauth2User);
+
+        SecurityContextHolder.getContext().setAuthentication(auth);
+    }
+
+    private String createDemoKakaoId(String clientIp) {
+        return DEMO_KAKAO_ID_PREFIX + clientIp.replace(IP_SEPARATOR, KAKAO_ID_SEPARATOR);
+    }
+
+    private String createDemoNickname(String clientIp) {
+        return DEMO_NICKNAME_PREFIX + clientIp;
+    }
+
+    private OAuth2User createOAuth2User(String demoKakaoId, String demoNickname) {
         Map<String, Object> attributes = Map.of(
             "id", demoKakaoId,
             "properties", Map.of("nickname", demoNickname)
         );
 
-        OAuth2User oauth2User = new DefaultOAuth2User(
+        return new DefaultOAuth2User(
             Collections.singletonList(new SimpleGrantedAuthority("ROLE_USER")),
             attributes,
             "id"
         );
+    }
 
-        OAuth2AuthenticationToken auth = new OAuth2AuthenticationToken(
+    private OAuth2AuthenticationToken createAuthenticationToken(OAuth2User oauth2User) {
+        return new OAuth2AuthenticationToken(
             oauth2User,
             oauth2User.getAuthorities(),
-            "kakao"
+            OAUTH_PROVIDER_KAKAO
         );
-
-        SecurityContextHolder.getContext().setAuthentication(auth);
     }
 }
