@@ -49,12 +49,20 @@ public class KnowledgeRegistrationServiceImpl implements KnowledgeRegistrationSe
   private User findOrCreateUser() {
     String kakaoId = AuthenticationHelper.getKaKaoId();
 
+    // 디버그 로그
+    System.out.println("====== findOrCreateUser DEBUG ======");
+    System.out.println("kakaoId: " + kakaoId);
+    System.out.println("demoUserService is null: " + (demoUserService == null));
+    System.out.println("====================================");
+
     // YouTube 시연용: demo- 프리픽스인 경우 (DevApiKeyFilter에서 설정)
     if (demoUserService != null && kakaoId.startsWith("demo-")) {
+      System.out.println(">>> Using DemoUserService");
       return demoUserService.findOrCreateDemoUser(kakaoId);
     }
 
     // 일반 개발자: 카카오 로그인 사용자 조회
+    System.out.println(">>> Using UserService");
     return userService.findUser();
   }
 }
