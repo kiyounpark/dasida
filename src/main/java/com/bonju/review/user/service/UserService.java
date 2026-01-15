@@ -1,5 +1,6 @@
 package com.bonju.review.user.service;
 
+import com.bonju.review.config.DemoUserService;
 import com.bonju.review.user.entity.User;
 import com.bonju.review.user.exception.UserErrorCode;
 import com.bonju.review.user.exception.UserException;
@@ -9,6 +10,7 @@ import com.bonju.review.user.helper.AuthenticationHelper;
 import com.bonju.review.util.auth.AuthErrorCode;
 import com.bonju.review.util.auth.UnauthenticatedException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,10 +24,21 @@ public class UserService {
 
     private final UserRepository userRepository;
 
+    @Autowired(required = false)  // dev 프로필에서만 존재하므로 optional
+    private DemoUserService demoUserService;
+
     /** 로그인 사용자 필수인 경우 사용 */
-    @Transactional(readOnly = true)
+    @Transactional
     public User findUser() {
-        Optional<User> userByKakaoId = userRepository.findByKaKaoId(AuthenticationHelper.getKaKaoId());
+        String kakaoId = AuthenticationHelper.getKaKaoId();
+
+        // YouTube 시연용: demo- 프리픽스인 경우 자동 생성
+        if (demoUserService != null && kakaoId.startsWith("demo-")) {
+            return demoUserService.findOrCreateDemoUser(kakaoId);
+        }
+
+        // 일반 사용자: 기존 로직
+        Optional<User> userByKakaoId = userRepository.findByKaKaoId(kakaoId);
         return userByKakaoId.orElseThrow(() -> new UserException(UserErrorCode.USER_NOT_FOUND));
     }
 

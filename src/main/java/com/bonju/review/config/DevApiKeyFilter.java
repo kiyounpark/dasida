@@ -42,41 +42,62 @@ public class DevApiKeyFilter extends OncePerRequestFilter {
                                    HttpServletResponse response,
                                    FilterChain filterChain) throws ServletException, IOException {
         String requestPath = request.getRequestURI();
+        String method = request.getMethod();
+
+        System.out.println("====== DevApiKeyFilter 진입 ======");
+        System.out.println("요청 경로: " + method + " " + requestPath);
 
         // /knowledge POST 요청인 경우만 제한 (조회/이미지는 제한 없음)
-        if ("POST".equals(request.getMethod()) && requestPath.startsWith("/knowledge")) {
+        if ("POST".equals(method) && requestPath.startsWith("/knowledge")) {
+            System.out.println("→ POST /knowledge 요청 감지");
+
             String clientIp = ipExtractor.getClientIp(request);
             String apiKey = request.getHeader(API_KEY_HEADER);
 
+            System.out.println("clientIp: " + clientIp);
+            System.out.println("API Key: " + (apiKey != null ? "존재함" : "없음"));
+
             // API Key 검증
             if (!DEV_API_KEY.equals(apiKey)) {
+                System.out.println("✗ API Key 불일치 - 401 반환");
                 response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Invalid API Key");
                 return;
             }
+            System.out.println("✓ API Key 검증 통과");
 
             // IP별 요청 횟수 체크
             if (!rateLimitService.isAllowed(clientIp)) {
+                System.out.println("✗ Rate Limit 초과 - 403 반환");
                 response.setStatus(HttpServletResponse.SC_FORBIDDEN);
                 response.setContentType("application/json; charset=UTF-8");
                 response.getWriter().write("{\"message\": \"지식 등록은 최대 3회까지만 가능합니다.\"}");
                 return;
             }
+            System.out.println("✓ Rate Limit 통과");
 
             // 요청 횟수 증가
             rateLimitService.incrementCount(clientIp);
 
             // IP 기반 임시 인증 정보 설정
             setAuthentication(clientIp);
+            System.out.println("✓ 인증 정보 설정 완료");
 
         } else if (requestPath.startsWith("/knowledge") || requestPath.startsWith("/image")) {
+            System.out.println("→ GET 요청 또는 이미지 요청");
             // GET /knowledge 또는 /image 엔드포인트는 API Key만 체크
             String apiKey = request.getHeader(API_KEY_HEADER);
             if (DEV_API_KEY.equals(apiKey)) {
                 String clientIp = ipExtractor.getClientIp(request);
                 setAuthentication(clientIp);
+                System.out.println("✓ 인증 정보 설정 완료");
+            } else {
+                System.out.println("→ API Key 없음, 인증 설정 스킵");
             }
+        } else {
+            System.out.println("→ DevApiKeyFilter 대상 아님, 패스");
         }
 
+        System.out.println("====== DevApiKeyFilter 종료 ======");
         filterChain.doFilter(request, response);
     }
 
@@ -90,6 +111,12 @@ public class DevApiKeyFilter extends OncePerRequestFilter {
         // IP 기반 고유 kakaoId 생성 (예: "demo-192-168-1-100")
         String demoKakaoId = "demo-" + clientIp.replace(".", "-");
         String demoNickname = "데모유저-" + clientIp;
+
+        // 디버그 로그
+        System.out.println("====== DevApiKeyFilter.setAuthentication ======");
+        System.out.println("clientIp: " + clientIp);
+        System.out.println("demoKakaoId: " + demoKakaoId);
+        System.out.println("==============================================");
 
         // OAuth2User 형태로 인증 정보 생성 (AuthenticationHelper가 OAuth2User를 우선 처리)
         Map<String, Object> attributes = Map.of(
