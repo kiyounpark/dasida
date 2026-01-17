@@ -23,10 +23,12 @@ public class SecurityConfig {
   private final AuthenticationSuccessHandler successHandler;
   private final CustomOAuth2UserService customOAuth2UserService;
   private final RememberMeServices rememberMeServices;
+  private final DevApiKeyFilter devApiKeyFilter;
 
   @Bean
   public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
     http
+            .addFilterBefore(devApiKeyFilter, org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter.class)
             .securityContext(ctx -> ctx.requireExplicitSave(false))
             .csrf(AbstractHttpConfigurer::disable)
             .cors(Customizer.withDefaults())

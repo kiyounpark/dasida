@@ -17,8 +17,10 @@ public class CorsConfig {
         CorsConfiguration configuration = new CorsConfiguration();
         // ✅ dasida.dev와 api.dasida.dev 허용 (서브도메인 포함)
         configuration.setAllowedOriginPatterns(List.of(
+                "http://localhost:*",               // 로컬 개발 (모든 포트)
+                "http://127.0.0.1:*",               // 로컬 개발 (IP)
                 "https://dev.dasida.org:3000",      // 프론트엔드
-                "https://dasida.org"   // 백엔드 API
+                "https://dasida.org"                // 백엔드 API
         ));
         // 요청 메서드 허용 설정
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
