@@ -34,6 +34,8 @@ public class DevApiKeyFilter extends OncePerRequestFilter {
     private static final String DEMO_NICKNAME_PREFIX = "데모유저-";
     private static final String KNOWLEDGE_PATH = "/knowledge";
     private static final String IMAGE_PATH = "/image";
+    private static final String HOME_PATH = "/home";
+    private static final String QUIZZES_PATH = "/quizzes";
     private static final String HTTP_METHOD_POST = "POST";
     private static final String RATE_LIMIT_ERROR_MESSAGE = "{\"message\": \"지식 등록은 최대 3회까지만 가능합니다.\"}";
     private static final String OAUTH_PROVIDER_KAKAO = "kakao";
@@ -60,6 +62,8 @@ public class DevApiKeyFilter extends OncePerRequestFilter {
 
         if (isKnowledgePostRequest(method, requestPath)) {
             handleKnowledgePostRequest(request, response);
+        } else if (isQuizPostRequest(method, requestPath)) {
+            handleQuizPostRequest(request, response);
         } else if (isReadOnlyRequest(requestPath)) {
             handleReadOnlyRequest(request);
         } else {
@@ -75,7 +79,13 @@ public class DevApiKeyFilter extends OncePerRequestFilter {
     }
 
     private boolean isReadOnlyRequest(String requestPath) {
-        return requestPath.startsWith(KNOWLEDGE_PATH) || requestPath.startsWith(IMAGE_PATH);
+        return requestPath.startsWith(KNOWLEDGE_PATH)
+            || requestPath.startsWith(IMAGE_PATH)
+            || requestPath.startsWith(HOME_PATH);
+    }
+
+    private boolean isQuizPostRequest(String method, String requestPath) {
+        return HTTP_METHOD_POST.equals(method) && requestPath.startsWith(QUIZZES_PATH);
     }
 
     private void handleKnowledgePostRequest(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -117,6 +127,25 @@ public class DevApiKeyFilter extends OncePerRequestFilter {
         } else {
             log.debug("→ API Key 없음, 인증 설정 스킵");
         }
+    }
+
+    private void handleQuizPostRequest(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        log.debug("→ POST /quizzes 요청 감지");
+
+        String apiKey = request.getHeader(API_KEY_HEADER);
+
+        log.debug("API Key: {}", apiKey != null ? "존재함" : "없음");
+
+        if (isInvalidApiKey(apiKey)) {
+            log.debug("✗ API Key 불일치 - 401 반환");
+            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Invalid API Key");
+            return;
+        }
+        log.debug("✓ API Key 검증 통과");
+
+        String clientIp = ipExtractor.getClientIp(request);
+        setAuthentication(clientIp);
+        log.debug("✓ 인증 정보 설정 완료");
     }
 
     private boolean isInvalidApiKey(String apiKey) {
