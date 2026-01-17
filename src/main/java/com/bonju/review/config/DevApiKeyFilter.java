@@ -35,6 +35,7 @@ public class DevApiKeyFilter extends OncePerRequestFilter {
     private static final String KNOWLEDGE_PATH = "/knowledge";
     private static final String IMAGE_PATH = "/image";
     private static final String HOME_PATH = "/home";
+    private static final String WRONG_NOTES_PATH = "/wrong-notes";
     private static final String QUIZZES_PATH = "/quizzes";
     private static final String HTTP_METHOD_POST = "POST";
     private static final String RATE_LIMIT_ERROR_MESSAGE = "{\"message\": \"지식 등록은 최대 3회까지만 가능합니다.\"}";
@@ -85,7 +86,8 @@ public class DevApiKeyFilter extends OncePerRequestFilter {
     private boolean isReadOnlyRequest(String requestPath) {
         return requestPath.startsWith(KNOWLEDGE_PATH)
             || requestPath.startsWith(IMAGE_PATH)
-            || requestPath.startsWith(HOME_PATH);
+            || requestPath.startsWith(HOME_PATH)
+            || requestPath.startsWith(WRONG_NOTES_PATH);
     }
 
     private boolean isQuizPostRequest(String method, String requestPath) {
