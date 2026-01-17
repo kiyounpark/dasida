@@ -20,7 +20,8 @@ public class CorsConfig {
                 "http://localhost:*",               // 로컬 개발 (모든 포트)
                 "http://127.0.0.1:*",               // 로컬 개발 (IP)
                 "https://dev.dasida.org:3000",      // 프론트엔드
-                "https://dasida.org"                // 백엔드 API
+                "https://dasida.org",               // 백엔드 API
+                "https://dasida-youtube.netlify.app" // Netlify 배포
         ));
         // 요청 메서드 허용 설정
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
