@@ -61,9 +61,13 @@ public class DevApiKeyFilter extends OncePerRequestFilter {
         log.debug("요청 경로: {} {}", method, requestPath);
 
         if (isKnowledgePostRequest(method, requestPath)) {
-            handleKnowledgePostRequest(request, response);
+            if (!handleKnowledgePostRequest(request, response)) {
+                return;
+            }
         } else if (isQuizPostRequest(method, requestPath)) {
-            handleQuizPostRequest(request, response);
+            if (!handleQuizPostRequest(request, response)) {
+                return;
+            }
         } else if (isReadOnlyRequest(requestPath)) {
             handleReadOnlyRequest(request);
         } else {
@@ -88,7 +92,7 @@ public class DevApiKeyFilter extends OncePerRequestFilter {
         return HTTP_METHOD_POST.equals(method) && requestPath.startsWith(QUIZZES_PATH);
     }
 
-    private void handleKnowledgePostRequest(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    private boolean handleKnowledgePostRequest(HttpServletRequest request, HttpServletResponse response) throws IOException {
         log.debug("→ POST /knowledge 요청 감지");
 
         String clientIp = ipExtractor.getClientIp(request);
@@ -100,20 +104,21 @@ public class DevApiKeyFilter extends OncePerRequestFilter {
         if (isInvalidApiKey(apiKey)) {
             log.debug("✗ API Key 불일치 - 401 반환");
             response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Invalid API Key");
-            return;
+            return false;
         }
         log.debug("✓ API Key 검증 통과");
 
         if (isRateLimitExceeded(clientIp)) {
             log.debug("✗ Rate Limit 초과 - 403 반환");
             sendRateLimitError(response);
-            return;
+            return false;
         }
         log.debug("✓ Rate Limit 통과");
 
         rateLimitService.incrementCount(clientIp);
         setAuthentication(clientIp);
         log.debug("✓ 인증 정보 설정 완료");
+        return true;
     }
 
     private void handleReadOnlyRequest(HttpServletRequest request) {
@@ -129,7 +134,7 @@ public class DevApiKeyFilter extends OncePerRequestFilter {
         }
     }
 
-    private void handleQuizPostRequest(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    private boolean handleQuizPostRequest(HttpServletRequest request, HttpServletResponse response) throws IOException {
         log.debug("→ POST /quizzes 요청 감지");
 
         String apiKey = request.getHeader(API_KEY_HEADER);
@@ -139,13 +144,14 @@ public class DevApiKeyFilter extends OncePerRequestFilter {
         if (isInvalidApiKey(apiKey)) {
             log.debug("✗ API Key 불일치 - 401 반환");
             response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Invalid API Key");
-            return;
+            return false;
         }
         log.debug("✓ API Key 검증 통과");
 
         String clientIp = ipExtractor.getClientIp(request);
         setAuthentication(clientIp);
         log.debug("✓ 인증 정보 설정 완료");
+        return true;
     }
 
     private boolean isInvalidApiKey(String apiKey) {
