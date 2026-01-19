@@ -25,4 +25,13 @@ public class HomeController {
     public HomeResponseDto getQuizzesAndKnowledge() {
         return homeWorkflow.buildHomeResponse();
     }
+
+    /**
+     * 유튜브 시연용 홈 데이터 조회
+     * 날짜 필터링 없이 모든 퀴즈와 지식을 반환합니다.
+     */
+    @GetMapping("/demo")
+    public HomeResponseDto getAllQuizzesAndKnowledgeForDemo() {
+        return homeWorkflow.buildDemoHomeResponse();
+    }
 }

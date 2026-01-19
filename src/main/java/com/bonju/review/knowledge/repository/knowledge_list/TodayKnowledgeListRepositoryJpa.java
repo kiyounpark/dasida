@@ -28,4 +28,18 @@ public class TodayKnowledgeListRepositoryJpa implements TodayKnowledgeListReposi
                 .setParameter("end", dayRange.getEnd())
                 .getResultList();
     }
+
+    /**
+     * 유튜브 시연용: 날짜 제한 없이 사용자의 모든 지식 조회
+     */
+    @Override
+    public List<Knowledge> findAllKnowledges(User user) {
+        return em.createQuery(
+                        "SELECT k FROM Knowledge k " +
+                                "WHERE k.user = :user " +
+                                "ORDER BY k.createdAt DESC",
+                        Knowledge.class)
+                .setParameter("user", user)
+                .getResultList();
+    }
 }

@@ -60,4 +60,30 @@ public class TodayKnowledgeListServiceImpl implements TodayKnowledgeListService 
             throw new KnowledgeException(KnowledgeErrorCode.NOT_FOUND, e);
         }
     }
+
+    /**
+     * 유튜브 시연용: 날짜 필터링 없이 사용자의 모든 지식 조회
+     */
+    @Override
+    @Transactional(readOnly = true)
+    public ImmutableList<DayKnowledgeResponseDto> getAllKnowledgesForDemo() {
+        User user = userService.findUser();
+
+        try {
+            List<Knowledge> knowledgeList = todayKnowledgeListRepository.findAllKnowledges(user);
+
+            return ImmutableList.copyOf(
+                    knowledgeList.stream()
+                            .map(knowledge -> DayKnowledgeResponseDto.builder()
+                                    .dayType(0)  // 시연용이므로 0일차로 통일
+                                    .id(knowledge.getId())
+                                    .title(knowledge.getTitle())
+                                    .text(markdownConverter.convertTruncatedParagraph(knowledge.getText()))
+                                    .build())
+                            .toList()
+            );
+        } catch (DataAccessException e) {
+            throw new KnowledgeException(KnowledgeErrorCode.NOT_FOUND, e);
+        }
+    }
 }

@@ -56,6 +56,30 @@ public class QuizzesRepositoryJpa implements QuizzesRepository {
                 .getResultList();
     }
 
+    /**
+     * 유튜브 시연용: 날짜 제한 없이 모든 미풀이/오답 퀴즈 조회
+     * 사용자의 모든 퀴즈 중 한 번도 맞힌 적이 없는 퀴즈를 반환합니다.
+     */
+    @Override
+    public List<Quiz> findAllUnsolvedOrAlwaysWrongQuizzes(User user) {
+        return em.createQuery("""
+                SELECT q
+                FROM   Quiz q
+                WHERE  q.user = :user
+                  AND  NOT EXISTS (
+                         SELECT 1
+                         FROM   UserAnswer ua
+                         WHERE  ua.quiz      = q
+                           AND  ua.user      = :user
+                           AND  ua.isCorrect = true
+                       )
+                ORDER BY q.createdAt DESC,
+                         q.id        DESC
+                """, Quiz.class)
+                .setParameter("user", user)
+                .getResultList();
+    }
+
     /* ──────────────────────────────────────────────
      * private helpers
      * ──────────────────────────────────────────── */

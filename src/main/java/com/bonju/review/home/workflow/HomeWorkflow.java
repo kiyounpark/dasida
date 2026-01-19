@@ -29,4 +29,15 @@ public class HomeWorkflow {
     List<DayKnowledgeResponseDto> dayKnowledges = todayKnowledgeListService.getAllDayKnowledges();
     return new HomeResponseDto(hasRegisteredKnowledge, dayQuizzes, dayKnowledges);
   }
+
+  /**
+   * 유튜브 시연용 홈 화면 데이터 조합
+   * 날짜 필터링 없이 모든 퀴즈와 지식을 반환합니다.
+   */
+  public HomeResponseDto buildDemoHomeResponse() {
+    boolean hasRegisteredKnowledge = knowledgeReadService.hasRegisteredKnowledge();
+    List<DayQuizResponseDto> allQuizzes = quizzesService.getAllQuizzesForDemo();
+    List<DayKnowledgeResponseDto> allKnowledges = todayKnowledgeListService.getAllKnowledgesForDemo();
+    return new HomeResponseDto(hasRegisteredKnowledge, allQuizzes, allKnowledges);
+  }
 }

@@ -65,6 +65,35 @@ public class QuizzesServiceImpl implements QuizzesService {
 
         return result;
     }
+
+    /**
+     * 유튜브 시연용: 날짜 필터링 없이 모든 미풀이/오답 퀴즈 조회
+     */
+    @Override
+    @Transactional(readOnly = true)
+    public List<DayQuizResponseDto> getAllQuizzesForDemo() {
+        User user = userService.findUser();
+        List<Quiz> quizzes;
+
+        try {
+            quizzes = quizzesRepository.findAllUnsolvedOrAlwaysWrongQuizzes(user);
+        } catch (DataAccessException e) {
+            throw new QuizException(QuizErrorCode.QUIZ_TODAY_FAILED, e);
+        }
+
+        List<DayQuizResponseDto> result = new ArrayList<>();
+        for (Quiz quiz : quizzes) {
+            result.add(DayQuizResponseDto.builder()
+                    .dayType(0)  // 시연용이므로 0일차로 통일
+                    .quizId(quiz.getId())
+                    .question(quiz.getQuestion())
+                    .answerLength(quiz.getAnswerLength())
+                    .hint(quiz.getHint())
+                    .build());
+        }
+
+        return result;
+    }
 }
 
 
